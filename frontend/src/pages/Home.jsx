@@ -4,30 +4,28 @@ import { Reveal, RevealStagger, RevealItem } from "../components/Reveal";
 export default function Home() {
     return (
         <main data-testid="home-page">
-            {/* ROW 1 — HERO — matches other page heros: cream, 8/4 grid, headline mix */}
+            {/* ROW 1 — HERO — navy, editorial H1 with serif italic emphasis on "show up" */}
             <section
                 data-testid="home-hero"
-                className="bg-cream text-navy row-full"
+                className="on-navy bg-navy text-cream row-full"
             >
                 <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 pt-32 md:pt-0 pb-16 md:pb-0">
                     <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-14 gap-x-8 items-end" stagger={0.14}>
                         <RevealItem className="lg:col-span-8">
-                            <div className="eyebrow text-navy/60 mb-8">
-                                A strategic marketing practice · Est. 2020
-                            </div>
                             <h1
                                 data-testid="home-hero-wordmark"
-                                className="wordmark text-5xl md:text-6xl lg:text-[5.25rem] xl:text-[6rem] leading-[0.98] tracking-tight"
+                                className="wordmark text-5xl md:text-6xl lg:text-[5.25rem] xl:text-[6rem] leading-[0.98] tracking-tight text-cream"
                             >
                                 <span className="block sm:whitespace-nowrap">Clarifying</span>
-                                <span className="block sm:whitespace-nowrap">how you show up</span>
+                                <span className="block sm:whitespace-nowrap">how you</span>
                                 <span className="block sm:whitespace-nowrap serif italic font-normal text-steel">
-                                    in the market.
+                                    show up
                                 </span>
+                                <span className="block sm:whitespace-nowrap">in the market.</span>
                             </h1>
                         </RevealItem>
                         <RevealItem className="lg:col-span-4 lg:pl-6">
-                            <p className="serif italic text-2xl md:text-3xl lg:text-[2rem] text-navy leading-snug">
+                            <p className="serif italic text-2xl md:text-3xl lg:text-[2rem] text-cream leading-snug">
                                 A strategic marketing practice nearly forty
                                 years in the making.
                             </p>
