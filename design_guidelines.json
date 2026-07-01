@@ -1,0 +1,110 @@
+{
+  "theme": "LIGHT",
+  "archetype": "4 (Swiss & High-Contrast)",
+  "instructions_to_main_agent": "Strict adherence to the provided color palette, typography stack, and spacing guidelines. Do NOT use any hero images, stock photos, or illustrations. Generous whitespace, typography-first approach. Add data-testid to all interactive and key informational elements. DO NOT use generic bento grids or shadowed rounded rectangle cards. Use editorial lists and crisp typography. Build components in HTML+Tailwind (JSX/JS). The domain is B2B strategic marketing practice. Think law firm with taste.",
+  "color_palette": {
+    "primary_navy": "#13243d",
+    "background_warm_white": "#f5f1eb",
+    "accent_steel_blue": "#5A7D9A",
+    "text_body": "#444444"
+  },
+  "typography": {
+    "font_sources": [
+      "<link rel=\"stylesheet\" href=\"https://use.typekit.net/kiu8ndx.css\">",
+      "<link href=\"https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap\" rel=\"stylesheet\">"
+    ],
+    "families": {
+      "heading": "\"scandia-web\", \"Manrope\", \"Helvetica Neue\", sans-serif",
+      "serif_accent": "\"Cormorant Garamond\", serif"
+    },
+    "scale": {
+      "h1": "text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-none",
+      "h2": "text-2xl sm:text-3xl lg:text-4xl tracking-tight leading-snug",
+      "h3": "text-xl sm:text-2xl leading-snug",
+      "body": "text-base lg:text-lg leading-relaxed text-[#444444]",
+      "editorial_accent": "text-2xl lg:text-3xl font-serif leading-relaxed italic"
+    }
+  },
+  "spacing_scale": {
+    "section_padding": "py-24 md:py-32 lg:py-48",
+    "container": "max-w-6xl mx-auto px-6 md:px-12 lg:px-24",
+    "element_gap": "gap-8 md:gap-16 lg:gap-24"
+  },
+  "motion_rules": {
+    "restrained": true,
+    "allowed": [
+      "fade on scroll reveal (subtle)",
+      "translate-y by small amount (e.g., 10px) on scroll reveal",
+      "hover underlines for links"
+    ],
+    "forbidden": [
+      "bouncy animations",
+      "parallax",
+      "heavy transitions",
+      "decorative animations"
+    ]
+  },
+  "dos_and_donts": {
+    "do": [
+      "Use typography and negative space as the primary visual drivers",
+      "Use warm white (#f5f1eb) as default background",
+      "Vary navy (#13243d) background sections intentionally (e.g., Home hero, footer, high-signal moments)",
+      "Use #444444 for body text on light background and warm white for text on navy background",
+      "Use editorial, well-set lists instead of bento-box grids or shadowed cards",
+      "Ensure all interactive elements have data-testid attributes",
+      "Make the site feel like it came from the same hand as the provided business card"
+    ],
+    "dont": [
+      "NO hero images, NO stock photography, NO illustrations",
+      "NO gradients of any kind (especially no purple/violet AI-slop defaults)",
+      "NO dark text on dark backgrounds",
+      "NO shadowed rounded rectangles for cards",
+      "NO forms or Calendly embeds (only email links)"
+    ]
+  },
+  "layout_blueprints": {
+    "global_nav": {
+      "structure": "Sticky or static header, transparent or solid warm white. Wordmark on left (Scandia bold), Nav links on right (Home, Work, About, Writing, Connect). Nav links should be clean sans-serif, hover state with subtle steel blue underline.",
+      "testid": "global-nav"
+    },
+    "global_footer": {
+      "structure": "Navy background (#13243d), warm white text (#f5f1eb). Wordmark, Email CTA (connect@methodmarketinggroup.com), Minimal legal text. Substantial padding (py-32).",
+      "testid": "global-footer"
+    },
+    "pages": {
+      "home": {
+        "hero": "Navy background (#13243d), text in warm white. Typography-only hero showcasing the tagline ('Clarifying how you show up in the market.') in Cormorant Garamond.",
+        "sections": [
+          "The Model: Warm white background. High typographic hierarchy using Scandia for headers, Cormorant Garamond for pull quotes.",
+          "Who We Work With: Warm white background. Clean editorial list layout, avoiding card blocks.",
+          "Closing CTA: Navy or warm white block. Large typography driving to connect@methodmarketinggroup.com."
+        ]
+      },
+      "work_index": {
+        "structure": "Page title in Scandia. Editorial list of case studies ('Engagement 01: Manufacturing...', 'Engagement 02: MedTech'). Each item acts as a clickable row or clean text block separated by subtle steel blue or navy 1px lines, not shadowed cards.",
+        "testid": "work-index-page"
+      },
+      "work_detail": {
+        "structure": "Long-form editorial layout. Opening statement (Cormorant Garamond), 'The Work' (bulleted list/clean columns), 'The Outcome' narrative. Generous padding, readable measure (max-w-prose)."
+      },
+      "about": {
+        "structure": "Company philosophy in large serif/sans text. Gary Hopkins bio (founder/principal). Link to blog. Editorial, clean columns."
+      },
+      "writing_index": {
+        "structure": "5-10 mock article list. Clean editorial list (date, title, short excerpt, 'Read more' link in steel blue). No bento cards. Just beautifully typeset rows."
+      },
+      "writing_detail": {
+        "structure": "Article title (H1 Scandia), Date/Author metadata. Body copy in max-w-2xl container for readability. Pull quotes in Cormorant Garamond."
+      },
+      "connect": {
+        "structure": "Simple, highly focused page. Large email CTA (connect@methodmarketinggroup.com). No forms."
+      }
+    }
+  },
+  "media": {
+    "favicon": "https://customer-assets.emergentagent.com/job_9388ad88-b996-460b-a025-c1566c4ded12/artifacts/uien7bv0_New%20Method%20Favicon%404x.png",
+    "email_signature_mark": "https://customer-assets.emergentagent.com/job_9388ad88-b996-460b-a025-c1566c4ded12/artifacts/onhhq4hm_New%20Method%20Email%20Sig%404x.png",
+    "business_card_reference": "https://customer-assets.emergentagent.com/job_9388ad88-b996-460b-a025-c1566c4ded12/artifacts/3zffysf1_new-method-card-front-CMYK-final.png",
+    "copy_document": "https://customer-assets.emergentagent.com/job_9388ad88-b996-460b-a025-c1566c4ded12/artifacts/wlmi9xzg_Method_Website_Copy_v5.docx"
+  }
+}
