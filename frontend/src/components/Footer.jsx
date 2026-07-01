@@ -92,7 +92,7 @@ export default function Footer() {
                         <a
                             href="mailto:connect@methodmarketinggroup.com"
                             data-testid="footer-email-link"
-                            className="ed-link text-base tracking-tight block break-all"
+                            className="ed-link text-base tracking-tight block break-words"
                         >
                             connect@methodmarketinggroup.com
                         </a>
