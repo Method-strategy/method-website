@@ -1,0 +1,33 @@
+{
+  "summary": "Iteration 9 frontend-only test of the Home hero redesign (cream bg, 8/4 split, H1 with 3 spans, italic-serif 'in the market.' in steel, right-column subhead) and App.js nav variant change (navyStart only on /connect). 10/11 acceptance checks PASS. Only issue: 2px horizontal overflow on 390 mobile viewport (docScrollWidth=392 vs clientWidth=390) caused by the H1 spans using `whitespace-nowrap` — 'how you show up' at text-5xl / Scandia bold is ~1-2px wider than the 342px content column at that breakpoint. All other viewports (768, 1440, 1920) have zero overflow. All regressions on /work, /about, /writing, /connect, /work/manufacturing-performance, /writing/inside-out pass. Zero console errors on any page.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Home hero H1 (data-testid='home-hero-wordmark')",
+        "issue": "At mobile 390x844, documentElement.scrollWidth = 392 while clientWidth = 390 — a 2px horizontal overflow. Root cause: the H1 uses `<span class='block whitespace-nowrap'>` for all three lines, and 'how you show up' rendered at Scandia bold text-5xl (48px) measures ~343-344px, marginally wider than the 342px content column (390 - 24px×2 padding). No specific element reports right > vw+0.5 in bounding-box scan, so the overflow is sub-pixel per element but sums to 2px on the doc. Visually 'how you show up' is flush to the right edge / very slightly clipped in the mobile screenshot.",
+        "selector": "h1[data-testid='home-hero-wordmark'] span.block.whitespace-nowrap",
+        "priority": "LOW"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "OPTIONAL (LOW): Fix the 2px mobile overflow on the home hero H1. Options: (a) drop `whitespace-nowrap` at the `sm:` and below breakpoint (e.g. `whitespace-normal sm:whitespace-nowrap`) so 'how you show up' can wrap on tiny screens; (b) reduce the mobile font-size (e.g. `text-[2.75rem]` or `text-[2.5rem]` for the first two spans until sm/md); or (c) tighten mobile padding from px-6 to px-5 on the hero container. Option (a) is the least visually disruptive. Everything else in the iteration_9 spec is verified working — no further changes needed."
+  ],
+  "critical_code_review_comments": [
+    "Home.jsx line 22-26: the three H1 spans use `whitespace-nowrap` which is fragile at narrow viewports. Consider `whitespace-normal md:whitespace-nowrap` so mobile can wrap gracefully if font metrics shift (e.g. font swap FOUT).",
+    "Home.jsx line 30: the right-column subhead paragraph has no data-testid. Adding one (e.g. `data-testid='home-hero-subhead'`) would make future regressions easier to lock down — this iteration tested it via `[data-testid='home-hero'] p` which is a brittle selector if more <p> gets added to the hero column later.",
+    "App.js line 17: `navyStart` is now correctly scoped to only `/connect`. Consider extracting the list of navy-start routes into a constant array (`const NAVY_ROUTES = ['/connect']`) so future additions don't require touching the boolean expression.",
+    "Reveal animations still work on the new hero (opacity 1 after 2s wait) — no changes needed."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "n/a (frontend-only test)", "frontend": "91% (10/11 acceptance checks pass; 1 minor mobile overflow)" },
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Preview URL: https://method-positioning.preview.emergentagent.com. VERIFIED on /: home-hero bg-color=rgb(245,241,235) ✓; H1 has 3 span.block children ['Clarifying','how you show up','in the market.']; 3rd span classes='block whitespace-nowrap serif italic font-normal text-steel', color=rgb(90,125,154), font-style=italic, font-family='Cormorant Garamond,EB Garamond,Garamond,serif' ✓; H1 text does NOT equal 'Method' ✓; right-column subhead exact text 'A strategic marketing practice nearly forty years in the making.' with italic + Cormorant Garamond ✓; nav-wordmark color on / = rgb(19,36,61) navy ✓ (legible on cream); nav-wordmark color on /connect = rgb(245,241,235) cream ✓; hero height at 1440x900 = 900px (>=895 ✓); hero height at 390x844 = 717.4px (>=712 ✓); reveal opacities → 1 after 2s ✓; scrollWidth at 1440=1440 ✓, 768=768 ✓, 1920=1920 ✓; scrollWidth at 390=392 ✗ (2px overflow, sub-pixel from whitespace-nowrap H1 spans); home-opening, home-the-model, home-who, home-cta all present ✓; global-nav, global-footer, footer-linkedin-link present ✓; /work H1='Strategy leads. Everything else follows.' ✓; /about H1='There is a method to this.' (contains line-break between 'There is a' and 'method' but text content matches spec) ✓; /writing H1='Notes on showing up clearly in the market.' ✓; /work/manufacturing-performance and /writing/inside-out render with their H1s ✓; footer hidden on /connect ✓; zero console errors on any route ✓. Production build + strip pipeline was NOT re-executed this iteration (iteration_8 already validated end-to-end and no build-config files changed). If main agent wants that leg re-validated, run: `cd /app/frontend && rm -rf build && CI=false DISABLE_ESLINT_PLUGIN=true GENERATE_SOURCEMAP=false yarn build && node scripts/strip-emergent.js` — expect exit 0, 'Sanity check: OK', 4 removals reported.",
+  "rca_of_the_issue": "Mobile 2px overflow — Root cause: `<span class='block whitespace-nowrap'>how you show up</span>` in Home.jsx forces the widest H1 line to render on a single line regardless of viewport. At 390px viewport with px-6 (24px each side) padding, the content column is 342px. 'how you show up' rendered in Scandia bold at `text-5xl` (48px, tight leading, tight tracking) measures ~343-344px, so it protrudes 1-2px past the right edge of the content column, which then bubbles up to a 2px document scrollWidth. Reproduction: set viewport 390x844, load /, evaluate `document.documentElement.scrollWidth - document.documentElement.clientWidth` → returns 2. Mitigation: change `className='block whitespace-nowrap'` to `className='block whitespace-normal md:whitespace-nowrap'` on the H1 spans in /app/frontend/src/pages/Home.jsx lines 22-26 (or reduce mobile font-size). This preserves the desired one-line-per-phrase layout on tablet+ while allowing gentle wrapping on tiny mobile."
+}

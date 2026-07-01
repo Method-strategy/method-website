@@ -13,9 +13,8 @@ import Connect from "@/pages/Connect";
 
 function Shell() {
     const { pathname } = useLocation();
-    // Pages whose FIRST band is navy — nav needs a light color from the start.
-    // Home starts navy; Connect is navy-only.
-    const navyStart = pathname === "/" || pathname === "/connect";
+    // Only /connect starts on navy now — home hero moved to cream to match other page heros.
+    const navyStart = pathname === "/connect";
     const hideFooter = pathname === "/connect";
 
     return (

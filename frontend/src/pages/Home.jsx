@@ -4,35 +4,32 @@ import { Reveal, RevealStagger, RevealItem } from "../components/Reveal";
 export default function Home() {
     return (
         <main data-testid="home-page">
-            {/* ROW 1 — HERO — Navy, business-card treatment */}
+            {/* ROW 1 — HERO — matches other page heros: cream, 8/4 grid, headline mix */}
             <section
                 data-testid="home-hero"
-                className="on-navy bg-navy text-cream row-full relative overflow-hidden pt-32 md:pt-0"
+                className="bg-cream text-navy row-full"
             >
-                <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-16 md:py-0">
-                    <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-14 gap-x-8 lg:items-end" stagger={0.14}>
-                        <RevealItem className="lg:col-span-8 xl:col-span-8">
-                            <div className="eyebrow text-cream/60 mb-8">
+                <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 pt-32 md:pt-0 pb-16 md:pb-0">
+                    <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-14 gap-x-8 items-end" stagger={0.14}>
+                        <RevealItem className="lg:col-span-8">
+                            <div className="eyebrow text-navy/60 mb-8">
                                 A strategic marketing practice · Est. 2020
                             </div>
                             <h1
                                 data-testid="home-hero-wordmark"
-                                className="wordmark text-[5.25rem] sm:text-[7.5rem] md:text-[10rem] lg:text-[11rem] xl:text-[14rem] text-cream leading-[0.82]"
-                                aria-label="Method"
+                                className="wordmark text-5xl md:text-6xl lg:text-[5.25rem] xl:text-[6rem] leading-[0.98] tracking-tight"
                             >
-                                Method
+                                <span className="block whitespace-nowrap">Clarifying</span>
+                                <span className="block whitespace-nowrap">how you show up</span>
+                                <span className="block whitespace-nowrap serif italic font-normal text-steel">
+                                    in the market.
+                                </span>
                             </h1>
                         </RevealItem>
-                        <RevealItem className="lg:col-span-4 xl:col-span-4 lg:pl-4 lg:pb-6">
-                            <p
-                                className="serif italic text-3xl sm:text-4xl md:text-[2.75rem] lg:text-[2.5rem] xl:text-[2.75rem] leading-[1.12] text-cream"
-                                style={{ letterSpacing: "-0.005em" }}
-                            >
-                                Clarifying
-                                <br />
-                                how you show up
-                                <br />
-                                in the market.
+                        <RevealItem className="lg:col-span-4 lg:pl-6">
+                            <p className="serif italic text-2xl md:text-3xl lg:text-[2rem] text-navy leading-snug">
+                                A strategic marketing practice nearly forty
+                                years in the making.
                             </p>
                         </RevealItem>
                     </RevealStagger>
