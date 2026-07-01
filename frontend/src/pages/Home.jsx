@@ -18,7 +18,7 @@ export default function Home() {
                             >
                                 <span className="block sm:whitespace-nowrap">Clarifying</span>
                                 <span className="block sm:whitespace-nowrap">how you</span>
-                                <span className="block sm:whitespace-nowrap serif italic font-normal text-steel">
+                                <span className="block sm:whitespace-nowrap text-steel">
                                     show up
                                 </span>
                                 <span className="block sm:whitespace-nowrap">in the market.</span>
