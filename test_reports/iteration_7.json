@@ -1,0 +1,62 @@
+{
+  "summary": "Verified strip-emergent.js run against a real CRA production build. CRITICAL BUG: the stripped build/index.html is broken and the Netlify deploy will render a blank white page. All 4 Emergent artifacts are indeed removed, but the posthog <script> regex is over-greedy on minified HTML and also swallows the CRA main.js <script> tag, the main CSS <link>, the <body> opening tag, and <div id=\"root\">. Dev-mode public/index.html is untouched (md5 unchanged) so the Emergent editor path is preserved as intended.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "frontend/scripts/strip-emergent.js (posthog regex)",
+        "issue": "Regex /<script\\b[^>]*>[\\s\\S]*?posthog\\.init[\\s\\S]*?<\\/script>/gi anchors on the FIRST <script> tag in the document (the DataCloneError shim in <head>) and its lazy [\\s\\S]*? expands across the entire page — swallowing the CRA main script <script defer src=\"/static/js/main.f5a34292.js\"></script>, and everything else between the head and the posthog closing tag. Stripped build/index.html is 1315 bytes and contains: NO <div id=\"root\">, NO CRA main.js <script>, NO main.css <link>, NO <body> opening tag, NO <noscript>. Result: React never mounts, page is blank white. Verified via `npx serve -s build`: GET / returns 200 with a 1315-byte HTML body, Playwright shows document.getElementById('root') === null, document.scripts.length === 0, wordmark never appears, screenshot is fully white.",
+        "selector": "build/index.html (post-strip)",
+        "priority": "CRITICAL"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "Netlify production deploy",
+        "issue": "netlify.toml build command `yarn install && yarn build && node scripts/strip-emergent.js` will publish a broken build/ directory. Every route (/, /work, /about, /writing, /connect, /work/manufacturing-performance, /writing/inside-out) will serve the same 1315-byte gutted HTML and render a blank page in the browser.",
+        "affected_selectors": ["[data-testid=\"nav-wordmark\"]", "[data-testid=\"home-hero-wordmark\"]", "#root"]
+      }
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Fix strip-emergent.js: the posthog and DataCloneError regexes must NOT anchor on any earlier <script> tag. Recommended fix: match the script by its content signature scoped to its own tag, e.g. /<script\\b[^>]*>(?:(?!<\\/script>)[\\s\\S])*?posthog\\.init(?:(?!<\\/script>)[\\s\\S])*?<\\/script>\\s*/gi (tempered greedy token so the match cannot cross a </script> boundary). Apply the same tempered pattern to the DataCloneError regex.",
+    "After fixing, re-run: `cd /app/frontend && rm -rf build && CI=false DISABLE_ESLINT_PLUGIN=true GENERATE_SOURCEMAP=false yarn build && node scripts/strip-emergent.js` and confirm build/index.html STILL contains: <div id=\"root\"></div>, <script defer=\"defer\" src=\"/static/js/main.*.js\">, <link href=\"/static/css/main.*.css\" rel=\"stylesheet\">, Typekit + Google Fonts links; and STILL does NOT contain: emergent-badge, assets.emergent.sh/scripts/emergent-main.js, posthog, DataCloneError.",
+    "Consider adding a post-strip sanity check inside strip-emergent.js that fails (process.exit(1)) if the output is missing `id=\"root\"` or the CRA main.*.js script tag — that would have caught this before any deploy."
+  ],
+  "critical_code_review_comments": [
+    "strip-emergent.js: lazy [\\s\\S]*? across a minified HTML with multiple <script> tags is unsafe — a lazy quantifier does not stop at intermediate </script> tags because [\\s\\S] matches everything including </script>. Use a tempered greedy token (?:(?!<\\/script>)[\\s\\S])*? to constrain to a single script element.",
+    "The removals[] log is misleading: it reported only `posthog analytics init` (3 items), but the DataCloneError shim was actually also removed — because the posthog regex ate it (and much more) as collateral. The script has no way to know it destroyed the CRA app. Add an assertion step.",
+    "netlify.toml build command has no verification step — a strip failure produces a green build but a broken deploy. Recommend chaining `&& grep -q 'id=\"root\"' build/index.html && grep -q 'static/js/main' build/index.html` after the strip."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "n/a (frontend-only test)", "frontend": "20% (only 1 of 5 acceptance checks pass: source public/index.html untouched; the stripped-build-still-renders check FAILS)" },
+  "seed_data_creation": "none",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Reproduce with: `cd /app/frontend && rm -rf build && CI=false DISABLE_ESLINT_PLUGIN=true GENERATE_SOURCEMAP=false yarn build && node scripts/strip-emergent.js && wc -c build/index.html && grep -c 'id=\"root\"' build/index.html`. Expected after fix: build/index.html ~4-5KB, contains id=\"root\" and static/js/main.*.js, and grep for emergent-badge/emergent-main.js/posthog/DataCloneError returns 0. Then serve locally with `npx serve -s build -l 4321` and confirm Playwright sees nav-wordmark / home-hero-wordmark, window.posthog undefined, and #emergent-badge count = 0. Dev URL https://method-positioning.preview.emergentagent.com must continue to show all 4 Emergent artifacts (it does today: md5 of public/index.html is 0c8747fed0b2131093d543d91784e785, 9072 bytes, unchanged).",
+  "rca of the issue": {
+    "symptom": "Post-strip build/index.html is 1315 bytes; contains no <div id=\"root\">, no CRA main script tag, no main CSS link, no <body> opening tag. Served via `npx serve` returns HTTP 200 with a body-less HTML shell; browser renders a blank white page and React never mounts.",
+    "root_cause": "In strip-emergent.js, the posthog removal regex `/<script\\b[^>]*>[\\s\\S]*?posthog\\.init[\\s\\S]*?<\\/script>\\s*/gi` uses a lazy [\\s\\S]*? that is NOT tempered against </script>. In the minified CRA build, the FIRST <script> tag in document order is the DataCloneError shim inside <head>. The regex anchors there, then the lazy [\\s\\S]*? has to expand until it finds `posthog.init` — which only exists in the last inline script at end of <body>. During that expansion, the regex freely consumes the intermediate <script defer src=\"/static/js/main.f5a34292.js\"></script>, the </head><body> boundary, the <div id=\"root\"></div>, the entire <a id=\"emergent-badge\">…</a> block, and the opening `<script>` of the posthog block, before finally stopping at the posthog block's `</script>`. Net effect: one regex `.replace()` deletes ~4342 bytes of essential markup along with the intended 3 targets.",
+    "reproduction_steps": [
+      "cd /app/frontend",
+      "rm -rf build",
+      "CI=false DISABLE_ESLINT_PLUGIN=true GENERATE_SOURCEMAP=false yarn build",
+      "node scripts/strip-emergent.js",
+      "wc -c build/index.html   # 1315 bytes",
+      "grep -c 'id=\"root\"' build/index.html   # 0",
+      "grep -c 'static/js/main' build/index.html   # 0",
+      "npx serve -s build -l 4321 & sleep 2 && curl -s http://localhost:4321/ | head -c 400   # returns gutted HTML"
+    ],
+    "mitigation": "Use a tempered greedy quantifier that cannot cross a </script> boundary. Replace both the posthog and DataCloneError regexes with, e.g.: `/<script\\b[^>]*>(?:(?!<\\/script>)[\\s\\S])*?posthog\\.init(?:(?!<\\/script>)[\\s\\S])*?<\\/script>\\s*/gi` and `/<script\\b[^>]*>(?:(?!<\\/script>)[\\s\\S])*?DataCloneError(?:(?!<\\/script>)[\\s\\S])*?<\\/script>\\s*/gi`. Also add a post-strip guard: `if (!/id=\"root\"/.test(html) || !/static\\/js\\/main\\.[^\"]+\\.js/.test(html)) { console.error('[strip-emergent] Sanity check failed'); process.exit(1); }` so a bad strip fails the build instead of publishing a broken deploy."
+  },
+  "verified_ok": [
+    "/app/frontend/public/index.html is byte-untouched (md5 0c8747fed0b2131093d543d91784e785, 9072 bytes). Dev preview URL https://method-positioning.preview.emergentagent.com/ still serves emergent-badge (2 matches), emergent-main.js (1), posthog (9), DataCloneError (1) — Emergent editor path preserved as intended.",
+    "/app/frontend/scripts/strip-emergent.js exists.",
+    "/app/netlify.toml build command ends with `&& node scripts/strip-emergent.js`.",
+    "yarn build completes with exit code 0 (Compiled successfully, 133.32 kB gzipped main JS).",
+    "Strip removes all 4 artifacts from build/index.html (grep count 0 for each after strip).",
+    "But: the strip ALSO removes essential CRA markup — see rca."
+  ]
+}
