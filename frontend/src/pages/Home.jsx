@@ -10,7 +10,7 @@ export default function Home() {
                 className="on-navy bg-navy text-cream row-full"
             >
                 <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 pt-32 md:pt-0 pb-16 md:pb-0">
-                    <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-14 gap-x-8 items-end" stagger={0.14}>
+                    <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-14 gap-x-8 items-center" stagger={0.14}>
                         <RevealItem className="lg:col-span-8">
                             <h1
                                 data-testid="home-hero-wordmark"
@@ -25,7 +25,10 @@ export default function Home() {
                             </h1>
                         </RevealItem>
                         <RevealItem className="lg:col-span-4 lg:pl-6">
-                            <p className="serif italic text-2xl md:text-3xl lg:text-[2rem] text-cream leading-snug">
+                            <p
+                                data-testid="home-hero-subhead"
+                                className="text-base md:text-lg text-cream/85 leading-relaxed max-w-sm"
+                            >
                                 A strategic marketing practice nearly forty
                                 years in the making.
                             </p>
