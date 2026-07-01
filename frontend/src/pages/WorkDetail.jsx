@@ -1,5 +1,6 @@
 import { Link, useParams, Navigate } from "react-router-dom";
 import { caseStudyBySlug, caseStudies } from "../data/caseStudies";
+import SaveAsPdfLink from "../components/SaveAsPdfLink";
 
 export default function WorkDetail() {
     const { slug } = useParams();
@@ -16,7 +17,7 @@ export default function WorkDetail() {
         >
             {/* Opener */}
             <section className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 pt-40 md:pt-56 pb-16 md:pb-24">
-                <div className="mb-10 md:mb-16">
+                <div className="mb-10 md:mb-16 flex items-center justify-between gap-4">
                     <Link
                         to="/work"
                         data-testid="back-to-work"
@@ -24,6 +25,7 @@ export default function WorkDetail() {
                     >
                         ← All Work
                     </Link>
+                    <SaveAsPdfLink variant="cream" testid="work-detail-save-pdf" />
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-8">
                     <div className="lg:col-span-2">

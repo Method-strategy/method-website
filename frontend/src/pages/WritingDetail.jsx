@@ -1,5 +1,6 @@
 import { Link, useParams, Navigate } from "react-router-dom";
 import { writing, writingBySlug } from "../data/writing";
+import SaveAsPdfLink from "../components/SaveAsPdfLink";
 
 export default function WritingDetail() {
     const { slug } = useParams();
@@ -15,7 +16,7 @@ export default function WritingDetail() {
         >
             {/* Opener */}
             <section className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 pt-40 md:pt-56 pb-12 md:pb-16">
-                <div className="mb-10 md:mb-16">
+                <div className="mb-10 md:mb-16 flex items-center justify-between gap-4">
                     <Link
                         to="/writing"
                         data-testid="back-to-writing"
@@ -23,6 +24,7 @@ export default function WritingDetail() {
                     >
                         ← All Writing
                     </Link>
+                    <SaveAsPdfLink variant="cream" testid="writing-detail-save-pdf" />
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-8 gap-x-8">
                     <div className="lg:col-span-2">

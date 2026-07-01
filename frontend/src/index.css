@@ -224,3 +224,177 @@ a.plain:hover {
 #emergent-badge {
     z-index: 10000;
 }
+
+/* ============================================================
+   PRINT STYLESHEET — case studies and long essays become
+   forwardable artifacts. Ink on paper. No noise.
+   ============================================================ */
+@media print {
+    @page {
+        size: Letter;
+        margin: 0.7in 0.75in 0.85in 0.75in;
+    }
+
+    html,
+    body {
+        background: #ffffff !important;
+        color: #13243d !important;
+        font-size: 11pt;
+        line-height: 1.55;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    /* Kill site chrome */
+    header[data-testid="global-nav"],
+    footer[data-testid="global-footer"],
+    #emergent-badge,
+    [data-testid="back-to-work"],
+    [data-testid="back-to-writing"],
+    [data-testid="next-case-study"],
+    [data-testid="writing-detail-more"],
+    [data-testid="writing-see-all"],
+    [data-print-hide="true"] {
+        display: none !important;
+    }
+
+    /* Flatten section borders and reset navy bands to paper */
+    section,
+    .on-navy,
+    [class*="bg-navy"],
+    [class*="bg-cream"] {
+        background: #ffffff !important;
+        color: #13243d !important;
+        border-color: #13243d !important;
+    }
+
+    .on-navy .lede,
+    .on-navy p,
+    .on-navy h1,
+    .on-navy h2,
+    .on-navy h3 {
+        color: #13243d !important;
+    }
+
+    .on-navy .prose-method p,
+    .prose-method p {
+        color: #1a1a1a !important;
+        font-size: 11pt !important;
+        line-height: 1.6 !important;
+        margin-bottom: 0.75em !important;
+    }
+
+    /* Reset container padding for print */
+    main {
+        padding-top: 0 !important;
+    }
+    section {
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.75rem !important;
+    }
+    section + section {
+        border-top: 1px solid rgba(19, 36, 61, 0.25) !important;
+        padding-top: 1rem !important;
+        margin-top: 0.5rem !important;
+    }
+
+    /* Typography — keep serif but scale down */
+    .lede {
+        font-size: 15pt !important;
+        line-height: 1.35 !important;
+        color: #13243d !important;
+        margin-bottom: 0.75em !important;
+    }
+    .wordmark {
+        letter-spacing: -0.03em;
+    }
+    h1 {
+        font-size: 26pt !important;
+        line-height: 1.1 !important;
+        margin: 0 0 0.4em 0 !important;
+    }
+    h2 {
+        font-size: 16pt !important;
+        line-height: 1.2 !important;
+    }
+    h3 {
+        font-size: 13pt !important;
+        line-height: 1.25 !important;
+    }
+
+    .eyebrow {
+        font-size: 8pt !important;
+        letter-spacing: 0.24em !important;
+        color: #5A7D9A !important;
+    }
+    .chapter-num {
+        font-size: 12pt !important;
+        color: #5A7D9A !important;
+    }
+
+    /* Grid collapse — print doesn't need 12-col */
+    [class*="lg:col-span"],
+    [class*="md:col-span"],
+    [class*="col-span"] {
+        grid-column: span 12 / span 12 !important;
+    }
+    .grid {
+        display: block !important;
+    }
+
+    /* Lists */
+    ul,
+    ol,
+    [data-testid="scope-list"] {
+        border: 0 !important;
+    }
+    [data-testid="scope-list"] li,
+    ul > li,
+    ol > li {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    /* Force links to show URLs (professional print convention) */
+    a[href^="mailto:"]::after {
+        content: " (" attr(href) ")";
+        font-size: 0.85em;
+        color: #5A7D9A;
+    }
+    a[href^="mailto:"]::after {
+        content: none; /* mailto reads the same as its label; skip repetition */
+    }
+
+    /* Add a small footer with the site URL to every printed page */
+    body::after {
+        content: "Method — methodmarketinggroup.com · connect@methodmarketinggroup.com";
+        display: block;
+        position: fixed;
+        bottom: 0.25in;
+        left: 0.75in;
+        right: 0.75in;
+        text-align: center;
+        font-size: 8pt;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #5A7D9A;
+    }
+
+    /* Avoid orphaned headings */
+    h1,
+    h2,
+    h3,
+    .lede {
+        break-after: avoid;
+        page-break-after: avoid;
+    }
+    p {
+        orphans: 3;
+        widows: 3;
+    }
+
+    /* Selection border resets */
+    * {
+        box-shadow: none !important;
+    }
+}
