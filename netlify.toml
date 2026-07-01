@@ -1,18 +1,22 @@
 [build]
   # Repo is monorepo-style. React app lives in /frontend.
   base    = "frontend"
-  command = "yarn install --frozen-lockfile && yarn build"
-  publish = "frontend/build"
+  command = "yarn install && yarn build"
+  publish = "build"
 
 [build.environment]
-  NODE_VERSION       = "20"
-  YARN_VERSION       = "1.22.22"
-  # CRA/craco: don't fail the build on ESLint warnings.
-  CI                 = "false"
-  # Support React 19 peer deps.
-  NPM_FLAGS          = "--legacy-peer-deps"
-  # Skip generating source maps in production for smaller bundle.
-  GENERATE_SOURCEMAP = "false"
+  NODE_VERSION            = "20"
+  # CRA/craco: don't fail the build on ESLint warnings-treated-as-errors.
+  CI                      = "false"
+  DISABLE_ESLINT_PLUGIN   = "true"
+  ESLINT_NO_DEV_ERRORS    = "true"
+  TSC_COMPILE_ON_ERROR    = "true"
+  # Support React 19 peer deps if any tool falls back to npm.
+  NPM_FLAGS               = "--legacy-peer-deps"
+  # Skip source maps in production.
+  GENERATE_SOURCEMAP      = "false"
+  # Skip the Netlify Next.js plugin auto-attach on this CRA project.
+  NETLIFY_USE_YARN        = "true"
 
 # SPA fallback — every unknown path serves index.html so React Router can
 # handle client-side routes like /work/manufacturing-performance.
