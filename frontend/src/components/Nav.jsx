@@ -20,10 +20,6 @@ export default function Nav({ variant = "cream" }) {
         return () => window.removeEventListener("scroll", onScroll);
     }, []);
 
-    useEffect(() => {
-        setMobileOpen(false);
-    }, []);
-
     const onNavy = variant === "navy";
     const bgClass = onNavy
         ? scrolled
