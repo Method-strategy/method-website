@@ -1,0 +1,37 @@
+[build]
+  # Repo is monorepo-style. React app lives in /frontend.
+  base    = "frontend"
+  command = "yarn install --frozen-lockfile && yarn build"
+  publish = "frontend/build"
+
+[build.environment]
+  NODE_VERSION       = "20"
+  YARN_VERSION       = "1.22.22"
+  # CRA/craco: don't fail the build on ESLint warnings.
+  CI                 = "false"
+  # Support React 19 peer deps.
+  NPM_FLAGS          = "--legacy-peer-deps"
+  # Skip generating source maps in production for smaller bundle.
+  GENERATE_SOURCEMAP = "false"
+
+# SPA fallback — every unknown path serves index.html so React Router can
+# handle client-side routes like /work/manufacturing-performance.
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
+
+# Long-cache hashed static assets.
+[[headers]]
+  for = "/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Sensible security headers for a marketing site.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options        = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy        = "strict-origin-when-cross-origin"
+    Permissions-Policy     = "camera=(), microphone=(), geolocation=()"
