@@ -1,30 +1,31 @@
 import { Link } from "react-router-dom";
+import { Reveal, RevealStagger, RevealItem } from "../components/Reveal";
 
 export default function Home() {
     return (
         <main data-testid="home-page">
-            {/* HERO — Navy, business-card treatment: wordmark left, serif tagline right */}
+            {/* ROW 1 — HERO — Navy, business-card treatment */}
             <section
                 data-testid="home-hero"
-                className="on-navy bg-navy text-cream relative overflow-hidden"
+                className="on-navy bg-navy text-cream row-full relative overflow-hidden pt-32 md:pt-0"
             >
-                <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 pt-40 md:pt-48 lg:pt-56 pb-28 md:pb-40 lg:pb-52">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-14 gap-x-8 lg:items-end">
-                        <div className="lg:col-span-8 xl:col-span-8">
-                            <div className="eyebrow text-cream/60 mb-8 reveal">
+                <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-16 md:py-0">
+                    <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-14 gap-x-8 lg:items-end" stagger={0.14}>
+                        <RevealItem className="lg:col-span-8 xl:col-span-8">
+                            <div className="eyebrow text-cream/60 mb-8">
                                 A strategic marketing practice · Est. 2020
                             </div>
                             <h1
                                 data-testid="home-hero-wordmark"
-                                className="wordmark text-[5.25rem] sm:text-[7.5rem] md:text-[10rem] lg:text-[11rem] xl:text-[14rem] text-cream reveal leading-[0.82]"
+                                className="wordmark text-[5.25rem] sm:text-[7.5rem] md:text-[10rem] lg:text-[11rem] xl:text-[14rem] text-cream leading-[0.82]"
                                 aria-label="Method"
                             >
                                 Method
                             </h1>
-                        </div>
-                        <div className="lg:col-span-4 xl:col-span-4 lg:pl-4 lg:pb-6">
+                        </RevealItem>
+                        <RevealItem className="lg:col-span-4 xl:col-span-4 lg:pl-4 lg:pb-6">
                             <p
-                                className="serif italic text-3xl sm:text-4xl md:text-[2.75rem] lg:text-[2.5rem] xl:text-[2.75rem] leading-[1.12] text-cream reveal reveal-delay-2"
+                                className="serif italic text-3xl sm:text-4xl md:text-[2.75rem] lg:text-[2.5rem] xl:text-[2.75rem] leading-[1.12] text-cream"
                                 style={{ letterSpacing: "-0.005em" }}
                             >
                                 Clarifying
@@ -33,24 +34,24 @@ export default function Home() {
                                 <br />
                                 in the market.
                             </p>
-                        </div>
-                    </div>
+                        </RevealItem>
+                    </RevealStagger>
                 </div>
             </section>
 
-            {/* Opening statement — Cream */}
+            {/* ROW 2 — Opening statement */}
             <section
                 data-testid="home-opening"
-                className="bg-cream text-navy"
+                className="bg-cream text-navy row-full"
             >
-                <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-24 md:py-40 lg:py-52">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                        <div className="lg:col-span-2 lg:col-start-1">
+                <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-0">
+                    <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                        <RevealItem className="lg:col-span-2 lg:col-start-1">
                             <div className="eyebrow text-navy/60">
                                 On the record
                             </div>
-                        </div>
-                        <div className="lg:col-span-9 lg:col-start-4">
+                        </RevealItem>
+                        <RevealItem className="lg:col-span-9 lg:col-start-4">
                             <p className="lede mb-10">
                                 Most B2B firms are better than their market
                                 presence suggests. We fix that.
@@ -72,19 +73,19 @@ export default function Home() {
                                     understanding the business first.
                                 </p>
                             </div>
-                        </div>
-                    </div>
+                        </RevealItem>
+                    </RevealStagger>
                 </div>
             </section>
 
-            {/* The Model */}
+            {/* ROW 3 — The Model */}
             <section
                 data-testid="home-the-model"
-                className="bg-cream text-navy border-t border-navy/10"
+                className="bg-cream text-navy row-full border-t border-navy/10"
             >
-                <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-24 md:py-40">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-8">
-                        <div className="lg:col-span-4">
+                <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-0">
+                    <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-8">
+                        <RevealItem className="lg:col-span-4">
                             <div className="eyebrow text-navy/60 mb-6">
                                 The Model
                             </div>
@@ -100,8 +101,8 @@ export default function Home() {
                                 <br />
                                 not headcount.
                             </h2>
-                        </div>
-                        <div className="lg:col-span-7 lg:col-start-6 prose-method">
+                        </RevealItem>
+                        <RevealItem className="lg:col-span-7 lg:col-start-6 prose-method">
                             <p>
                                 Method maintains a small roster of clients,
                                 four or five at any given time, and works with
@@ -120,19 +121,19 @@ export default function Home() {
                                 deliver it or direct it. Strategy doesn't stop
                                 at a deck.
                             </p>
-                        </div>
-                    </div>
+                        </RevealItem>
+                    </RevealStagger>
                 </div>
             </section>
 
-            {/* Who We Work With */}
+            {/* ROW 4 — Who We Work With */}
             <section
                 data-testid="home-who"
-                className="bg-cream text-navy border-t border-navy/10"
+                className="bg-cream text-navy row-full-loose border-t border-navy/10"
             >
-                <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-24 md:py-40">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-16 gap-x-8">
-                        <div className="lg:col-span-5">
+                <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-0">
+                    <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-16 gap-x-8">
+                        <RevealItem className="lg:col-span-5">
                             <div className="eyebrow text-navy/60 mb-6">
                                 Who We Work With
                             </div>
@@ -149,8 +150,8 @@ export default function Home() {
                                 <br />
                                 for a full-time CMO.
                             </h2>
-                        </div>
-                        <div className="lg:col-span-6 lg:col-start-7 space-y-14">
+                        </RevealItem>
+                        <RevealItem className="lg:col-span-6 lg:col-start-7 space-y-14">
                             <div>
                                 <div className="chapter-num mb-4">
                                     Situation i.
@@ -187,19 +188,19 @@ export default function Home() {
                                     start.
                                 </p>
                             </div>
-                        </div>
-                    </div>
+                        </RevealItem>
+                    </RevealStagger>
                 </div>
             </section>
 
-            {/* CTA band — Navy */}
+            {/* ROW 5 — CTA band — Navy */}
             <section
                 data-testid="home-cta"
-                className="on-navy bg-navy text-cream"
+                className="on-navy bg-navy text-cream row-full"
             >
-                <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-28 md:py-48">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-8 items-end">
-                        <div className="lg:col-span-8">
+                <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-0">
+                    <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-8 items-end" stagger={0.15}>
+                        <RevealItem className="lg:col-span-8">
                             <p
                                 className="serif italic text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-[1.1] text-cream"
                                 style={{ letterSpacing: "-0.005em" }}
@@ -211,15 +212,15 @@ export default function Home() {
                                     that's where we start.
                                 </span>
                             </p>
-                        </div>
-                        <div className="lg:col-span-4 lg:pl-6">
+                        </RevealItem>
+                        <RevealItem className="lg:col-span-4 lg:pl-6">
                             <div className="eyebrow text-cream/60 mb-3">
                                 Start a conversation
                             </div>
                             <a
                                 href="mailto:connect@methodmarketinggroup.com"
                                 data-testid="home-cta-email"
-                                className="ed-link text-lg md:text-xl tracking-tight break-all"
+                                className="ed-link text-lg md:text-xl tracking-tight break-words"
                             >
                                 connect@methodmarketinggroup.com
                             </a>
@@ -232,8 +233,8 @@ export default function Home() {
                                     See the Work →
                                 </Link>
                             </div>
-                        </div>
-                    </div>
+                        </RevealItem>
+                    </RevealStagger>
                 </div>
             </section>
         </main>

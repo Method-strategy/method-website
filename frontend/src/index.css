@@ -38,6 +38,43 @@ html {
     text-rendering: optimizeLegibility;
 }
 
+/* Full-viewport row utility.
+   On phones we use 85svh (small-viewport-height) to avoid mobile browser
+   chrome cropping the section. On tablet+ we lock to full 100vh. */
+.row-full {
+    min-height: 85svh;
+    display: flex;
+    align-items: center;
+}
+@supports not (min-height: 85svh) {
+    .row-full {
+        min-height: 85vh;
+    }
+}
+@media (min-width: 768px) {
+    .row-full {
+        min-height: 100vh;
+    }
+}
+/* Long-content variant: still centers, but never crops content on tall bios */
+.row-full-loose {
+    min-height: 85svh;
+    display: flex;
+    align-items: center;
+}
+@media (min-width: 768px) {
+    .row-full-loose {
+        min-height: 100vh;
+        align-items: center;
+    }
+}
+@media (max-width: 767px) {
+    .row-full-loose {
+        min-height: auto;
+        align-items: flex-start;
+    }
+}
+
 body {
     margin: 0;
     background-color: #f5f1eb;

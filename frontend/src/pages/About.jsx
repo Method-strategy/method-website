@@ -1,46 +1,49 @@
 import { Link } from "react-router-dom";
+import { Reveal, RevealStagger, RevealItem } from "../components/Reveal";
 
 export default function About() {
     return (
         <main data-testid="about-page" className="bg-cream text-navy">
-            {/* Opener */}
-            <section className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 pt-40 md:pt-56 pb-16 md:pb-24">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-14 gap-x-8 items-end">
-                    <div className="lg:col-span-8">
-                        <div className="eyebrow text-navy/60 mb-8">
-                            About Method
-                        </div>
-                        <h1 className="wordmark text-5xl md:text-7xl lg:text-[7rem] leading-[0.9] tracking-tight reveal">
-                            There is a
-                            <br />
-                            <span className="serif italic font-normal text-steel">
-                                method
-                            </span>{" "}
-                            to this.
-                        </h1>
-                    </div>
-                    <div className="lg:col-span-4 lg:pl-6">
-                        <p className="serif italic text-2xl md:text-3xl text-navy leading-snug">
-                            Founded 2020. A deliberate point of view about
-                            what a marketing practice should be.
-                        </p>
-                    </div>
+            {/* ROW 1 — Opener */}
+            <section className="row-full bg-cream">
+                <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 pt-32 md:pt-0 pb-16 md:pb-0">
+                    <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-14 gap-x-8 items-end" stagger={0.14}>
+                        <RevealItem className="lg:col-span-8">
+                            <div className="eyebrow text-navy/60 mb-8">
+                                About Method
+                            </div>
+                            <h1 className="wordmark text-5xl md:text-7xl lg:text-[7rem] leading-[0.9] tracking-tight">
+                                There is a
+                                <br />
+                                <span className="serif italic font-normal text-steel">
+                                    method
+                                </span>{" "}
+                                to this.
+                            </h1>
+                        </RevealItem>
+                        <RevealItem className="lg:col-span-4 lg:pl-6">
+                            <p className="serif italic text-2xl md:text-3xl text-navy leading-snug">
+                                Founded 2020. A deliberate point of view about
+                                what a marketing practice should be.
+                            </p>
+                        </RevealItem>
+                    </RevealStagger>
                 </div>
             </section>
 
-            {/* Philosophy */}
+            {/* ROW 2 — Philosophy */}
             <section
                 data-testid="about-philosophy"
-                className="border-t border-navy/15"
+                className="row-full-loose border-t border-navy/15"
             >
-                <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-32">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-8">
-                        <div className="lg:col-span-3">
+                <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-24">
+                    <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-8">
+                        <RevealItem className="lg:col-span-3">
                             <div className="eyebrow text-navy/60">
                                 The Idea
                             </div>
-                        </div>
-                        <div className="lg:col-span-8 lg:col-start-5">
+                        </RevealItem>
+                        <RevealItem className="lg:col-span-8 lg:col-start-5">
                             <p className="lede mb-10">
                                 Method was founded in 2020 with a deliberate
                                 point of view: the most valuable thing a
@@ -74,24 +77,24 @@ export default function About() {
                                     derived from the inside out.
                                 </p>
                             </div>
-                        </div>
-                    </div>
+                        </RevealItem>
+                    </RevealStagger>
                 </div>
             </section>
 
-            {/* Small numbers row */}
-            <section className="border-t border-navy/15">
-                <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-16 md:py-24">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-8">
+            {/* ROW 3 — Small numbers row */}
+            <section className="row-full bg-cream border-t border-navy/15">
+                <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-16 md:py-0">
+                    <RevealStagger className="grid grid-cols-2 md:grid-cols-4 gap-y-14 gap-x-8" stagger={0.12}>
                         {[
                             { k: "2020", v: "Founded" },
                             { k: "4–5", v: "Active clients at any time" },
                             { k: "40 yrs", v: "Practitioner experience" },
                             { k: "1", v: "Point of view" }
                         ].map((n) => (
-                            <div key={n.k}>
+                            <RevealItem key={n.k}>
                                 <div
-                                    className="wordmark text-4xl md:text-5xl lg:text-6xl text-navy leading-none"
+                                    className="wordmark text-5xl md:text-6xl lg:text-7xl text-navy leading-none"
                                     data-testid={`about-stat-${n.k}`}
                                 >
                                     {n.k}
@@ -99,20 +102,20 @@ export default function About() {
                                 <div className="eyebrow text-navy/60 mt-4">
                                     {n.v}
                                 </div>
-                            </div>
+                            </RevealItem>
                         ))}
-                    </div>
+                    </RevealStagger>
                 </div>
             </section>
 
-            {/* Gary Hopkins bio */}
+            {/* ROW 4 — Gary Hopkins bio */}
             <section
                 data-testid="about-founder"
-                className="border-t border-navy/15"
+                className="row-full-loose border-t border-navy/15"
             >
-                <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-32">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-8">
-                        <div className="lg:col-span-4">
+                <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-24">
+                    <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-8">
+                        <RevealItem className="lg:col-span-4">
                             <div className="eyebrow text-navy/60 mb-6">
                                 Founder & Principal
                             </div>
@@ -126,8 +129,8 @@ export default function About() {
                                 <br />
                                 Every phase of the medium.
                             </p>
-                        </div>
-                        <div className="lg:col-span-8 prose-method">
+                        </RevealItem>
+                        <RevealItem className="lg:col-span-8 prose-method">
                             <p>
                                 Gary Hopkins has worked in marketing for
                                 nearly forty years, through print, broadcast,
@@ -191,16 +194,16 @@ export default function About() {
                                 the strategist and creative director doing the
                                 actual work. That's the arrangement.
                             </p>
-                        </div>
-                    </div>
+                        </RevealItem>
+                    </RevealStagger>
                 </div>
             </section>
 
-            {/* Writing tease */}
-            <section className="border-t border-navy/15">
-                <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-32">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-8 items-end">
-                        <div className="lg:col-span-8">
+            {/* ROW 5 — Writing tease */}
+            <section className="row-full border-t border-navy/15">
+                <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-0">
+                    <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-8 items-end" stagger={0.14}>
+                        <RevealItem className="lg:col-span-8">
                             <div className="eyebrow text-navy/60 mb-4">
                                 Writing
                             </div>
@@ -210,8 +213,8 @@ export default function About() {
                                 discipline of showing up clearly in the
                                 market.
                             </h2>
-                        </div>
-                        <div className="lg:col-span-4 lg:pl-6">
+                        </RevealItem>
+                        <RevealItem className="lg:col-span-4 lg:pl-6">
                             <Link
                                 to="/writing"
                                 data-testid="about-writing-link"
@@ -219,8 +222,8 @@ export default function About() {
                             >
                                 Read the Method blog →
                             </Link>
-                        </div>
-                    </div>
+                        </RevealItem>
+                    </RevealStagger>
                 </div>
             </section>
         </main>

@@ -1,48 +1,51 @@
 import { Link } from "react-router-dom";
 import { caseStudies } from "../data/caseStudies";
+import { Reveal, RevealStagger, RevealItem } from "../components/Reveal";
 
 export default function Work() {
     return (
         <main data-testid="work-index-page" className="bg-cream text-navy">
-            {/* Page opener */}
-            <section className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 pt-40 md:pt-56 pb-16 md:pb-24">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-12 gap-x-8 items-end">
-                    <div className="lg:col-span-8">
-                        <div className="eyebrow text-navy/60 mb-6">
-                            The Work
-                        </div>
-                        <h1 className="wordmark text-5xl md:text-7xl lg:text-[6.5rem] leading-[0.92] tracking-tight reveal">
-                            Strategy leads.
-                            <br />
-                            <span className="serif italic font-normal text-steel">
-                                Everything else
-                            </span>
-                            <br />
-                            follows.
-                        </h1>
-                    </div>
-                    <div className="lg:col-span-4 lg:pl-6 prose-method">
-                        <p>
-                            Most marketing problems aren't marketing problems.
-                            They're clarity problems. Method starts there,
-                            before anything is written, designed, or built.
-                        </p>
-                        <p className="serif italic text-navy text-xl md:text-2xl leading-snug !mb-0">
-                            Right message. Right audience. Right time. Right
-                            place. That's still the game.
-                        </p>
-                    </div>
+            {/* ROW 1 — Page opener */}
+            <section className="row-full bg-cream">
+                <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 pt-32 md:pt-0 pb-16 md:pb-0">
+                    <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-12 gap-x-8 items-end" stagger={0.14}>
+                        <RevealItem className="lg:col-span-8">
+                            <div className="eyebrow text-navy/60 mb-6">
+                                The Work
+                            </div>
+                            <h1 className="wordmark text-5xl md:text-7xl lg:text-[6.5rem] leading-[0.92] tracking-tight">
+                                Strategy leads.
+                                <br />
+                                <span className="serif italic font-normal text-steel">
+                                    Everything else
+                                </span>
+                                <br />
+                                follows.
+                            </h1>
+                        </RevealItem>
+                        <RevealItem className="lg:col-span-4 lg:pl-6 prose-method">
+                            <p>
+                                Most marketing problems aren't marketing problems.
+                                They're clarity problems. Method starts there,
+                                before anything is written, designed, or built.
+                            </p>
+                            <p className="serif italic text-navy text-xl md:text-2xl leading-snug !mb-0">
+                                Right message. Right audience. Right time. Right
+                                place. That's still the game.
+                            </p>
+                        </RevealItem>
+                    </RevealStagger>
                 </div>
             </section>
 
-            {/* What we do — capabilities list */}
+            {/* ROW 2 — What we do — capabilities list */}
             <section
                 data-testid="work-what-we-do"
-                className="border-t border-navy/15"
+                className="row-full-loose border-t border-navy/15"
             >
-                <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-32">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-8">
-                        <div className="lg:col-span-4">
+                <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-24">
+                    <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-8">
+                        <RevealItem className="lg:col-span-4">
                             <div className="eyebrow text-navy/60 mb-4">
                                 What we do
                             </div>
@@ -55,11 +58,17 @@ export default function Work() {
                                 <br />
                                 by strategy.
                             </h2>
-                        </div>
-                        <div className="lg:col-span-8 lg:col-start-5">
-                            <ol className="divide-y divide-navy/15 border-y border-navy/15">
+                        </RevealItem>
+                        <RevealItem className="lg:col-span-8 lg:col-start-5">
+                            <RevealStagger
+                                as="ol"
+                                className="divide-y divide-navy/15 border-y border-navy/15"
+                                stagger={0.08}
+                                amount={0.05}
+                            >
                                 {capabilities.map((cap, i) => (
-                                    <li
+                                    <RevealItem
+                                        as="li"
                                         key={cap.title}
                                         className="grid grid-cols-12 gap-4 md:gap-6 py-7 md:py-9 items-start"
                                     >
@@ -76,22 +85,22 @@ export default function Work() {
                                                 </span>
                                             </p>
                                         </div>
-                                    </li>
+                                    </RevealItem>
                                 ))}
-                            </ol>
-                        </div>
-                    </div>
+                            </RevealStagger>
+                        </RevealItem>
+                    </RevealStagger>
                 </div>
             </section>
 
-            {/* Recent engagements */}
+            {/* ROW 3 — Recent engagements */}
             <section
                 data-testid="work-engagements"
-                className="border-t border-navy/15"
+                className="row-full-loose border-t border-navy/15"
             >
-                <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 pt-20 md:pt-32 pb-8 md:pb-16">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-8 items-end mb-12 md:mb-20">
-                        <div className="lg:col-span-8">
+                <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-24">
+                    <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-8 items-end mb-12 md:mb-20">
+                        <RevealItem className="lg:col-span-8">
                             <div className="eyebrow text-navy/60 mb-4">
                                 Recent Engagements
                             </div>
@@ -106,26 +115,28 @@ export default function Work() {
                                     confidentiality.
                                 </span>
                             </h2>
-                        </div>
-                        <div className="lg:col-span-4 lg:pl-6 prose-method">
+                        </RevealItem>
+                        <RevealItem className="lg:col-span-4 lg:pl-6 prose-method">
                             <p className="!mb-0">
                                 Method has worked with B2B firms across
                                 industries since 2020. Two recent engagements
                                 follow.
                             </p>
-                        </div>
-                    </div>
+                        </RevealItem>
+                    </RevealStagger>
 
-                    <ul
+                    <RevealStagger
+                        as="ul"
                         data-testid="work-cards"
                         className="divide-y divide-navy/15 border-t border-b border-navy/15"
+                        stagger={0.15}
                     >
                         {caseStudies.map((c) => (
-                            <li key={c.slug}>
+                            <RevealItem as="li" key={c.slug}>
                                 <Link
                                     to={`/work/${c.slug}`}
                                     data-testid={`work-card-${c.slug}`}
-                                    className="plain group block py-12 md:py-20"
+                                    className="plain group block py-12 md:py-16"
                                 >
                                     <div className="grid grid-cols-12 gap-4 md:gap-8 items-start">
                                         <div className="col-span-12 md:col-span-2">
@@ -151,9 +162,9 @@ export default function Work() {
                                         </div>
                                     </div>
                                 </Link>
-                            </li>
+                            </RevealItem>
                         ))}
-                    </ul>
+                    </RevealStagger>
                 </div>
             </section>
         </main>

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { RevealStagger, RevealItem } from "../components/Reveal";
 
 export default function Connect() {
     return (
@@ -8,16 +9,16 @@ export default function Connect() {
 
             <section className="flex-1 flex items-center">
                 <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-32">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-16 gap-x-8">
-                        <div className="lg:col-span-12">
-                            <div className="eyebrow text-cream/60 mb-8 reveal">
+                    <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-16 gap-x-8" stagger={0.14}>
+                        <RevealItem className="lg:col-span-12">
+                            <div className="eyebrow text-cream/60 mb-8">
                                 Connect
                             </div>
-                        </div>
+                        </RevealItem>
 
-                        <div className="lg:col-span-8">
+                        <RevealItem className="lg:col-span-8">
                             <h1
-                                className="serif italic font-normal text-4xl md:text-6xl lg:text-[5rem] leading-[1.05] text-cream reveal reveal-delay-1"
+                                className="serif italic font-normal text-4xl md:text-6xl lg:text-[5rem] leading-[1.05] text-cream"
                                 style={{ letterSpacing: "-0.005em" }}
                                 data-testid="connect-headline"
                             >
@@ -27,9 +28,9 @@ export default function Connect() {
                                 <br />
                                 a conversation.
                             </h1>
-                        </div>
+                        </RevealItem>
 
-                        <div className="lg:col-span-4 lg:pl-6 prose-method">
+                        <RevealItem className="lg:col-span-4 lg:pl-6 prose-method">
                             <p>
                                 Method takes on a small number of engagements.
                                 We're selective, not because we're precious
@@ -45,18 +46,18 @@ export default function Connect() {
                                 The conversation starts with understanding your
                                 situation, not pitching ours.
                             </p>
-                        </div>
-                    </div>
+                        </RevealItem>
+                    </RevealStagger>
 
-                    <div className="mt-20 md:mt-32 pt-12 border-t border-cream/20 grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-8 items-end">
-                        <div className="lg:col-span-8">
+                    <RevealStagger className="mt-20 md:mt-32 pt-12 border-t border-cream/20 grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-8 items-end" stagger={0.14}>
+                        <RevealItem className="lg:col-span-8">
                             <div className="eyebrow text-cream/55 mb-6">
                                 Start a conversation
                             </div>
                             <a
                                 href="mailto:connect@methodmarketinggroup.com?subject=Method%20—%20Introduction"
                                 data-testid="connect-email-primary"
-                                className="wordmark block text-[2rem] sm:text-[3rem] md:text-[4rem] lg:text-[5.25rem] leading-none tracking-tight text-cream break-all hover:text-cream/85 transition-colors duration-300"
+                                className="wordmark block text-[2rem] sm:text-[3rem] md:text-[4rem] lg:text-[5.25rem] leading-none tracking-tight text-cream break-words hover:text-cream/85 transition-colors duration-300"
                             >
                                 connect@
                                 <br className="lg:hidden" />
@@ -65,8 +66,8 @@ export default function Connect() {
                             <p className="serif italic text-2xl md:text-3xl text-cream/80 mt-10">
                                 We'll take it from there.
                             </p>
-                        </div>
-                        <div className="lg:col-span-4 lg:pl-6">
+                        </RevealItem>
+                        <RevealItem className="lg:col-span-4 lg:pl-6">
                             <div className="eyebrow text-cream/55 mb-4">
                                 Elsewhere
                             </div>
@@ -98,9 +99,20 @@ export default function Connect() {
                                         Read the Writing →
                                     </Link>
                                 </li>
+                                <li>
+                                    <a
+                                        href="https://www.linkedin.com/company/method-strategic-marketing/"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        data-testid="connect-link-linkedin"
+                                        className="ed-link"
+                                    >
+                                        Connect on LinkedIn →
+                                    </a>
+                                </li>
                             </ul>
-                        </div>
-                    </div>
+                        </RevealItem>
+                    </RevealStagger>
                 </div>
             </section>
         </main>
