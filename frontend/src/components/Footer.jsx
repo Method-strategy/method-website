@@ -10,57 +10,29 @@ export default function Footer() {
         >
             <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 pt-20 md:pt-28 pb-10 md:pb-14">
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-y-12 md:gap-y-16 gap-x-8 items-start">
-                    {/* Wordmark + tagline */}
+                    {/* Column 1 — Wordmark + tagline (matches header wordmark size) */}
                     <div className="md:col-span-6 lg:col-span-6">
                         <Link
                             to="/"
                             data-testid="footer-wordmark"
-                            className="plain wordmark block text-[2.5rem] md:text-[3.25rem] lg:text-[4rem] leading-[0.9] text-cream"
+                            className="plain wordmark block text-[1.65rem] md:text-[2rem] leading-none text-cream"
                         >
                             Method
                         </Link>
                         <p
-                            className="serif italic text-xl md:text-2xl mt-4 md:mt-5 text-cream/90 max-w-md leading-snug"
+                            className="serif italic text-lg md:text-xl mt-5 text-cream/90 max-w-md leading-snug"
                             style={{ letterSpacing: "-0.005em" }}
                         >
                             Clarifying how you show up in the market.
                         </p>
-                    </div>
-
-                    {/* Contact */}
-                    <div className="md:col-span-3 lg:col-span-3">
-                        <div className="eyebrow text-cream/55 mb-4">
-                            Contact
-                        </div>
-                        <a
-                            href="mailto:connect@methodmarketinggroup.com"
-                            data-testid="footer-email-link"
-                            className="ed-link text-base tracking-tight block break-all"
-                        >
-                            connect@methodmarketinggroup.com
-                        </a>
-                        <a
-                            href="https://www.linkedin.com/company/method-strategic-marketing/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            data-testid="footer-linkedin-link"
-                            className="mt-5 inline-flex items-center gap-2 nav-link text-[0.78rem] tracking-[0.22em] uppercase font-medium text-cream/85 hover:text-cream"
-                        >
-                            <Linkedin
-                                className="w-3.5 h-3.5"
-                                strokeWidth={1.5}
-                                aria-hidden="true"
-                            />
-                            <span>Connect on LinkedIn</span>
-                        </a>
-                        <p className="text-cream/60 text-sm mt-6 leading-relaxed">
+                        <p className="text-cream/55 text-sm mt-6 leading-relaxed">
                             Method Marketing Group
                             <br />
-                            A strategic marketing practice
+                            A strategic marketing practice · Est. 2020
                         </p>
                     </div>
 
-                    {/* Nav */}
+                    {/* Column 2 — Site nav */}
                     <div className="md:col-span-3 lg:col-span-3">
                         <div className="eyebrow text-cream/55 mb-4">Site</div>
                         <ul className="space-y-3 text-base">
@@ -110,6 +82,34 @@ export default function Footer() {
                                 </Link>
                             </li>
                         </ul>
+                    </div>
+
+                    {/* Column 3 — Contact */}
+                    <div className="md:col-span-3 lg:col-span-3">
+                        <div className="eyebrow text-cream/55 mb-4">
+                            Contact
+                        </div>
+                        <a
+                            href="mailto:connect@methodmarketinggroup.com"
+                            data-testid="footer-email-link"
+                            className="ed-link text-base tracking-tight block break-all"
+                        >
+                            connect@methodmarketinggroup.com
+                        </a>
+                        <a
+                            href="https://www.linkedin.com/company/method-strategic-marketing/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            data-testid="footer-linkedin-link"
+                            className="mt-5 inline-flex items-center gap-2 nav-link text-[0.78rem] tracking-[0.22em] uppercase font-medium text-cream/85 hover:text-cream"
+                        >
+                            <Linkedin
+                                className="w-3.5 h-3.5"
+                                strokeWidth={1.5}
+                                aria-hidden="true"
+                            />
+                            <span>Connect on LinkedIn</span>
+                        </a>
                     </div>
                 </div>
 
