@@ -50,10 +50,16 @@ export default function Home() {
                             </div>
                         </RevealItem>
                         <RevealItem className="lg:col-span-9 lg:col-start-4">
-                            <p className="lede mb-10">
-                                Most B2B firms are better than their market
-                                presence suggests. We fix that.
-                            </p>
+                            <h2 className="wordmark text-3xl md:text-4xl lg:text-[3rem] xl:text-[3.5rem] leading-[1.05] tracking-tight text-navy mb-10">
+                                Most B2B firms are better
+                                <br />
+                                than their market presence
+                                <br />
+                                suggests.{" "}
+                                <span className="serif italic font-normal text-steel">
+                                    We fix that.
+                                </span>
+                            </h2>
                             <div className="prose-method max-w-3xl">
                                 <p>
                                     Method is a strategic marketing practice.
