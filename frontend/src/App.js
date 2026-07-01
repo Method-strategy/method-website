@@ -1,56 +1,48 @@
-import { useEffect } from "react";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
-import { HOME } from "@/constants/testIds";
+import Nav from "@/components/Nav";
+import Footer from "@/components/Footer";
+import ScrollToTop from "@/components/ScrollToTop";
+import Home from "@/pages/Home";
+import Work from "@/pages/Work";
+import WorkDetail from "@/pages/WorkDetail";
+import About from "@/pages/About";
+import Writing from "@/pages/Writing";
+import WritingDetail from "@/pages/WritingDetail";
+import Connect from "@/pages/Connect";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+function Shell() {
+    const { pathname } = useLocation();
+    // Pages whose FIRST band is navy — nav needs a light color from the start.
+    // Home starts navy; Connect is navy-only.
+    const navyStart = pathname === "/" || pathname === "/connect";
+    const hideFooter = pathname === "/connect";
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
-
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          data-testid={HOME.emergentLink}
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
+    return (
+        <div className="min-h-screen bg-cream text-navy">
+            <Nav variant={navyStart ? "navy" : "cream"} />
+            <ScrollToTop />
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/work" element={<Work />} />
+                <Route path="/work/:slug" element={<WorkDetail />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/writing" element={<Writing />} />
+                <Route path="/writing/:slug" element={<WritingDetail />} />
+                <Route path="/connect" element={<Connect />} />
+                <Route path="*" element={<Home />} />
+            </Routes>
+            {!hideFooter && <Footer />}
+        </div>
+    );
+}
 
 function App() {
-  return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
-  );
+    return (
+        <BrowserRouter>
+            <Shell />
+        </BrowserRouter>
+    );
 }
 
 export default App;
