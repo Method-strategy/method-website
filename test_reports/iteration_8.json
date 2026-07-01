@@ -1,0 +1,35 @@
+{
+  "summary": "Iteration 8 retest of the strip-emergent.js fix. All 8 acceptance checks PASS. The tempered greedy token (?:(?!<\\/script>)[\\s\\S])*? correctly scopes the posthog and DataCloneError removals to a single <script> element, leaving the CRA main.js/main.css/root markup intact. The new post-strip sanity check exits 1 and prints 'FAILED sanity check' + 'Missing required markers' when the build is intentionally broken, proving it would have caught iteration_7's bug. Dev preview URL still serves all 4 Emergent artifacts (editor path preserved).",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/frontend/scripts/strip-emergent.js",
+    "/app/frontend/build/index.html"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "netlify.toml build command still relies on strip-emergent.js's own process.exit(1) to gate the deploy (fine now that the sanity check exists). Optional hardening: also chain `&& grep -q 'id=\"root\"' build/index.html && grep -q 'static/js/main' build/index.html` in netlify.toml as belt-and-suspenders in case the script is ever bypassed or reverted.",
+    "The mustHave/mustNotHave arrays inside strip-emergent.js are the single source of truth for a good deploy. Consider extracting them so a future dev doesn't accidentally weaken them; and add one more mustHave for the Typekit + Google Fonts links so a font-config regression would also fail the deploy."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "n/a (frontend-only test)", "frontend": "100% (8/8 acceptance checks pass)" },
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Reproduce with: `cd /app/frontend && rm -rf build && CI=false DISABLE_ESLINT_PLUGIN=true GENERATE_SOURCEMAP=false yarn build && node scripts/strip-emergent.js` — expect exit 0, 'Sanity check: OK', and all 4 removals listed. Post-strip build/index.html is 1541 bytes and contains id=\"root\", <script defer=\"defer\" src=\"/static/js/main.f5a34292.js\">, <link href=\"/static/css/main.bdf484a9.css\" rel=\"stylesheet\">, <title>Method, Typekit + Google Fonts links. It contains 0 occurrences each of emergent-badge, assets.emergent.sh/scripts/emergent-main.js, posthog, DataCloneError. `npx serve -s build -l 4321` returns HTTP 200 with a 1541-byte body on /, /work, /about, /writing, /connect, /work/manufacturing-performance, /writing/inside-out (SPA fallback working). Playwright on the stripped local serve confirms React mounts (nav-wordmark='Method', home-hero-wordmark='Method'), window.posthog undefined, #emergent-badge count 0, 0 emergent.sh scripts, 2 work-cards on /work, work-detail-manufacturing-performance renders on click, 8 writing-cards on /writing, 0 console errors. Failure-mode: replacing build/index.html with a stub missing #root and running the strip yields exit 1 with '[strip-emergent] FAILED sanity check.' and 'Missing required markers: div#root, CRA main.js script tag, CRA main.css link tag'. Dev preview https://method-positioning.preview.emergentagent.com/ still has emergent-badge (2), emergent-main.js (1), posthog (9), DataCloneError (1) — Emergent editor path preserved. public/index.html md5 unchanged (0c8747fed0b2131093d543d91784e785, 9072 bytes).",
+  "verified_ok": [
+    "yarn build exit 0; strip-emergent.js exit 0; prints 'Sanity check: OK' and lists all 4 removals (emergent-badge anchor, emergent-main.js script, posthog analytics init, DataCloneError shim).",
+    "Post-strip build/index.html size 1541 bytes (>1000, <3000); source was 5655 pre-strip.",
+    "POSITIVE assertions on stripped build/index.html: id=\"root\" (1), static/js/main.f5a34292.js (1), static/css/main.bdf484a9.css (1), <title>Method (1), use.typekit.net (1), fonts.googleapis.com (1). All pass.",
+    "NEGATIVE assertions on stripped build/index.html: emergent-badge (0), assets.emergent.sh (0), posthog (0), DataCloneError (0). All pass.",
+    "SPA smoke test via `npx serve -s build -l 4321`: /, /work, /about, /writing, /connect, /work/manufacturing-performance, /writing/inside-out all return HTTP 200 with an identical 1541-byte body.",
+    "Playwright on stripped local serve: nav-wordmark text 'Method', home-hero-wordmark text 'Method', window.posthog === undefined, #emergent-badge count 0, emergent.sh script count 0, /work shows 2 work-cards, work-card-manufacturing-performance click navigates to /work/manufacturing-performance and renders work-detail-manufacturing-performance, /writing shows 8 writing-cards, 0 console errors.",
+    "Failure-mode test: broken index.html without #root causes strip-emergent.js to exit 1, stderr contains 'FAILED sanity check' and 'Missing required markers: div#root, CRA main.js script tag, CRA main.css link tag'. Build was restored to the clean stripped state (1541 bytes, has root, no posthog).",
+    "Dev preview URL https://method-positioning.preview.emergentagent.com/ still contains all 4 Emergent artifacts (badge x2, emergent-main.js x1, posthog x9, DataCloneError x1) and renders the 'Made with Emergent' badge in the bottom-right; global-nav, global-footer, footer-linkedin-link, home-hero-wordmark, work-card-manufacturing-performance, writing-card-inside-out all resolve on their respective pages. (Note: connect-email-primary and connect-link-linkedin only exist on the /connect page, not on home — expected.)",
+    "public/index.html md5 unchanged (0c8747fed0b2131093d543d91784e785), 9072 bytes — the Emergent editor path is preserved as intended."
+  ]
+}
