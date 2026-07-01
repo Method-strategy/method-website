@@ -19,9 +19,9 @@ export default function Home() {
                                 data-testid="home-hero-wordmark"
                                 className="wordmark text-5xl md:text-6xl lg:text-[5.25rem] xl:text-[6rem] leading-[0.98] tracking-tight"
                             >
-                                <span className="block whitespace-nowrap">Clarifying</span>
-                                <span className="block whitespace-nowrap">how you show up</span>
-                                <span className="block whitespace-nowrap serif italic font-normal text-steel">
+                                <span className="block sm:whitespace-nowrap">Clarifying</span>
+                                <span className="block sm:whitespace-nowrap">how you show up</span>
+                                <span className="block sm:whitespace-nowrap serif italic font-normal text-steel">
                                     in the market.
                                 </span>
                             </h1>
