@@ -10,8 +10,8 @@ export default function Home() {
                 className="on-navy bg-navy text-cream row-full"
             >
                 <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 pt-32 md:pt-0 pb-16 md:pb-0">
-                    <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-14 gap-x-8 items-center" stagger={0.14}>
-                        <RevealItem className="lg:col-span-8">
+                    <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-8" stagger={0.14}>
+                        <RevealItem className="lg:col-span-12">
                             <h1
                                 data-testid="home-hero-wordmark"
                                 className="wordmark text-5xl md:text-6xl lg:text-[5.25rem] xl:text-[6rem] leading-[0.98] tracking-tight text-cream"
@@ -23,11 +23,9 @@ export default function Home() {
                                 </span>
                                 <span className="block sm:whitespace-nowrap">in the market.</span>
                             </h1>
-                        </RevealItem>
-                        <RevealItem className="lg:col-span-4 lg:pl-6">
                             <p
                                 data-testid="home-hero-subhead"
-                                className="text-base md:text-lg text-cream/85 leading-relaxed max-w-sm"
+                                className="text-base md:text-lg text-cream/85 leading-relaxed max-w-sm mt-8 md:mt-10 pt-6 border-t border-cream/20"
                             >
                                 A strategic marketing practice nearly forty
                                 years in the making.
@@ -50,16 +48,16 @@ export default function Home() {
                             </div>
                         </RevealItem>
                         <RevealItem className="lg:col-span-9 lg:col-start-4">
-                            <h2 className="wordmark text-3xl md:text-4xl lg:text-[3rem] xl:text-[3.5rem] leading-[1.05] tracking-tight text-navy mb-10">
+                            <h2 className="wordmark text-3xl md:text-4xl lg:text-[3rem] xl:text-[3.5rem] leading-[1.05] tracking-tight text-navy">
                                 Most B2B firms are better
                                 <br />
                                 than their market presence
                                 <br />
-                                suggests.{" "}
-                                <span className="serif italic font-normal text-steel">
-                                    We fix that.
-                                </span>
+                                suggests.
                             </h2>
+                            <p className="serif italic font-normal text-steel text-4xl md:text-5xl lg:text-[3rem] leading-none tracking-tight mt-8 md:mt-10 mb-10">
+                                We fix that.
+                            </p>
                             <div className="prose-method max-w-3xl">
                                 <p>
                                     Method is a strategic marketing practice.
@@ -120,7 +118,7 @@ export default function Home() {
                                 get exactly what the work needs. Nothing more,
                                 nothing else.
                             </p>
-                            <p className="serif italic text-navy text-2xl md:text-3xl leading-snug !mb-0 pt-4">
+                            <p className="prose-method !text-base md:!text-lg text-navy font-medium leading-relaxed !mb-0 mt-8 pt-6 border-t border-navy/15">
                                 Where execution is part of the scope, we
                                 deliver it or direct it. Strategy doesn't stop
                                 at a deck.
@@ -224,7 +222,7 @@ export default function Home() {
                             <a
                                 href="mailto:connect@methodmarketinggroup.com"
                                 data-testid="home-cta-email"
-                                className="ed-link text-lg md:text-xl tracking-tight break-words"
+                                className="ed-link text-sm md:text-base tracking-tight whitespace-nowrap"
                             >
                                 connect@methodmarketinggroup.com
                             </a>
