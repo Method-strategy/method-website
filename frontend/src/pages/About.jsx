@@ -45,8 +45,9 @@ export default function About() {
                         </RevealItem>
                         <RevealItem className="lg:col-span-8 lg:col-start-5">
                             <p className="lede mb-10">
-                                Method was founded in 2020 with a deliberate
-                                point of view: the most valuable thing a
+                                Method was founded in 2020, but it was more
+                                than four decades in the making. The premise
+                                was deliberate: the most valuable thing a
                                 marketing practice can offer isn't execution.
                                 It's thinking.
                             </p>
@@ -72,9 +73,18 @@ export default function About() {
                                 </p>
                                 <p className="pull !mb-0 pt-4 mt-2">
                                     The brand. The positioning. The content.
-                                    The channels. The execution. None of it is
-                                    imposed from the outside. All of it is
+                                    The channels. The execution. None of it's
+                                    imposed from the outside. All of it's
                                     derived from the inside out.
+                                </p>
+                                <p className="mt-8">
+                                    Method works with a small number of
+                                    clients at any given time, four or five,
+                                    because that's what significant depth
+                                    requires. Every engagement gets senior
+                                    thinking, direct access, and consistent
+                                    attention. That's the arrangement, and it
+                                    isn't going to change.
                                 </p>
                             </div>
                         </RevealItem>
@@ -125,7 +135,7 @@ export default function About() {
                                 Hopkins.
                             </h2>
                             <p className="serif italic text-3xl md:text-4xl text-steel mt-6 leading-tight">
-                                Nearly four decades.
+                                More than four decades.
                                 <br />
                                 Every phase of the medium.
                             </p>
@@ -133,11 +143,11 @@ export default function About() {
                         <RevealItem className="lg:col-span-8 prose-method">
                             <p>
                                 Gary Hopkins has worked in marketing for
-                                nearly forty years, through print, broadcast,
-                                direct mail, the early web, email marketing,
-                                search, social media, content, and now AI. He
-                                has guided clients through every major
-                                transition in the discipline, not as a
+                                more than forty years, through print,
+                                broadcast, direct mail, the early web, email
+                                marketing, search, social media, content, and
+                                now AI. He has guided clients through every
+                                major transition in the discipline, not as a
                                 technologist chasing tools, but as a
                                 strategist who understands what changes and
                                 what doesn't.
@@ -146,7 +156,7 @@ export default function About() {
                                 The tools and techniques have changed. The
                                 game hasn't. Reaching the right people with
                                 the right message at the right time is still
-                                all it is. Knowing that is what forty years
+                                all it is. Knowing that's what forty years
                                 buys you.
                             </p>
                             <p>
@@ -182,10 +192,11 @@ export default function About() {
                                 it. The creative direction of the agency
                                 years. The business sensibility of the
                                 client-side years. The strategic discipline of
-                                four decades of practice. The result is a
-                                practice that thinks like a CMO and works like
-                                a creative director, which is, in the end,
-                                exactly what the right clients need.
+                                more than four decades of practice. The
+                                result is a practice that thinks like a CMO
+                                and works like a creative director, which is,
+                                in the end, exactly what the right clients
+                                need.
                             </p>
                             <p>
                                 Gary is directly involved in every Method
@@ -253,7 +264,8 @@ export default function About() {
                                 Gary writes regularly on marketing
                                 strategy, brand positioning, and the
                                 discipline of showing up clearly in the
-                                market.
+                                market. The Method blog is where that
+                                thinking lives.
                             </h2>
                         </RevealItem>
                         <RevealItem className="lg:col-span-4 lg:pl-6">

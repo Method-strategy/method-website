@@ -6,12 +6,12 @@ export default function Work() {
     return (
         <main data-testid="work-index-page" className="bg-cream text-navy">
             {/* ROW 1 — Page opener */}
-            <section className="row-full bg-cream">
-                <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 pt-32 md:pt-0 pb-16 md:pb-0">
-                    <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-12 gap-x-8 items-end" stagger={0.14}>
-                        <RevealItem className="lg:col-span-8">
+            <section className="row-full-loose bg-cream">
+                <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 pt-32 md:pt-24 pb-16 md:pb-16">
+                    <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-12 gap-x-8 items-start" stagger={0.14}>
+                        <RevealItem className="lg:col-span-6">
                             <div className="eyebrow text-navy/60 mb-6">
-                                The Work
+                                How We Engage
                             </div>
                             <h1 className="wordmark text-5xl md:text-7xl lg:text-[6.5rem] leading-[0.92] tracking-tight">
                                 Strategy leads.
@@ -23,15 +23,33 @@ export default function Work() {
                                 follows.
                             </h1>
                         </RevealItem>
-                        <RevealItem className="lg:col-span-4 lg:pl-6 prose-method">
-                            <p>
-                                Most marketing problems aren't marketing problems.
-                                They're clarity problems. Method starts there,
-                                before anything is written, designed, or built.
-                            </p>
-                            <p className="pull !mb-0">
-                                Right message. Right audience. Right time. Right
-                                place. That's still the game.
+                        <RevealItem className="lg:col-span-6 lg:pl-6">
+                            <div className="prose-method">
+                                <p>
+                                    Most marketing problems aren't marketing
+                                    problems. They're clarity problems. A
+                                    business that hasn't defined what it's
+                                    trying to become, or a market presence
+                                    that no longer reflects what it actually
+                                    is. Method starts there, before anything
+                                    is written, designed, or built.
+                                </p>
+                                <p>
+                                    We call this inside-out. It means
+                                    understanding the business, its ambitions,
+                                    its competitive position, its ideal
+                                    client, before making any decisions about
+                                    how it shows up. The positioning, the
+                                    brand architecture, the content, the
+                                    channels: all of it's derived from that
+                                    understanding, not imposed on top of it.
+                                </p>
+                            </div>
+                            <p className="pull !mb-0 mt-8 pt-6 border-t border-navy/15">
+                                Right message. Right audience. Right time.
+                                Right place. That's still the game. The tools
+                                and techniques have changed. The fundamentals
+                                haven't.
                             </p>
                         </RevealItem>
                     </RevealStagger>
@@ -102,25 +120,22 @@ export default function Work() {
                     <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-8 items-end mb-12 md:mb-20">
                         <RevealItem className="lg:col-span-8">
                             <div className="eyebrow text-navy/60 mb-4">
-                                Recent Engagements
+                                The Work
                             </div>
                             <h2 className="wordmark text-4xl md:text-6xl lg:text-7xl leading-[0.95] tracking-tight">
-                                A sample of the
-                                <br />
-                                work, written to
+                                A sample of
                                 <br />
                                 <span className="serif italic font-normal text-steel">
-                                    protect client
-                                    <br />
-                                    confidentiality.
+                                    recent engagements.
                                 </span>
                             </h2>
                         </RevealItem>
                         <RevealItem className="lg:col-span-4 lg:pl-6 prose-method">
                             <p className="!mb-0">
                                 Method has worked with B2B firms across
-                                industries since 2020. Two recent engagements
-                                follow.
+                                industries since its founding. What follows are
+                                two recent engagements, written to protect
+                                client confidentiality.
                             </p>
                         </RevealItem>
                     </RevealStagger>
@@ -174,30 +189,30 @@ export default function Work() {
 const capabilities = [
     {
         title: "Brand Architecture and Positioning",
-        body: "The foundation of everything. We define what a business is, who it serves, why it wins, and how it should be understood in the market. Naming, brand identity direction, messaging architecture, competitive positioning. Built to last, not built to trend."
+        body: "The foundation of everything. We define what a business is, who it serves, why it wins, and how it should be understood in the market. This includes naming, brand identity direction, messaging architecture, and competitive positioning. Built to last, not built to trend."
     },
     {
         title: "Content Strategy and Thought Leadership",
-        body: "A sustained content program positions a firm as the authority in its space. Method develops the editorial strategy, the point of view, and the content architecture. Where the engagement calls for it, we produce the content itself: articles, LinkedIn programs, case studies, white papers, and contributed editorial."
+        body: "A sustained content program positions a firm as the authority in its space. Method develops the editorial strategy, the point of view, and the content architecture. Where the engagement calls for it, we produce the content itself: articles, LinkedIn programs, case studies, white papers, and contributed editorial in trade and industry publications."
     },
     {
         title: "Channel Strategy and Direction",
-        body: "Knowing what to say is half the equation. Knowing where and how to say it is the other half. Method defines the channel strategy — which platforms, which formats, which cadence — and directs execution across LinkedIn, organic search, email, and trade press."
+        body: "Knowing what to say is half the equation. Knowing where and how to say it's the other half. Method defines the channel strategy, which platforms, which formats, which cadence, and directs execution across LinkedIn, organic search, email, and trade press."
     },
     {
         title: "Website Strategy and Development",
-        body: "A website should be the clearest expression of what a business is and why it matters. Method leads the strategic and creative direction — positioning, copy, information architecture, design — and oversees development through trusted technical partners."
+        body: "A website should be the clearest expression of what a business is and why it matters. Method leads the strategic and creative direction, including positioning, copy, information architecture, and design, and oversees development through trusted technical partners."
     },
     {
         title: "Trade Show and Event Strategy",
-        body: "Method develops and executes the full strategy across all three phases: pre-show positioning and campaign development, on-site presence and materials, and post-show follow-through to convert attention into pipeline."
+        body: "For clients entering a new market or building presence at a major industry event, Method develops and executes the full strategy across all three phases: pre-show positioning and campaign development, on-site presence and materials, and post-show follow-through to convert attention into pipeline."
     },
     {
         title: "Investor-Ready Positioning and Marketing Planning",
-        body: "Growth-stage companies approaching institutional capital need their market narrative tightly aligned with their business story. Method builds the complete investor-ready foundation: positioning architecture, pitch materials, market framing, and the comprehensive marketing plan."
+        body: "Growth-stage companies approaching institutional capital need their market narrative tightly aligned with their business story. Method builds the complete investor-ready marketing foundation: positioning architecture, pitch materials, market framing, and the comprehensive marketing plan that shows investors not just what the company is, but exactly how it intends to grow."
     },
     {
         title: "Fractional CMO Leadership",
-        body: "For clients who need ongoing senior marketing leadership, Method operates as the CMO function — owning strategy, directing the team, and maintaining the consistency and integrity of the market presence over time."
+        body: "For clients who need ongoing senior marketing leadership, Method operates as the CMO function, owning strategy, directing the team, and maintaining the consistency and integrity of the market presence over time."
     }
 ];

@@ -279,8 +279,11 @@ body {
 
 /* Pull — short punchline lines in Cormorant italic steel.
    Upsized above body/emphasis, but below lede. Editorial punctuation.
-   Used for: "That's still the game.", "Where we start.", section closers. */
-.pull {
+   Used for: "That's still the game.", "Where we start.", section closers.
+   Specificity boosted so it wins over .prose-method p inside prose blocks. */
+.pull,
+.prose-method .pull,
+.prose-method p.pull {
     font-family: "Cormorant Garamond", "EB Garamond", Garamond, serif;
     font-style: italic;
     font-weight: 400;
@@ -289,7 +292,8 @@ body {
     letter-spacing: -0.005em;
     color: #5A7D9A;
 }
-.on-navy .pull {
+.on-navy .pull,
+.on-navy .prose-method .pull {
     color: #7a9bb6;
 }
 

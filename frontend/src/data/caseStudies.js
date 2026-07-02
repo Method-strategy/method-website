@@ -8,10 +8,10 @@ export const caseStudies = [
             "A 20-year-old management consulting firm had built a strong track record, but a market presence that hadn't kept pace with the business they'd become. A significant shift in their client market represented a real opportunity to own a point of view. Method built the brand to own it.",
         engagementYears: "Ongoing since 2020",
         scope: [
-            "Full rebrand: name consolidation, identity, positioning, voice, visual system",
+            "Full rebrand: name consolidation, identity, positioning, voice, and visual system",
             "Website rebuild and ongoing development",
-            "Thought leadership program: 3–4 pieces per week over five years",
-            "68 case studies produced end-to-end",
+            "Thought leadership content program: 3 to 4 pieces per week over five years",
+            "68 case studies produced end-to-end: intake, writing, editing, design, and deployment",
             "LinkedIn content strategy and execution",
             "Contributed article program across industry publications",
             "Competitive research and ongoing market positioning"
@@ -37,13 +37,13 @@ export const caseStudies = [
             "A pre-Series A medtech company had built a genuinely innovative product but was approaching the industry's most important annual trade show without a coherent brand system, product naming architecture, or investor-ready materials. They had four months.",
         engagementYears: "2024 — Sprint engagement",
         scope: [
-            "Complete product naming architecture: 30+ directions evaluated, trademark strategy",
-            "Corporate and product brand standards across all product lines",
+            "Complete product naming architecture: evaluated 30+ directions, developed the product naming system, established trademark strategy",
+            "Corporate and product brand standards: logos, color, typography, usage rules across all product lines",
             "Product positioning and messaging for four distinct product lines",
             "Four individual product data sheets",
             "Four-page trade show brochure",
             "Trade show booth strategy and layout",
-            "Series A investor pitch deck: market sizing, financial narrative, positioning",
+            "Series A investor pitch deck: market sizing, financial narrative, and positioning",
             "Comprehensive marketing plan",
             "System-level overview collateral"
         ],
