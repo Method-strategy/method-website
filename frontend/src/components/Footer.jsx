@@ -38,15 +38,6 @@ export default function Footer() {
                         <ul className="space-y-3 text-base">
                             <li>
                                 <Link
-                                    to="/"
-                                    data-testid="footer-link-home"
-                                    className="nav-link text-cream/90"
-                                >
-                                    Home
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
                                     to="/work"
                                     data-testid="footer-link-work"
                                     className="nav-link text-cream/90"

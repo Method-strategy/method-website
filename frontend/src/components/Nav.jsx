@@ -2,7 +2,6 @@ import { NavLink, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 const links = [
-    { to: "/", label: "Home", end: true },
     { to: "/work", label: "Work" },
     { to: "/about", label: "About" },
     { to: "/writing", label: "Writing" },
