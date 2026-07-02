@@ -20,7 +20,6 @@ export function AppShell() {
     useDocumentTitle();
     // Pages whose FIRST band is navy — nav needs a light color from the start.
     const navyStart = pathname === "/" || pathname === "/connect";
-    const hideFooter = pathname === "/connect";
 
     return (
         <div className="min-h-screen bg-cream text-navy">
@@ -37,7 +36,7 @@ export function AppShell() {
                 <Route path="/connect" element={<Connect />} />
                 <Route path="*" element={<Home />} />
             </Routes>
-            {!hideFooter && <Footer />}
+            <Footer />
         </div>
     );
 }
