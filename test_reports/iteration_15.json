@@ -1,0 +1,27 @@
+{
+  "summary": "SSG bug fix VERIFIED. Plain HTTP fetches (no JS execution) of all 11 core routes on the preview URL return complete, route-specific rendered HTML with H1/body content inside <div id=\"root\">, unique <title>, og:title/og:description, and asset links that resolve 200. React hydrates cleanly in-browser with 0 console errors and 0 hydration warnings, client-side navigation still updates document.title, Scandia and Cormorant fonts load, and sitemap/robots/rss/og-default are all 200. Preview URL matches the /app/frontend/build/ artifact.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_ssg.py",
+    "/app/test_reports/pytest/ssg_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "SSG implementation is solid: StaticRouter-based SSR entry + hydrateRoot in index.js + post-build injection into per-route index.html works correctly with zero hydration mismatches.",
+    "Note: The default CRA 'You need to enable JavaScript to run this app' <noscript> fallback string still appears in HTML source but is inside <noscript> — this is harmless and does not affect Claude's acceptance criterion (real content is present in <div id=\"root\"> alongside it).",
+    "Body sizes per route now range 8.8KB (Connect, shortest page) — 29.3KB (long-form essay), all well above the ~2-3KB empty-shell threshold."
+  ],
+  "updated_files": ["/app/backend/tests/test_ssg.py"],
+  "success_rate": {"backend": "N/A (skipped)", "frontend": "100% (74/74 SSG assertions passed + browser hydration clean)"},
+  "test_credentials": "N/A",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "SSG is now the shipping mode. Supervisor runs `node scripts/build-and-serve.js` which builds prod bundle → prerender-og → prerender-ssg → generate-sitemap → generate-rss → serves /app/frontend/build via node http server on :3000. Full rebuild takes ~50-60s on supervisor restart. Route body sizes reported below (all substantial, none empty-shell):\n  / — 15,164 bytes\n  /work — 19,152 bytes\n  /work/manufacturing-performance — 21,103 bytes\n  /work/medtech — 21,388 bytes\n  /about — 17,789 bytes\n  /about/discernment — 22,055 bytes\n  /writing — 23,965 bytes\n  /writing/wrap-rage — 27,876 bytes\n  /writing/marketing-writes-checks-operations-cant-cash — 29,332 bytes\n  /writing/ai-hasnt-made-marketing-cheaper — 21,909 bytes\n  /connect — 8,799 bytes\nAll titles unique per-route. Browser hydration: 0 errors, 0 warnings. Client-side nav (/, /work, /writing, /connect) updates document.title correctly via useDocumentTitle hook.",
+  "rca of the issue": "Previously the site shipped as a client-only CRA build — initial HTML had an empty <div id=\"root\"></div> and the noscript fallback, so JS-disabled fetches returned only the shell (~2KB). Fix: added scripts/prerender-ssg.js which bundles src/index.js's AppShell via esbuild with StaticRouter, renders each route to HTML via renderToString, and rewrites build/{route}/index.html injecting the markup into <div id=\"root\">. src/index.js was updated to use hydrateRoot when root has children (falls back to createRoot for dev). Supervisor now runs build-and-serve.js instead of the CRA dev server. Verification: curl of all 11 routes returns route-specific HTML content (verified via /app/backend/tests/test_ssg.py — 74/74 passed) and Chromium hydrates cleanly with no console errors."
+}
