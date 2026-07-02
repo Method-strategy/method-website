@@ -36,6 +36,15 @@ Marketing website for Method, a strategic marketing practice (fractional CMO-lev
 - **Assets**: favicon from client, tagline reference to business card, no hero images.
 - **Testing**: 100% pass on frontend testing agent iteration 1 (routing, testids, mailtos, mobile nav, typography, no-forms guarantee).
 
+## Session 2026-02 — Typography Refinement Pass
+- Added Cormorant Garamond italic emphasis blurbs in steel blue (About page, ≥ text-3xl per typography rules).
+- Switched body copy to Akzidenz-Grotesk Next Pro via Adobe Typekit (replacing Söhne consideration for cost).
+- Rebuilt hero as 2-column layout with vertical hairline divider and centered alignment.
+- Discernment page added; Save-as-PDF + ShareRow on Work / Writing detail pages.
+- Netlify config finalized: `/app/netlify.toml` + `/app/frontend/scripts/strip-emergent.js` post-build to strip Emergent branding.
+- LinkedIn logo in navy footer (official brand bug).
+- **H2 subhead leading fix (2026-02)**: scoped `h2.wordmark { line-height: 1.15 }` in `index.css` to beat Tailwind's bundled `md:text-4xl` line-height. Fixes the "characters colliding with line above" issue where `.wordmark` global 0.85 leading + Tailwind utility bundling caused 40px lh on 56px font. All H2 subheads now compute to lh ratio 1.150. Verified via `testing_agent_v3_fork` iteration 13.
+
 ## Prioritized Backlog
 
 ### P0 (must have — done)

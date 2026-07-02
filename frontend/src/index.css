@@ -114,6 +114,13 @@ body {
     line-height: 0.85;
 }
 
+/* H2 subheads use Scandia at display sizes but need openable editorial leading
+     so ascenders/descenders don't collide across lines. Scoped selector wins over
+     Tailwind's `text-3xl`/`md:text-4xl` bundled line-height (specificity 0,1,1 > 0,1,0). */
+h2.wordmark {
+    line-height: 1.15;
+}
+
 /* Eyebrow — small tracked caps in Scandia. Signage moments only. */
 .eyebrow {
     font-family: "scandia-web", "scandia", "Manrope", sans-serif;
