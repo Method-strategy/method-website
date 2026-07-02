@@ -1,0 +1,22 @@
+{
+  "summary": "SSG regression re-verification + Netlify config sanity check passed 100%. All 19 routes on the Emergent preview URL return 200 with unique per-route <title>, non-empty #root, h1/p content, and body size 8.8KB–29.8KB (all >5KB threshold). Auxiliary assets (sitemap.xml with 19 URLs, robots.txt referencing sitemap, writing/rss.xml with 11 items, og-default.jpg 63KB image/jpeg) all valid. Browser hydration of /writing/wrap-rage: 0 console errors, 0 hydration warnings/mismatches, useDocumentTitle hook correctly updates title on client-side nav to /writing. netlify.toml validated: base=frontend, NODE_VERSION=20, NPM_CONFIG_PRODUCTION=false, YARN_PRODUCTION=false, build command chains all 5 post-build scripts (strip-emergent, prerender-og, prerender-ssg, generate-sitemap, generate-rss), no duplicate [[redirects]] block. package.json validated: esbuild in dependencies (not devDependencies), serve removed. /tmp/netlify-sim.log confirms fresh-build reproducibility (~38s yarn build + all 5 post-build steps OK, 19 SSG routes rendered, sanity checks OK).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/tests/verify_ssg.py"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "netlify.toml build chain is well-structured with belt-and-braces env vars (NPM_CONFIG_PRODUCTION=false + YARN_PRODUCTION=false) — good defensive posture.",
+    "Single source of truth for SPA fallback (public/_redirects only) is correct — avoids drift.",
+    "esbuild moved to dependencies is the right call given post-build scripts import it — will survive any production-only install mode."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped per request)", "frontend": "100%"},
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 15 (74/74) is the comprehensive SSG baseline; iteration 16 is a re-verify after netlify.toml hardening + package.json esbuild move + serve removal. Preview URL serves freshly regenerated build post supervisor restart. Netlify-side deploy propagation is external and outside test scope — cannot be verified from this environment (main agent already noted this)."
+}

@@ -1,7 +1,12 @@
 [build]
   # Repo is monorepo-style. React app lives in /frontend.
   base    = "frontend"
-  command = "yarn install && yarn build && node scripts/strip-emergent.js && node scripts/prerender-og.js && node scripts/prerender-ssg.js && node scripts/generate-sitemap.js && node scripts/generate-rss.js"
+  # Full production build + strip-emergent + per-route OG meta + STATIC SITE
+  # GENERATION (renders every route's React tree to HTML at build time) +
+  # sitemap.xml + writing/rss.xml. The SSG step is what makes the deploy
+  # crawlable by non-JS clients (LinkedIn, Perplexity, Claude, Google AI
+  # Overview) — see scripts/prerender-ssg.js.
+  command = "yarn install --frozen-lockfile && yarn build && node scripts/strip-emergent.js && node scripts/prerender-og.js && node scripts/prerender-ssg.js && node scripts/generate-sitemap.js && node scripts/generate-rss.js"
   publish = "build"
 
 [build.environment]
@@ -17,13 +22,17 @@
   GENERATE_SOURCEMAP      = "false"
   # Skip the Netlify Next.js plugin auto-attach on this CRA project.
   NETLIFY_USE_YARN        = "true"
+  # Ensure devDependencies get installed. Belt-and-braces — Netlify's
+  # default already installs them for yarn projects, but we set this
+  # explicitly so the build step (which uses esbuild via a post-build
+  # script) never breaks silently.
+  NPM_CONFIG_PRODUCTION   = "false"
+  YARN_PRODUCTION         = "false"
 
-# SPA fallback — every unknown path serves index.html so React Router can
-# handle client-side routes like /work/manufacturing-performance.
-[[redirects]]
-  from   = "/*"
-  to     = "/index.html"
-  status = 200
+# SPA fallback lives in public/_redirects (copied to build/_redirects by
+# CRA) so it's colocated with the site rather than split across files.
+# Netlify serves EXACT files first — so per-route prerendered
+# build/{route}/index.html files always win before the fallback fires.
 
 # Long-cache hashed static assets.
 [[headers]]
