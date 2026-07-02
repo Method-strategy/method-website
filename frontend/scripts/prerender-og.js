@@ -56,10 +56,12 @@ const SITE =
     process.env.URL ||
     "https://methodmarketinggroup.com";
 
-// og:image intentionally omitted for now. LinkedIn / Twitter unfurl to a
-// clean compact card with just title + description when no image is set.
-// When the client provides a 1200x630 branded image, drop it in
-// /app/frontend/public/og-default.jpg and add the tag in buildMetaBlock.
+// Single sitewide typographic OG card. Lives at /public/og-default.jpg and is
+// generated as an HTML render (Scandia + Cormorant italic on navy) — no photos.
+// LinkedIn / Twitter show the branded card image + the per-route title +
+// description text below, which is the ideal split: brand consistency in the
+// image, content specificity in the text.
+const OG_IMAGE = `${SITE}/og-default.jpg`;
 
 // ---------- Route manifest ----------
 const staticRoutes = [
@@ -131,15 +133,22 @@ function buildMetaBlock(route) {
     const url = `${SITE}${route.path === "/" ? "" : route.path}`;
     const t = escapeAttr(route.title);
     const d = escapeAttr(route.desc);
-    return `    <link rel="canonical" href="${escapeAttr(url)}" />
+    return `<meta name="method-seo-block" content="start" />
+    <link rel="canonical" href="${escapeAttr(url)}" />
     <meta property="og:type" content="${route.type}" />
     <meta property="og:url" content="${escapeAttr(url)}" />
     <meta property="og:site_name" content="Method" />
     <meta property="og:title" content="${t}" />
     <meta property="og:description" content="${d}" />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image" content="${escapeAttr(OG_IMAGE)}" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Method — Clarifying how you show up in the market." />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${t}" />
-    <meta name="twitter:description" content="${d}" />`;
+    <meta name="twitter:description" content="${d}" />
+    <meta name="twitter:image" content="${escapeAttr(OG_IMAGE)}" />
+    <meta name="method-seo-block" content="end" />`;
 }
 
 function renderRoute(html, route) {
@@ -155,14 +164,15 @@ function renderRoute(html, route) {
         `<meta name="description" content="${d}" />`
     );
 
-    // 3. Strip any prior OG/Twitter/canonical block from a previous run
+    // 3. Strip any prior META_SEO block(s) from previous runs — idempotent.
+    // Uses <meta> sentinels because CRA's HTML minifier strips comments.
     out = out.replace(
-        /\n\s*<link rel="canonical"[^>]*\/?>[\s\S]*?<meta name="twitter:description"[^>]*\/?>\n/,
-        "\n"
+        /\s*<meta\s+name="method-seo-block"\s+content="start"[^>]*\/?>[\s\S]*?<meta\s+name="method-seo-block"\s+content="end"[^>]*\/?>/g,
+        ""
     );
 
-    // 4. Inject fresh meta block just before </head>
-    out = out.replace(/(\s*)<\/head>/, `\n${buildMetaBlock(route)}$1</head>`);
+    // 4. Inject fresh block just before </head>.
+    out = out.replace(/(\s*)<\/head>/, `\n    ${buildMetaBlock(route)}\n$1</head>`);
 
     return out;
 }
@@ -196,7 +206,8 @@ const checks = [
     { test: /<title>The gap between what companies promise/i, label: "per-route <title>" },
     { test: /og:title" content="The gap between/i, label: "per-route og:title" },
     { test: /og:type" content="article/i, label: "og:type article" },
-    { test: /twitter:card" content="summary/i, label: "twitter:card" },
+    { test: /twitter:card" content="summary_large_image/i, label: "twitter:card" },
+    { test: /og:image" content="[^"]*og-default\.jpg/, label: "og:image" },
     { test: /rel="canonical"/, label: "canonical link" },
     { test: /id="root"/, label: "div#root preserved" },
     { test: /static\/js\/main\./, label: "CRA main.js bundle preserved" },
