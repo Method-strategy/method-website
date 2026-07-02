@@ -28,7 +28,7 @@ export default function Writing() {
                             </h1>
                         </RevealItem>
                         <RevealItem className="lg:col-span-4 lg:pl-6">
-                            <p className="text-base md:text-lg text-navy/85 leading-relaxed max-w-sm mt-8 md:mt-10 pt-6 border-t border-navy/20">
+                            <p className="emphasis-line">
                                 Essays on marketing strategy, brand positioning,
                                 and the gap between what companies promise and
                                 what they actually deliver.

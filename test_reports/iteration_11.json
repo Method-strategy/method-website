@@ -1,0 +1,32 @@
+{
+  "summary": "Iteration 11 typography sweep verified. Three-font system working: body face is now akzidenz-grotesk-next-pro across /, /work, /about, /writing; wordmark/eyebrow remain scandia-web; Cormorant Garamond italic still applied where used (large + inline emphasis). New .emphasis-line utility renders Akzidenz medium 500 at 18px mobile / 20px desktop with correct navy/cream colors. All 8 sweep spots verified on Home/Work/About/Writing. Founder subhead 'Nearly four decades / Every phase of the medium.' now serif italic at 36px desktop (text-3xl md:text-4xl), earning the Cormorant treatment. Zero console errors across all 7 tested routes. Production build + strip-emergent script exits 0 with 'Sanity check: OK'; build/index.html contains id=root, main.d7c2a916.js, main.907f9a7c.css, Typekit kiu8ndx.css link, and Method title; contains none of emergent-badge/assets.emergent.sh/posthog/DataCloneError.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Global Footer (visible on all pages)",
+        "issues": [
+          "Footer.jsx line 22 renders a standalone <p class='serif italic text-lg md:text-xl mt-5 ...'>Clarifying how you show up in the market.</p> at 20px computed font-size — this is the only remaining Cormorant-italic standalone paragraph under 28px on Home/Work/About/Writing per the discipline audit. Per the iteration 11 spec, small standalone serif blurbs should be swapped to .emphasis-line. Suggest: change Footer tagline to .emphasis-line (or bump to text-3xl+ if the founder wants to keep it as serif signage)."
+        ]
+      }
+    ]
+  },
+  "test_report_links": ["/app/test_reports/iteration_11.json"],
+  "action_items": [
+    "Optional / follow-up: Sweep the Footer tagline 'Clarifying how you show up in the market.' — currently serif italic at 20px in /app/frontend/src/components/Footer.jsx. Either promote to .emphasis-line to match the Home/Work/About/Writing rule, or size up to >=text-3xl to keep it as serif. All other 8 sweep spots verified correct."
+  ],
+  "critical_code_review_comments": [
+    "Nice separation of concerns in tailwind.config.js — sans/display/serif families with clear intent comments. Body font stack in index.css matches the Tailwind sans stack — no drift.",
+    "emphasis-line utility properly handles .on-navy inversion (cream on navy). Good.",
+    "Only Cormorant-italic-small-standalone bleed left is the global Footer tagline; the 8 body-page sweep spots are clean."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a", "frontend": "100%"},
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Iteration 11 is a pure typography swap. Body font = akzidenz-grotesk-next-pro (Typekit kit kiu8ndx). Display = scandia-web. Serif = Cormorant Garamond (Google Fonts) and should only appear at >=text-3xl standalone or as inline emphasis. New .emphasis-line class replaces small standalone Cormorant blurbs across Home/Work/About/Writing. All primary sweep spots verified. Only pending item: Footer.jsx tagline 'Clarifying how you show up in the market.' is still serif italic at 20px — flagged as design follow-up, not a blocker.",
+  "rca of the issue": "N/A — no bugs found. Only follow-up: the Footer tagline (global element) was not included in the 8 sweep spots but technically appears on all four primary pages, so it triggers the Cormorant-under-28px audit. Not a test fail — flagged as a design follow-up per the review request's 'report any that are still under-sized standalone serif blurbs' clause."
+}

@@ -79,9 +79,11 @@ body {
     margin: 0;
     background-color: #f5f1eb;
     color: #444444;
-    font-family: "scandia-web", "scandia", "Manrope", "Neue Haas Grotesk",
-        "Helvetica Neue", Arial, sans-serif;
-    font-feature-settings: "ss01", "ss02", "kern";
+    font-family: "akzidenz-grotesk-next-pro", "akzidenz-grotesk-next",
+        "akzidenz-grotesk", "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400;
+    font-feature-settings: "kern", "ss01";
+    letter-spacing: 0;
 }
 
 /* Selection */
@@ -94,21 +96,22 @@ body {
     color: #13243d;
 }
 
-/* Serif */
+/* Serif — editorial voice, standalone use ≥ text-3xl only */
 .serif {
     font-family: "Cormorant Garamond", "EB Garamond", Garamond, serif;
     font-feature-settings: "liga", "dlig", "kern";
 }
 
-/* Wordmark — heavy geometric */
+/* Wordmark / Display — Scandia. Used for H1, H2, wordmark, section labels. */
 .wordmark {
-    font-family: "scandia-web", "scandia", "Manrope", "Helvetica Neue", sans-serif;
+    font-family: "scandia-web", "scandia", "Manrope", "Helvetica Neue",
+        sans-serif;
     font-weight: 800;
     letter-spacing: -0.045em;
     line-height: 0.85;
 }
 
-/* Small, tracked-out label caps used on section eyebrows */
+/* Eyebrow — small tracked caps in Scandia. Signage moments only. */
 .eyebrow {
     font-family: "scandia-web", "scandia", "Manrope", sans-serif;
     text-transform: uppercase;
@@ -202,22 +205,46 @@ body {
     }
 }
 
-/* Body defaults for prose blocks */
+/* Body defaults for prose blocks — Akzidenz-Grotesk Next Pro */
 .prose-method p {
+    font-family: "akzidenz-grotesk-next-pro", "akzidenz-grotesk-next",
+        "Helvetica Neue", Arial, sans-serif;
     font-size: 1.0625rem;
-    line-height: 1.7;
+    line-height: 1.65;
     color: #444444;
     margin-bottom: 1.5rem;
+    letter-spacing: 0;
 }
 @media (min-width: 768px) {
     .prose-method p {
-        font-size: 1.1875rem;
-        line-height: 1.72;
+        font-size: 1.125rem;
+        line-height: 1.66;
     }
 }
 .on-navy.prose-method p,
 .on-navy .prose-method p {
     color: rgba(245, 241, 235, 0.86);
+}
+
+/* Emphasis line — Akzidenz medium, one step above body, replaces small
+   Cormorant standalone blurbs. Reads confident, not decorative. */
+.emphasis-line {
+    font-family: "akzidenz-grotesk-next-pro", "akzidenz-grotesk-next",
+        "Helvetica Neue", Arial, sans-serif;
+    font-weight: 500;
+    font-size: 1.125rem;
+    line-height: 1.5;
+    color: #13243d;
+    letter-spacing: -0.005em;
+}
+@media (min-width: 768px) {
+    .emphasis-line {
+        font-size: 1.25rem;
+        line-height: 1.5;
+    }
+}
+.on-navy .emphasis-line {
+    color: #f5f1eb;
 }
 
 /* Editorial serif lede */

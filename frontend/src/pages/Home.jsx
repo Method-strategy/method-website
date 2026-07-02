@@ -25,7 +25,7 @@ export default function Home() {
                             </h1>
                             <p
                                 data-testid="home-hero-subhead"
-                                className="text-base md:text-lg text-cream/85 leading-relaxed max-w-sm mt-8 md:mt-10 pt-6 border-t border-cream/20"
+                                className="emphasis-line max-w-sm mt-8 md:mt-10 pt-6 border-t border-cream/20"
                             >
                                 A strategic marketing practice nearly forty
                                 years in the making.
@@ -184,7 +184,7 @@ export default function Home() {
                                 </div>
                             </div>
                             <div className="pt-4 border-t border-navy/15">
-                                <p className="serif italic text-navy text-xl md:text-2xl leading-snug">
+                                <p className="emphasis-line">
                                     In both cases, the problem isn't
                                     execution. It's clarity. That's where we
                                     start.

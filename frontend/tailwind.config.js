@@ -47,15 +47,27 @@ module.exports = {
                 ring: 'hsl(var(--ring))'
             },
             fontFamily: {
+                // Body / reader — Akzidenz-Grotesk Next Pro from Typekit.
+                // Everything below H2 size uses this. Never used for display.
                 sans: [
-                    "scandia-web",
-                    "scandia",
-                    "Manrope",
-                    "Neue Haas Grotesk",
+                    "akzidenz-grotesk-next-pro",
+                    "akzidenz-grotesk-next",
+                    "akzidenz-grotesk",
                     "Helvetica Neue",
                     "Arial",
                     "sans-serif"
                 ],
+                // Display — Scandia. Wordmark, H1, H2, eyebrow caps.
+                // Never used for body copy.
+                display: [
+                    "scandia-web",
+                    "scandia",
+                    "Manrope",
+                    "Helvetica Neue",
+                    "sans-serif"
+                ],
+                // Editorial voice — Cormorant italic. Used only ≥ text-3xl
+                // standalone, or as inline emphasis inside a display line.
                 serif: [
                     "Cormorant Garamond",
                     "EB Garamond",

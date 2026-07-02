@@ -22,7 +22,7 @@ export default function About() {
                             </h1>
                         </RevealItem>
                         <RevealItem className="lg:col-span-4 lg:pl-6">
-                            <p className="serif italic text-2xl md:text-3xl text-navy leading-snug">
+                            <p className="emphasis-line">
                                 Founded 2020. A deliberate point of view about
                                 what a marketing practice should be.
                             </p>
@@ -70,7 +70,7 @@ export default function About() {
                                     answers to those questions determine
                                     everything that follows.
                                 </p>
-                                <p className="serif italic text-navy text-xl md:text-2xl leading-snug !mb-0 pt-2">
+                                <p className="emphasis-line !mb-0 pt-2">
                                     The brand. The positioning. The content.
                                     The channels. The execution. None of it is
                                     imposed from the outside. All of it is
@@ -124,7 +124,7 @@ export default function About() {
                                 <br />
                                 Hopkins.
                             </h2>
-                            <p className="serif italic text-2xl md:text-3xl text-steel mt-6 leading-snug">
+                            <p className="serif italic text-3xl md:text-4xl text-steel mt-6 leading-tight">
                                 Nearly four decades.
                                 <br />
                                 Every phase of the medium.
@@ -142,7 +142,7 @@ export default function About() {
                                 strategist who understands what changes and
                                 what doesn't.
                             </p>
-                            <p className="serif italic text-navy text-xl md:text-2xl leading-snug">
+                            <p className="emphasis-line">
                                 The tools and techniques have changed. The
                                 game hasn't. Reaching the right people with
                                 the right message at the right time is still
