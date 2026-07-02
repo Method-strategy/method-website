@@ -1,5 +1,19 @@
 import { Link } from "react-router-dom";
-import { Linkedin } from "lucide-react";
+
+const LinkedInMark = ({ className = "" }) => (
+    <svg
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+        className={className}
+    >
+        <rect width="24" height="24" rx="3" fill="#5A7D9A" />
+        <path
+            fill="#13243d"
+            d="M6.94 8.5H4.06v10h2.88v-10zM5.5 4.5a1.75 1.75 0 1 0 0 3.5 1.75 1.75 0 0 0 0-3.5zM20 18.5h-2.88v-4.87c0-1.16-.02-2.65-1.62-2.65-1.62 0-1.87 1.26-1.87 2.57v4.95H10.75v-10h2.76v1.36h.04c.38-.72 1.32-1.48 2.72-1.48 2.91 0 3.45 1.92 3.45 4.41v5.71z"
+        />
+    </svg>
+);
 
 export default function Footer() {
     const year = new Date().getFullYear();
@@ -89,13 +103,9 @@ export default function Footer() {
                             target="_blank"
                             rel="noopener noreferrer"
                             data-testid="footer-linkedin-link"
-                            className="mt-5 inline-flex items-center gap-2 nav-link text-[0.78rem] tracking-[0.22em] uppercase font-medium text-cream/85 hover:text-cream"
+                            className="mt-5 inline-flex items-center gap-2.5 nav-link text-[0.78rem] tracking-[0.22em] uppercase font-medium text-cream/85 hover:text-cream"
                         >
-                            <Linkedin
-                                className="w-3.5 h-3.5"
-                                strokeWidth={1.5}
-                                aria-hidden="true"
-                            />
+                            <LinkedInMark className="w-4 h-4" />
                             <span>Connect on LinkedIn</span>
                         </a>
                     </div>
