@@ -50,7 +50,12 @@
         <script src="https://assets.emergent.sh/scripts/emergent-main.js"></script>
     </head>
     <body>
-        <noscript>You need to enable JavaScript to run this app.</noscript>
+        <!-- No <noscript> element on purpose: this site is statically
+             pre-rendered at build time (see /frontend/scripts/prerender-ssg.js),
+             so every page's content is present in the initial HTML response
+             without any JavaScript execution. A `noscript` fallback would
+             only mislead HTML text extractors into thinking the site is
+             JS-required. -->
         <div id="root"></div>
         <a
             id="emergent-badge"

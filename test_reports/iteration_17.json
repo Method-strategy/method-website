@@ -1,0 +1,27 @@
+{
+  "summary": "Verified noscript removal fix on preview URL. All 12 routes serve 0 noscript elements and 0 'enable JavaScript' text. Body opens directly with <div id=\"root\"><div (only an HTML comment intervening, which is invisible to text extractors). SSG content intact: wrap-rage > 20KB with essay body, marketing-writes-checks > 25KB, home > 13KB with 'Most B2B firms are better'. Per-route meta (title/canonical/og/twitter) present and route-specific. Browser test on /writing/wrap-rage: 0 console errors, 0 hydration warnings, client-side nav updates document.title correctly. Netlify /writing/wrap-rage/ also verified 200, >20KB, contains essay. 42/42 pytest tests pass.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_noscript_removal.py",
+    "/app/test_reports/pytest/iteration_17.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "public/index.html has a helpful HTML comment (lines 53-58) explaining why noscript is absent — good documentation for future contributors, and comments are invisible to text extractors so they don't reintroduce the original issue.",
+    "Netlify's 301 redirect from no-trailing-slash to trailing-slash is noted but not tested here; requests follows redirects transparently and standard crawlers handle it fine — non-issue."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_noscript_removal.py"
+  ],
+  "success_rate": {"backend": "N/A (skipped)", "frontend": "100% (42/42 tests + browser hydration clean)"},
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "iteration_17: verified noscript removal. Preview URL clean, SSG intact, per-route meta intact, hydration clean. User next step: push to GitHub so Netlify picks up the noscript-removal fix (current Netlify deploy may still contain noscript until push). Regression test file at /app/backend/tests/test_noscript_removal.py covers all 12 routes and can be re-run against Netlify by swapping PREVIEW→NETLIFY.",
+  "rca of the issue": "Original bug: CRA's default public/index.html shipped with <noscript>You need to enable JavaScript to run this app.</noscript> inside <body> BEFORE <div id=\"root\">. Even though the site is now fully SSG'd (content present in initial HTML), some HTML text extractors read the first-visible-text and hit that noscript message. Fix (already applied by main agent): removed the noscript element entirely from public/index.html and rebuilt. Verified in build output and served responses."
+}
