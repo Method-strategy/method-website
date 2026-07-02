@@ -10,6 +10,7 @@ import About from "@/pages/About";
 import Writing from "@/pages/Writing";
 import WritingDetail from "@/pages/WritingDetail";
 import Connect from "@/pages/Connect";
+import Discernment from "@/pages/Discernment";
 
 function Shell() {
     const { pathname } = useLocation();
@@ -26,6 +27,7 @@ function Shell() {
                 <Route path="/work" element={<Work />} />
                 <Route path="/work/:slug" element={<WorkDetail />} />
                 <Route path="/about" element={<About />} />
+                <Route path="/about/discernment" element={<Discernment />} />
                 <Route path="/writing" element={<Writing />} />
                 <Route path="/writing/:slug" element={<WritingDetail />} />
                 <Route path="/connect" element={<Connect />} />

@@ -187,12 +187,54 @@ export default function About() {
                                 a creative director, which is, in the end,
                                 exactly what the right clients need.
                             </p>
-                            <p className="!mb-0">
+                            <p>
                                 Gary is directly involved in every Method
                                 engagement. Not as an account supervisor. Not
                                 as the person who pitches and disappears. As
                                 the strategist and creative director doing the
                                 actual work. That's the arrangement.
+                            </p>
+                            <p>
+                                In 2017, more than three decades into
+                                practicing marketing, Gary went back to study
+                                it. He completed a Bachelor of Business
+                                Administration in Marketing at Kennesaw State
+                                University over five years while running the
+                                practice, graduating summa cum laude in 2022
+                                with a 4.0, and picking up the university's
+                                best emerging new writer award as a freshman
+                                along the way. He's methodical. It's been said
+                                of him so many times it became the name on the
+                                door.
+                            </p>
+                            <p>
+                                Outside the practice, Gary has a tinkerer's
+                                heart, which is why he's spent a lifetime
+                                restoring things by hand: first vintage
+                                motorcycles, then bicycles. The same instinct
+                                shows up in how he works over a sentence until
+                                it's right. He's a lifelong bass player and
+                                still plays in a rock band, because rock and
+                                roll dreams die hard, and because everything
+                                worth knowing about teamwork and communication
+                                can be learned in a band. He holds his own at
+                                disc golf against his son and his son's
+                                friends, a fact he'll mention if given the
+                                opening. And he's been married to a superhero
+                                badass woman for thirty-five years.
+                            </p>
+                            <p className="!mb-0">
+                                Most of what Gary knows about brands and craft
+                                he learned in his father's studios, from the
+                                stat camera up. That story is longer, and it
+                                lives here:{" "}
+                                <Link
+                                    to="/about/discernment"
+                                    data-testid="about-discernment-link"
+                                    className="ed-link"
+                                >
+                                    Where Discernment Comes From →
+                                </Link>
                             </p>
                         </RevealItem>
                     </RevealStagger>
