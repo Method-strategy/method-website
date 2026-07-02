@@ -86,7 +86,7 @@ const staticRoutes = [
     {
         path: "/about/discernment",
         title: "Discernment — Method",
-        desc: "Where discernment comes from: a basement in Cincinnati, a stat camera, and what four decades of craft actually teach. An essay by Gary Hopkins.",
+        desc: "A basement in Cincinnati, a stat camera, an Ogilvy cassette set, and what four decades of craft actually teach. Gary Hopkins on where standards come from.",
         type: "article",
     },
     {
@@ -113,7 +113,10 @@ const workRoutes = caseStudies.map((c) => ({
 const writingRoutes = writing.map((w) => ({
     path: `/writing/${w.slug}`,
     title: `${w.title} — Method`,
-    desc: w.dek,
+    // `share` is the author-approved verbatim excerpt for meta / og /
+    // twitter descriptions. Fall back to `dek` if a post hasn't been given
+    // its own share copy yet.
+    desc: w.share || w.dek,
     type: "article",
 }));
 

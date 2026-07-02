@@ -247,6 +247,18 @@ export default function About() {
                                     Where Discernment Comes From →
                                 </Link>
                             </p>
+                            <p className="!mb-0 mt-6 text-sm text-navy/70">
+                                Gary on LinkedIn:{" "}
+                                <a
+                                    href="https://www.linkedin.com/in/gary-hopkins-brand/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    data-testid="about-gary-linkedin"
+                                    className="ed-link"
+                                >
+                                    linkedin.com/in/gary-hopkins-brand
+                                </a>
+                            </p>
                         </RevealItem>
                     </RevealStagger>
                 </div>
