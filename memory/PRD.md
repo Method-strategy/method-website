@@ -59,6 +59,15 @@ Marketing website for Method, a strategic marketing practice (fractional CMO-lev
 - **ShareRow on WorkDetail.** Case study detail pages now render the same LinkedIn/X/Email/Copy-link share row + Save-as-PDF row as writing posts. Was missing per the testing agent's iteration-14 gap analysis.
 - **Netlify build chain**: `yarn install && yarn build && strip-emergent → prerender-og → generate-sitemap → generate-rss`.
 
+## Session 2026-02 (part 3) — True Static Site Generation
+- **Full SSG shipped** at `/app/frontend/scripts/prerender-ssg.js`. Every page's React tree is now rendered to a static HTML string at build time via `react-dom/server` + `<StaticRouter>`, then injected into that route's `<div id="root">` shell. AI answer engines (Claude, Perplexity, ChatGPT browsing, Google AI Overview) and non-JS crawlers now see the actual page content — full essay body, case study copy, headlines, prose — instead of an empty `#root`. Verified: `/writing/wrap-rage/` static HTML is 27KB with all 10 body paragraphs baked in.
+- **Client hydration**: `src/index.js` now uses `hydrateRoot` when `#root` has prerendered children, `createRoot` otherwise (keeps `yarn start` dev workflow intact).
+- **SSR hardening**: SSR entry (`scripts/ssr-entry.jsx`) wraps the app in `<MotionConfig reducedMotion="user">` so framer-motion's SSR/CSR mismatch on the `useReducedMotion` hook is neutralized — zero hydration warnings verified in Chromium.
+- **Refactor**: `App.js` exports `AppShell` (was inline `Shell`) so the same shell renders under BrowserRouter (client) and StaticRouter (SSG).
+- **Build pipeline**: esbuild bundles the SSR entry to CJS on the fly; Node requires the bundle and calls `render(pathname)` per route. Tmp bundle is cleaned up on success.
+- **Netlify build chain (final)**: `yarn install && yarn build && strip-emergent → prerender-og → prerender-ssg → generate-sitemap → generate-rss`.
+- **Verified end-to-end**: served `build/` via python http.server, navigated to `/writing/wrap-rage/` — SSG content visible, React hydrated without errors, client-side nav to `/writing` updates `document.title` correctly. Curl on the same URL confirms all essay text is in the initial HTML response (26.3 KB).
+
 ## Prioritized Backlog
 
 ### P0 (must have — done)

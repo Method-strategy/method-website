@@ -127,7 +127,17 @@ const escapeAttr = (s) =>
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;");
 
-const baseHtml = fs.readFileSync(INDEX_PATH, "utf8");
+const baseHtml = (() => {
+    let html = fs.readFileSync(INDEX_PATH, "utf8");
+    // Ensure #root is empty in the base template — subsequent SSG runs
+    // may have filled it, but each fresh prerender starts from an empty
+    // root that prerender-ssg (if present) will re-render into.
+    html = html.replace(
+        /<div id="root">[\s\S]*?<\/div>(?=\s*(<script|<\/body))/i,
+        '<div id="root"></div>'
+    );
+    return html;
+})();
 
 function buildMetaBlock(route) {
     const url = `${SITE}${route.path === "/" ? "" : route.path}`;

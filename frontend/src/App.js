@@ -13,7 +13,9 @@ import Connect from "@/pages/Connect";
 import Discernment from "@/pages/Discernment";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
-function Shell() {
+// Exported so the SSG build (scripts/ssr-entry.jsx) can render each route
+// to static HTML at build time without pulling in BrowserRouter.
+export function AppShell() {
     const { pathname } = useLocation();
     useDocumentTitle();
     // Pages whose FIRST band is navy — nav needs a light color from the start.
@@ -43,7 +45,7 @@ function Shell() {
 function App() {
     return (
         <BrowserRouter>
-            <Shell />
+            <AppShell />
         </BrowserRouter>
     );
 }
