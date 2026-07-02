@@ -29,7 +29,7 @@ export default function Home() {
                                 data-testid="home-hero-subhead"
                                 className="pull max-w-md"
                             >
-                                A strategic marketing practice nearly forty
+                                A strategic marketing practice more than forty
                                 years in the making.
                             </p>
                         </RevealItem>

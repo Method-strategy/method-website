@@ -23,8 +23,8 @@ export default function About() {
                         </RevealItem>
                         <RevealItem className="lg:col-span-4 lg:pl-6">
                             <p className="emphasis-line">
-                                Founded 2020. A deliberate point of view about
-                                what a marketing practice should be.
+                                A deliberate point of view about what a
+                                marketing practice should be.
                             </p>
                         </RevealItem>
                     </RevealStagger>
@@ -99,7 +99,7 @@ export default function About() {
                         {[
                             { k: "2020", v: "Founded" },
                             { k: "4–5", v: "Active clients at any time" },
-                            { k: "40 yrs", v: "Practitioner experience" },
+                            { k: "40+ yrs", v: "Practitioner experience" },
                             { k: "1", v: "Point of view" }
                         ].map((n) => (
                             <RevealItem key={n.k}>

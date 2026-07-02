@@ -39,7 +39,7 @@ export default function Footer() {
                         <p className="text-cream/55 text-sm mt-6 leading-relaxed">
                             Method Marketing Group
                             <br />
-                            A strategic marketing practice · Est. 2020
+                            Founded 2020. More than forty years in the making.
                         </p>
                     </div>
 

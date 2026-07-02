@@ -1,9 +1,18 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { Linkedin, Link2, Mail, Check } from "lucide-react";
+
+const SITE_ORIGIN = "https://methodmarketinggroup.com";
 
 /**
  * Editorial share row. Restrained, black-and-cream, no colored social pills.
  * Used at the top and bottom of long-form pieces.
+ *
+ * `url` (optional) — a fully-qualified URL to share. If not passed, the
+ * component builds one from the current route: window.location.origin
+ * on the client, or the production origin on the server (SSG). This
+ * ensures share links have real URLs even in the prerendered HTML —
+ * critical for anyone who reads the page without executing JavaScript.
  */
 export default function ShareRow({
     title,
@@ -13,10 +22,13 @@ export default function ShareRow({
     className = ""
 }) {
     const [copied, setCopied] = useState(false);
+    const { pathname } = useLocation();
 
-    const shareUrl =
-        url ||
-        (typeof window !== "undefined" ? window.location.href : "");
+    const origin =
+        typeof window !== "undefined" && window.location
+            ? window.location.origin
+            : SITE_ORIGIN;
+    const shareUrl = url || `${origin}${pathname}`;
     const encodedUrl = encodeURIComponent(shareUrl);
     const encodedTitle = encodeURIComponent(title || "");
 

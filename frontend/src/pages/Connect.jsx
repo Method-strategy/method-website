@@ -60,9 +60,7 @@ export default function Connect() {
                                 data-testid="connect-email-primary"
                                 className="wordmark block text-[2rem] sm:text-[3rem] md:text-[4rem] lg:text-[5.25rem] leading-none tracking-tight text-cream break-words hover:text-cream/85 transition-colors duration-300"
                             >
-                                connect@
-                                <br className="lg:hidden" />
-                                methodmarketinggroup.com
+                                connect@<wbr />methodmarketinggroup.com
                             </a>
                             <p className="serif italic text-2xl md:text-3xl text-cream/80 mt-10">
                                 We'll take it from there.

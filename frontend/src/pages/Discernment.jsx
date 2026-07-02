@@ -58,9 +58,9 @@ export default function Discernment() {
                             <br />
                             comes from.
                         </h1>
-                        <div className="mt-8 text-navy/60 text-sm md:text-base tracking-wide flex flex-wrap items-center gap-x-6 gap-y-2">
+                        <div className="mt-8 text-navy/60 text-sm md:text-base tracking-wide flex flex-wrap items-baseline gap-x-3 gap-y-2">
                             <span>By Gary Hopkins</span>
-                            <span className="w-px h-4 bg-navy/25 hidden sm:inline-block" />
+                            <span aria-hidden="true" className="text-navy/40">·</span>
                             <span>A basement in Cincinnati, and after</span>
                         </div>
                     </RevealItem>

@@ -68,7 +68,7 @@ const staticRoutes = [
     {
         path: "/",
         title: "Method — Clarifying how you show up in the market.",
-        desc: "A strategic marketing practice. Fractional CMO-level partnership for B2B firms. Nearly forty years in the making.",
+        desc: "A strategic marketing practice. Fractional CMO-level partnership for B2B firms. More than forty years in the making.",
         type: "website",
     },
     {
@@ -86,7 +86,7 @@ const staticRoutes = [
     {
         path: "/about/discernment",
         title: "Discernment — Method",
-        desc: "A note on how Method chooses its work, and the kind of engagement that actually produces the outcome.",
+        desc: "Where discernment comes from: a basement in Cincinnati, a stat camera, and what four decades of craft actually teach. An essay by Gary Hopkins.",
         type: "article",
     },
     {

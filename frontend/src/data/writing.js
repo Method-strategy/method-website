@@ -8,7 +8,7 @@ export const writing = [
     {
         slug: "the-gap-series-introduction",
         title: "The gap between what companies promise and what they deliver. A series.",
-        dek: "I've spent nearly forty years in marketing. Here's the closest thing I have to a professional creed: if you're going to use marketing to hide a terrible company behind, I want no part of it.",
+        dek: "I've spent more than forty years in marketing. Here's the closest thing I have to a professional creed: if you're going to use marketing to hide a terrible company behind, I want no part of it.",
         readTime: "6 min",
         category: "Gap Series",
         series: "Gap Series",
@@ -16,7 +16,7 @@ export const writing = [
         featured: true,
         body: [
             { type: "p", text: "Let me tell you what I believe, and then let me tell you about the waxer." },
-            { type: "p", text: "I've spent nearly forty years in marketing. Here's the closest thing I have to a professional creed: if you're going to use marketing to hide a terrible company behind, I want no part of it. Marketing as a shield. Fake it till you make it, at scale, with a media budget. It's a big part of why advertising has the reputation it has, the smoke, the mirrors, the wink. Some of it earned that reputation honestly." },
+            { type: "p", text: "I've spent more than forty years in marketing. Here's the closest thing I have to a professional creed: if you're going to use marketing to hide a terrible company behind, I want no part of it. Marketing as a shield. Fake it till you make it, at scale, with a media budget. It's a big part of why advertising has the reputation it has, the smoke, the mirrors, the wink. Some of it earned that reputation honestly." },
             { type: "p", text: "I've always worked from the opposite premise. You find what's true in a company or a product and you amplify that. It usually wins. Not always. Usually. And when it wins, it keeps winning, because nothing you said has to be walked back." },
             { type: "p", text: "Which brings me to Apple, and the waxer." },
             { type: "p", text: "In 1987, I pleaded with the owners of the agency where I worked to buy one of the first Apple IIgs machines. Pleaded. These things were massively expensive, and the owner I had to convince came up in the rubber cement generation. \"Hell, we didn't have waxers or Spray Mount, we had rubber cement and liked it.\"" },
