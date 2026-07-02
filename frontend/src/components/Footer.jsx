@@ -19,10 +19,7 @@ export default function Footer() {
                         >
                             Method
                         </Link>
-                        <p
-                            className="serif italic text-lg md:text-xl mt-5 text-cream/90 max-w-md leading-snug"
-                            style={{ letterSpacing: "-0.005em" }}
-                        >
+                        <p className="emphasis-line mt-5 max-w-md">
                             Clarifying how you show up in the market.
                         </p>
                         <p className="text-cream/55 text-sm mt-6 leading-relaxed">
