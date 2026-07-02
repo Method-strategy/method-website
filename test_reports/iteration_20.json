@@ -1,0 +1,51 @@
+{
+  "summary": "Independent live-Netlify verification (https://method-website.netlify.app) with no JS, cache-busted GETs. 37/37 assertions PASS. Main agent's diagnosis is CONFIRMED: the live Netlify deploy already serves the correct copy. User is seeing a stale browser cache.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_netlify_live.py",
+    "/app/test_reports/pytest/netlify_live.xml"
+  ],
+  "verified_on_live_netlify": {
+    "home_hero": "PRESENT: 'A strategic marketing practice more than forty years in the making.'",
+    "home_footer": "PRESENT: 'Founded 2020. More than forty years in the making.'",
+    "est_2020_occurrences": 0,
+    "nearly_forty_occurrences": 0,
+    "gap_series_body": "PRESENT: 'more than forty years in marketing'",
+    "gap_series_og_description": "VERBATIM MATCH to author-approved copy",
+    "bernbach_title": "VERBATIM MATCH: '...operationally unsound. That used to be true. — Method'",
+    "discernment_og_description": "VERBATIM MATCH to author-approved copy",
+    "routes_verified": ["/", "/about", "/work", "/writing", "/connect", "/about/discernment", "/writing/the-gap-series-introduction", "/writing/you-cant-market-a-business-that-is-operationally-unsound/"],
+    "netlify_response_headers": {
+      "age": "0",
+      "cache-status": "\"Netlify Edge\"; fwd=miss",
+      "x-nf-request-id": "01KWJ3QEHJ8ACREMHWS147VSK1",
+      "etag": "\"2d4ac1776f16c12ad014fb7cb7350871-ssl\"",
+      "cache-control": "public,max-age=0,must-revalidate",
+      "date": "Thu, 02 Jul 2026 19:08:41 GMT"
+    },
+    "live_vs_preview_parity": "IDENTICAL on all copy assertions (3/3 parity tests pass)"
+  },
+  "action_items": [
+    "NO CODE CHANGES REQUIRED. The live Netlify deploy is correct.",
+    "Instruct user to hard-refresh (Cmd+Shift+R / Ctrl+F5) or open the site in a private/incognito window to bypass their stale browser cache.",
+    "If user still sees old copy after hard refresh, ask them to share the x-nf-request-id from their browser DevTools Network tab and the exact URL they're viewing (they may be on a preview branch subdomain like *--method-website.netlify.app rather than the production apex)."
+  ],
+  "critical_code_review_comments": [
+    "Both mentions of the stale strings 'Est. 2020' and 'nearly forty' exist ONLY in historical test_reports/*.json artifacts, not in any source file. Safe to ignore.",
+    "Footer.jsx line 42 and Home.jsx lines 32-33 already contain the author-approved copy. Confirmed matches live production."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_netlify_live.py (new — live Netlify regression suite, 37 tests)"
+  ],
+  "success_rate": {"backend": "N/A (frontend-only iteration)", "frontend": "100% (37/37 live-Netlify assertions)"},
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "test_netlify_live.py is a reusable regression suite that hits the LIVE Netlify URL with cache-busting. Run it after any content/copy change to confirm the deploy actually propagated. It also parity-tests live vs Emergent preview to catch stale Netlify builds.",
+  "rca of the issue": "User-reported bug is a false positive caused by stale client-side browser cache. Live Netlify HTML source (fetched fresh, age=0, fwd=miss) contains the correct hero, footer, essay body, and og:description strings across all tested routes. Zero occurrences of 'Est. 2020' or 'nearly forty' anywhere on the live site. Mitigation: user needs to hard-refresh or clear cache; no code fix required."
+}
