@@ -78,12 +78,15 @@ html {
 body {
     margin: 0;
     background-color: #f5f1eb;
-    color: #444444;
+    color: #3d3d3d;
     font-family: "akzidenz-grotesk-next-pro", "akzidenz-grotesk-next",
         "akzidenz-grotesk", "Helvetica Neue", Arial, sans-serif;
     font-weight: 400;
-    font-feature-settings: "kern", "ss01";
-    letter-spacing: 0;
+    font-size: 15.5px;
+    line-height: 1.65;
+    font-feature-settings: "kern", "liga";
+    letter-spacing: -0.003em;
+    font-variant-numeric: proportional-nums;
 }
 
 /* Selection */
@@ -107,7 +110,7 @@ body {
     font-family: "scandia-web", "scandia", "Manrope", "Helvetica Neue",
         sans-serif;
     font-weight: 800;
-    letter-spacing: -0.045em;
+    letter-spacing: -0.048em;
     line-height: 0.85;
 }
 
@@ -115,17 +118,18 @@ body {
 .eyebrow {
     font-family: "scandia-web", "scandia", "Manrope", sans-serif;
     text-transform: uppercase;
-    letter-spacing: 0.22em;
-    font-size: 0.72rem;
+    letter-spacing: 0.26em;
+    font-size: 0.68rem;
     font-weight: 500;
+    color: inherit;
 }
 
-/* Nav / body */
+/* Nav / body — steel underline on hover, editorial precision */
 .nav-link {
     position: relative;
     display: inline-block;
-    padding-bottom: 2px;
-    transition: color 240ms ease;
+    padding-bottom: 3px;
+    transition: color 260ms ease;
 }
 .nav-link::after {
     content: "";
@@ -134,45 +138,46 @@ body {
     right: 0;
     bottom: 0;
     height: 1px;
-    background: currentColor;
+    background: #5A7D9A;
     transform: scaleX(0);
     transform-origin: left;
-    transition: transform 340ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 380ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 .nav-link:hover::after,
 .nav-link[aria-current="page"]::after {
     transform: scaleX(1);
 }
 
-/* Editorial link — used inline in body */
+/* Editorial link — used inline in body. Steel emerges on hover. */
 .ed-link {
     color: #13243d;
     text-decoration: none;
-    box-shadow: inset 0 -1px 0 0 rgba(19, 36, 61, 0.35);
+    box-shadow: inset 0 -1px 0 0 rgba(90, 125, 154, 0.55);
     transition:
-        box-shadow 240ms ease,
-        color 240ms ease;
+        box-shadow 260ms ease,
+        color 260ms ease;
 }
 .ed-link:hover {
-    box-shadow: inset 0 -1px 0 0 rgba(19, 36, 61, 1);
-    color: #13243d;
+    box-shadow: inset 0 -1px 0 0 #5A7D9A;
+    color: #5A7D9A;
 }
 .on-navy .ed-link {
     color: #f5f1eb;
-    box-shadow: inset 0 -1px 0 0 rgba(245, 241, 235, 0.4);
+    box-shadow: inset 0 -1px 0 0 rgba(90, 125, 154, 0.7);
 }
 .on-navy .ed-link:hover {
-    box-shadow: inset 0 -1px 0 0 rgba(245, 241, 235, 1);
+    box-shadow: inset 0 -1px 0 0 #5A7D9A;
+    color: #5A7D9A;
 }
 
-/* Big hairline dividers used on editorial pages */
+/* Hairline dividers used on editorial pages */
 .hairline {
     height: 1px;
-    background: rgba(19, 36, 61, 0.18);
+    background: rgba(19, 36, 61, 0.14);
     width: 100%;
 }
 .on-navy .hairline {
-    background: rgba(245, 241, 235, 0.22);
+    background: rgba(245, 241, 235, 0.18);
 }
 
 /* Reveal on load */
@@ -205,69 +210,82 @@ body {
     }
 }
 
-/* Body defaults for prose blocks — Akzidenz-Grotesk Next Pro */
+/* Body defaults for prose blocks — Akzidenz-Grotesk Next Pro.
+   Sized to read like a considered editorial piece, not a marketing brochure. */
 .prose-method p {
     font-family: "akzidenz-grotesk-next-pro", "akzidenz-grotesk-next",
         "Helvetica Neue", Arial, sans-serif;
-    font-size: 1.0625rem;
-    line-height: 1.65;
-    color: #444444;
-    margin-bottom: 1.5rem;
-    letter-spacing: 0;
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: #3d3d3d;
+    margin-bottom: 1.4rem;
+    letter-spacing: -0.003em;
 }
 @media (min-width: 768px) {
     .prose-method p {
-        font-size: 1.125rem;
-        line-height: 1.66;
+        font-size: 1rem;
+        line-height: 1.72;
     }
 }
 .on-navy.prose-method p,
 .on-navy .prose-method p {
-    color: rgba(245, 241, 235, 0.86);
+    color: rgba(245, 241, 235, 0.82);
 }
 
-/* Emphasis line — Akzidenz medium, one step above body, replaces small
-   Cormorant standalone blurbs. Reads confident, not decorative. */
+/* Emphasis line — Akzidenz regular, quiet weight, a step above body.
+   Replaces small standalone Cormorant blurbs. Reads considered, not loud. */
 .emphasis-line {
     font-family: "akzidenz-grotesk-next-pro", "akzidenz-grotesk-next",
         "Helvetica Neue", Arial, sans-serif;
-    font-weight: 500;
-    font-size: 1.125rem;
-    line-height: 1.5;
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.55;
     color: #13243d;
-    letter-spacing: -0.005em;
+    letter-spacing: -0.008em;
 }
 @media (min-width: 768px) {
     .emphasis-line {
-        font-size: 1.25rem;
-        line-height: 1.5;
+        font-size: 1.0625rem;
+        line-height: 1.55;
     }
 }
 .on-navy .emphasis-line {
-    color: #f5f1eb;
+    color: rgba(245, 241, 235, 0.92);
 }
 
-/* Editorial serif lede */
+/* Meta strip — small tracked lines carrying byline, date, read time. */
+.meta {
+    font-size: 0.8125rem;
+    letter-spacing: 0.01em;
+    color: rgba(19, 36, 61, 0.6);
+    font-variant-numeric: tabular-nums;
+}
+.on-navy .meta {
+    color: rgba(245, 241, 235, 0.6);
+}
+
+/* Editorial serif lede — the big Cormorant moment */
 .lede {
     font-family: "Cormorant Garamond", serif;
     font-weight: 400;
-    font-size: clamp(1.65rem, 3.2vw, 2.5rem);
-    line-height: 1.24;
-    letter-spacing: -0.005em;
+    font-size: clamp(1.75rem, 3.4vw, 2.75rem);
+    line-height: 1.22;
+    letter-spacing: -0.008em;
     color: #13243d;
 }
 .on-navy .lede {
     color: #f5f1eb;
 }
 
-/* Numeric label used on Work engagements — sits like a book chapter number */
+/* Numeric label used on Work engagements — quieter chapter number */
 .chapter-num {
     font-family: "Cormorant Garamond", serif;
     font-style: italic;
     font-weight: 400;
-    font-size: clamp(1.5rem, 2.4vw, 2rem);
+    font-size: clamp(1.125rem, 1.6vw, 1.375rem);
     color: #5A7D9A;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
+    font-variant-numeric: oldstyle-nums;
 }
 
 /* Utility to remove any inherited link styling */
