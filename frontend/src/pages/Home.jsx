@@ -118,7 +118,7 @@ export default function Home() {
                                 get exactly what the work needs. Nothing more,
                                 nothing else.
                             </p>
-                            <p className="prose-method !text-base md:!text-lg text-navy font-medium leading-relaxed !mb-0 mt-8 pt-6 border-t border-navy/15">
+                            <p className="pull !mb-0 mt-8 pt-6 border-t border-navy/15">
                                 Where execution is part of the scope, we
                                 deliver it or direct it. Strategy doesn't stop
                                 at a deck.
@@ -184,7 +184,7 @@ export default function Home() {
                                 </div>
                             </div>
                             <div className="pt-4 border-t border-navy/15">
-                                <p className="emphasis-line">
+                                <p className="pull">
                                     In both cases, the problem isn't
                                     execution. It's clarity. That's where we
                                     start.

@@ -277,6 +277,22 @@ body {
     color: #f5f1eb;
 }
 
+/* Pull — short punchline lines in Cormorant italic steel.
+   Upsized above body/emphasis, but below lede. Editorial punctuation.
+   Used for: "That's still the game.", "Where we start.", section closers. */
+.pull {
+    font-family: "Cormorant Garamond", "EB Garamond", Garamond, serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    line-height: 1.28;
+    letter-spacing: -0.005em;
+    color: #5A7D9A;
+}
+.on-navy .pull {
+    color: #7a9bb6;
+}
+
 /* Numeric label used on Work engagements — quieter chapter number */
 .chapter-num {
     font-family: "Cormorant Garamond", serif;

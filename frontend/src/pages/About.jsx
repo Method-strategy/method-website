@@ -70,7 +70,7 @@ export default function About() {
                                     answers to those questions determine
                                     everything that follows.
                                 </p>
-                                <p className="emphasis-line !mb-0 pt-2">
+                                <p className="pull !mb-0 pt-4 mt-2">
                                     The brand. The positioning. The content.
                                     The channels. The execution. None of it is
                                     imposed from the outside. All of it is
@@ -142,7 +142,7 @@ export default function About() {
                                 strategist who understands what changes and
                                 what doesn't.
                             </p>
-                            <p className="emphasis-line">
+                            <p className="pull">
                                 The tools and techniques have changed. The
                                 game hasn't. Reaching the right people with
                                 the right message at the right time is still

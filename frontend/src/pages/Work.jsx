@@ -29,7 +29,7 @@ export default function Work() {
                                 They're clarity problems. Method starts there,
                                 before anything is written, designed, or built.
                             </p>
-                            <p className="emphasis-line !mb-0">
+                            <p className="pull !mb-0">
                                 Right message. Right audience. Right time. Right
                                 place. That's still the game.
                             </p>
