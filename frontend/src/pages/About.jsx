@@ -162,8 +162,8 @@ export default function About() {
                             <p>
                                 Gary began his career in Southern California,
                                 where he co-founded F Space, a full-service
-                                creative agency he built and led for nineteen
-                                years. The agency served major brands
+                                creative agency he and his partner built
+                                side by side and led for nineteen years. The agency served major brands
                                 including Farmer Bros. Coffee, Yamaha
                                 Motorsports, El Portal Luxury Leather Goods,
                                 and Rodenstock, among many others. It was a
