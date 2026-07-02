@@ -59,7 +59,7 @@ const writingRoutes = writing.map((w) => ({
     path: `/writing/${w.slug}`,
     changefreq: "monthly",
     priority: "0.7",
-    lastmod: w.dateIso || today,
+    lastmod: today,
 }));
 
 const routes = [...staticRoutes, ...workRoutes, ...writingRoutes];

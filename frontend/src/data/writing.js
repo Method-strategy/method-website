@@ -1,13 +1,14 @@
 // Method — Writing content. Real posts as provided.
-// Series: "Gap Series" and standalone "Point of View" essays.
+// Order below is the intended reading/release order. No date metadata —
+// the site sequences posts by array position (see writing/rss/sitemap
+// consumers which rely on this order).
 
 export const writing = [
+    // 1. Intro — sets up the whole Gap Series
     {
         slug: "the-gap-series-introduction",
         title: "The gap between what companies promise and what they deliver. A series.",
         dek: "I've spent nearly forty years in marketing. Here's the closest thing I have to a professional creed: if you're going to use marketing to hide a terrible company behind, I want no part of it.",
-        date: "May 5, 2025",
-        dateIso: "2025-05-05",
         readTime: "6 min",
         category: "Gap Series",
         series: "Gap Series",
@@ -31,37 +32,16 @@ export const writing = [
             { type: "p", text: "But underneath the bit, I mean it. If I ever went back for the MBA, this would be the thesis: marketing writes checks that operations can't cash, and how a company might actually close that gap. For real. Because consumers deserve it. Period. We've bought enough islands and jets and space adventures. Can we have shit that works?" }
         ]
     },
-    {
-        slug: "you-cant-market-a-business-that-is-operationally-unsound",
-        title: "You can't market a business that is operationally unsound.",
-        dek: "That used to be true. Bill Bernbach said it as plainly as anyone ever has. Then large companies discovered they could just budget for the gap.",
-        date: "May 26, 2025",
-        dateIso: "2025-05-26",
-        readTime: "5 min",
-        category: "Point of View",
-        seriesLabel: "Post 01 · Point of View",
-        body: [
-            { type: "p", text: "That used to be true. Bill Bernbach said it as plainly as anyone ever has: \"A great ad campaign will make a bad product fail faster. It will get more people to know it's bad.\"" },
-            { type: "p", text: "When I came up in this business, that principle was pretty universally understood. Not because agencies were saints (we were not), but because it was demonstrably, financially true. The feedback loop between promise and experience was short. Tell people your car is reliable and it isn't? They find out. Tell people your restaurant is exceptional and the food is mediocre? The reservation book thins out. Reality had consequences." },
-            { type: "p", text: "Here's what I believed for most of my career: the internet would make that loop even tighter. Reviews travel at light speed now. Everyone can see everything. Surely, I thought, we were entering the golden age of accountability. Bernbach's principle, supercharged." },
-            { type: "p", text: "Let me tell you about my wife's sewing pattern. She bought a digital pattern that happened to originate in England, which required printing on A4 paper. Not exotic. Just A4. The Office Depot website said they had it. She drove to the store. The store said, oh, that's online only. Fine. She went to the Staples website, which said it needed to be ordered online. A step in the right direction, technically. She ordered it, shipped to store. She drove to the store to pick it up, opened the box, and found a calendar. A calendar." },
-            { type: "p", text: "To make a long story longer: she eventually walked out with two free reams of A4 paper and thirty-five dollars in store coupons. Which sounds like a happy ending until you notice what it actually was. Nobody fixed anything. Nobody seemed surprised. The apology machine worked flawlessly. The fulfillment machine, the thing the entire business allegedly exists to do, had failed three times in a row, and the institutional response was: here are some coupons. No. One. Cared." },
-            { type: "p", text: "And here's the part that would genuinely puzzle Bernbach: none of it matters. Staples spends heavily on advertising. The ads run. The stores stay open. The feedback moves at light speed, exactly as promised, and it changes nothing, because somewhere along the way large companies discovered they don't actually have to close the gap between promise and experience. They just have to budget for it. Free reams and coupons are cheaper than fixing the fulfillment system. The failure isn't a crisis. It's a line item." },
-            { type: "p", text: "So I have to amend the old adage. It turns out you can, in fact, market an operationally unsound business. Indefinitely, apparently, at sufficient scale and ad spend. Bernbach assumed a bad experience would kill the brand faster. What actually happened is that brands learned to price in the bad experience." },
-            { type: "p", text: "Which changes the question. It's no longer \"can you get away with it?\" Clearly you can. The question is whether you want to be that kind of company. Because the inverse is still true, and it's still the greatest competitive weapon available: a business whose operations actually deliver what its marketing promises is rare enough now to be remarkable. Literally. People remark on it." },
-            { type: "p", text: "The truth used to be mandatory. Now it's a strategy. Very few are using it. The campaigns I remember most were the ones that were already true before they ran." }
-        ]
-    },
+
+    // 2. Gap No. 1 — perforations
     {
         slug: "marketing-writes-checks-operations-cant-cash",
         title: "Marketing writes checks that operations can't cash.",
         dek: "This week I bought a twelve-pack of Coke Zero. Eight cans rolled out of the bottom of the fridge onto the floor. On the counter sits a torn Starbucks box. This is what a dull knife looks like at brand scale.",
-        date: "May 12, 2025",
-        dateIso: "2025-05-12",
         readTime: "6 min",
         category: "Gap Series",
         series: "Gap Series",
-        seriesLabel: "Gap Series · Post 02",
+        seriesLabel: "Gap Series · No. 1",
         body: [
             { type: "p", text: "This week I bought a twelve-pack of Coke Zero. One corner of the top has a perforated tab. The idea is that you pull the tab, it opens cleanly, and from that point forward the box is the dispenser. One can at a time. Convenient. Tidy." },
             { type: "p", text: "I carefully pulled on the perforated area, using the tab, exactly as intended. Eight cans rolled out of the bottom of the fridge onto the floor. Shaken and stirred." },
@@ -74,33 +54,16 @@ export const writing = [
             { type: "p", text: "I eventually bought a black wire rack that holds forty K-Cups. Eighteen dollars. No logo. Works perfectly. The Starbucks box went in the recycling where it belongs. Starbucks lost the counter." }
         ]
     },
-    {
-        slug: "cx-became-a-religion",
-        title: "CX became a religion. The pews are full. The building is still on fire.",
-        dek: "Customer experience became a measurement function instead of an operational one. You can measure your way to a diagnosis. You cannot measure your way to a cure.",
-        date: "June 16, 2025",
-        dateIso: "2025-06-16",
-        readTime: "4 min",
-        category: "Point of View",
-        seriesLabel: "Post 03 · Point of View",
-        body: [
-            { type: "p", text: "Customer experience is one of the most elaborately theorized and least practically improved disciplines in modern business. There are frameworks. Certifications. Conferences where people who study customer experience present to other people who study customer experience about how important customer experience is. There are NPS scores measured quarterly, reviewed in decks, discussed in all-hands meetings. And the bad customer experience remains." },
-            { type: "p", text: "Here's what I think happened. Customer experience became a measurement function instead of an operational one. The industry built an enormous apparatus for understanding how customers feel and a surprisingly modest apparatus for changing what customers encounter. Journey mapping workshops produce funnel diagrams, workflows, automations, spreadsheets, metrics, and new data points, all artifacts that go into a deck. And the deck gets filed." },
-            { type: "p", text: "Some of it is structural. The people who measure customer sentiment report to different leadership than the people whose operational decisions create that sentiment. An NPS score drops from 32 to 28. A meeting is convened. Action items are produced. The action items go to people with other priorities. The score goes to 25. Another meeting is convened. You can see where this is headed, and it is not toward the customer." },
-            { type: "p", text: "Some of it is that CX made its home in the service layer. It concerned itself with how interactions felt rather than how systems worked. Training your customer-facing people to be warmer and more sympathetic, while leaving intact the phone tree that exhausted the customer before they got to those people, is a very expensive way to not solve the problem." },
-            { type: "p", text: "The companies that actually close the gap aren't the ones with the most sophisticated measurement programs. They're the ones where someone with authority looked at the customer journey from the outside and asked one question: would I accept this? And then changed the thing. Not the measurement of the thing. You can measure your way to an accurate diagnosis. You cannot measure your way to a cure." }
-        ]
-    },
+
+    // 3. Gap No. 2 — wrap rage
     {
         slug: "wrap-rage",
         title: "Wrap rage has an official name. That should tell you something.",
         dek: "Sealed plastic. Heat-welded. Capable of defeating a determined adult with kitchen scissors. Consumer Reports has covered it. There are injury statistics. For packaging.",
-        date: "May 19, 2025",
-        dateIso: "2025-05-19",
         readTime: "5 min",
         category: "Gap Series",
         series: "Gap Series",
-        seriesLabel: "Gap Series · Post 04",
+        seriesLabel: "Gap Series · No. 2",
         body: [
             { type: "p", text: "Wrap rage is a real term. Real people in packaging research use it to describe what happens when a human attempts to open hard plastic clamshell packaging. It's in the dictionary. Consumer Reports has covered it. There are injury statistics. Injury statistics. For packaging." },
             { type: "p", text: "You know the clamshell. Everyone knows the clamshell. Sealed plastic, heat-welded around its perimeter, impervious to bare hands, capable of defeating a determined adult armed with kitchen scissors. The contents become visible around minute three. Airborne around minute four." },
@@ -110,16 +73,37 @@ export const writing = [
             { type: "p", text: "And the companies shipping clamshells are, by and large, the same companies running spots about how much they value their customers. Both things are true, in their way. The spots reflect what the company believes about itself. The packaging reflects what happens when that belief competes with operational convenience. Operational convenience wins. It usually does. Usually without anyone deciding it should." }
         ]
     },
+
+    // 4. PoV — Bernbach
+    {
+        slug: "you-cant-market-a-business-that-is-operationally-unsound",
+        title: "You can't market a business that is operationally unsound.",
+        dek: "That used to be true. Bill Bernbach said it as plainly as anyone ever has. Then large companies discovered they could just budget for the gap.",
+        readTime: "5 min",
+        category: "Point of View",
+        seriesLabel: "Point of View",
+        body: [
+            { type: "p", text: "That used to be true. Bill Bernbach said it as plainly as anyone ever has: \"A great ad campaign will make a bad product fail faster. It will get more people to know it's bad.\"" },
+            { type: "p", text: "When I came up in this business, that principle was pretty universally understood. Not because agencies were saints (we were not), but because it was demonstrably, financially true. The feedback loop between promise and experience was short. Tell people your car is reliable and it isn't? They find out. Tell people your restaurant is exceptional and the food is mediocre? The reservation book thins out. Reality had consequences." },
+            { type: "p", text: "Here's what I believed for most of my career: the internet would make that loop even tighter. Reviews travel at light speed now. Everyone can see everything. Surely, I thought, we were entering the golden age of accountability. Bernbach's principle, supercharged." },
+            { type: "p", text: "Let me tell you about my wife's sewing pattern. She bought a digital pattern that happened to originate in England, which required printing on A4 paper. Not exotic. Just A4. The Office Depot website said they had it. She drove to the store. The store said, oh, that's online only. Fine. She went to the Staples website, which said it needed to be ordered online. A step in the right direction, technically. She ordered it, shipped to store. She drove to the store to pick it up, opened the box, and found a calendar. A calendar." },
+            { type: "p", text: "To make a long story longer: she eventually walked out with two free reams of A4 paper and thirty-five dollars in store coupons. Which sounds like a happy ending until you notice what it actually was. Nobody fixed anything. Nobody seemed surprised. The apology machine worked flawlessly. The fulfillment machine, the thing the entire business allegedly exists to do, had failed three times in a row, and the institutional response was: here are some coupons. No. One. Cared." },
+            { type: "p", text: "And here's the part that would genuinely puzzle Bernbach: none of it matters. Staples spends heavily on advertising. The ads run. The stores stay open. The feedback moves at light speed, exactly as promised, and it changes nothing, because somewhere along the way large companies discovered they don't actually have to close the gap between promise and experience. They just have to budget for it. Free reams and coupons are cheaper than fixing the fulfillment system. The failure isn't a crisis. It's a line item." },
+            { type: "p", text: "So I have to amend the old adage. It turns out you can, in fact, market an operationally unsound business. Indefinitely, apparently, at sufficient scale and ad spend. Bernbach assumed a bad experience would kill the brand faster. What actually happened is that brands learned to price in the bad experience." },
+            { type: "p", text: "Which changes the question. It's no longer \"can you get away with it?\" Clearly you can. The question is whether you want to be that kind of company. Because the inverse is still true, and it's still the greatest competitive weapon available: a business whose operations actually deliver what its marketing promises is rare enough now to be remarkable. Literally. People remark on it." },
+            { type: "p", text: "The truth used to be mandatory. Now it's a strategy. Very few are using it. The campaigns I remember most were the ones that were already true before they ran." }
+        ]
+    },
+
+    // 5. Gap No. 3 — phone tree
     {
         slug: "your-call-is-important-to-us",
         title: "\"Your call is important to us.\"",
         dek: "It's not, though. The automated phone system wasn't designed to help you. It was designed to help the company manage the cost of helping you.",
-        date: "June 2, 2025",
-        dateIso: "2025-06-02",
         readTime: "4 min",
         category: "Gap Series",
         series: "Gap Series",
-        seriesLabel: "Gap Series · Post 05",
+        seriesLabel: "Gap Series · No. 3",
         body: [
             { type: "p", text: "It's not, though. And everyone on both ends of the line knows it. The automated phone system wasn't designed to help you. It was designed to help the company manage the cost of helping you. Within that constraint, the system is optimized to resolve your issue without involving anyone who earns a salary." },
             { type: "p", text: "You know the architecture. We've all memorized it. Press 1 for billing. Press 2 for technical support. Press 4 for all other inquiries. Say or press the number that best describes your issue. I'm sorry, I didn't catch that. Your estimated wait time is currently longer than you are willing to tolerate." },
@@ -129,16 +113,16 @@ export const writing = [
             { type: "p", text: "This is how most brand erosion actually happens. Not in a scandal. Not in a product failure. In a phone tree. In a chatbot that says it can help. In hold music that plays the same thirty seconds of acoustic guitar until the caller gives up. \"Your call is important to us\" isn't a lie, exactly. It's a promise the rest of the system hasn't read." }
         ]
     },
+
+    // 6. Gap No. 4 — cancel anytime
     {
         slug: "cancel-anytime",
         title: "Cancel anytime. (Terms and conditions apply.)",
         dek: "\"Cancel anytime\" is technically true in the same way that \"some assembly required\" is technically true for flat-pack furniture that takes four hours.",
-        date: "June 9, 2025",
-        dateIso: "2025-06-09",
         readTime: "4 min",
         category: "Gap Series",
         series: "Gap Series",
-        seriesLabel: "Gap Series · Post 06",
+        seriesLabel: "Gap Series · No. 4",
         body: [
             { type: "p", text: "\"Cancel anytime\" is technically true in the same way that \"some assembly required\" is technically true for flat-pack furniture that takes four hours, two people, and a YouTube tutorial. The statement is accurate. The experience it implies is not." },
             { type: "p", text: "I've been through some version of this with several platforms now. Names withheld, because I'm being polite, and because it genuinely doesn't matter which ones. The flow is nearly identical everywhere, which is rather the point." },
@@ -148,16 +132,33 @@ export const writing = [
             { type: "p", text: "You experience both. You signed up because the promise was reassuring. You're canceling because the experience eventually fell short of whatever brought you in. And somewhere in the seven-step exit, you form a view of the company that no subsequent marketing will revise. Cancel anytime. Assuming you have the time." }
         ]
     },
+
+    // 7. PoV — CX religion
+    {
+        slug: "cx-became-a-religion",
+        title: "CX became a religion. The pews are full. The building is still on fire.",
+        dek: "Customer experience became a measurement function instead of an operational one. You can measure your way to a diagnosis. You cannot measure your way to a cure.",
+        readTime: "4 min",
+        category: "Point of View",
+        seriesLabel: "Point of View",
+        body: [
+            { type: "p", text: "Customer experience is one of the most elaborately theorized and least practically improved disciplines in modern business. There are frameworks. Certifications. Conferences where people who study customer experience present to other people who study customer experience about how important customer experience is. There are NPS scores measured quarterly, reviewed in decks, discussed in all-hands meetings. And the bad customer experience remains." },
+            { type: "p", text: "Here's what I think happened. Customer experience became a measurement function instead of an operational one. The industry built an enormous apparatus for understanding how customers feel and a surprisingly modest apparatus for changing what customers encounter. Journey mapping workshops produce funnel diagrams, workflows, automations, spreadsheets, metrics, and new data points, all artifacts that go into a deck. And the deck gets filed." },
+            { type: "p", text: "Some of it is structural. The people who measure customer sentiment report to different leadership than the people whose operational decisions create that sentiment. An NPS score drops from 32 to 28. A meeting is convened. Action items are produced. The action items go to people with other priorities. The score goes to 25. Another meeting is convened. You can see where this is headed, and it is not toward the customer." },
+            { type: "p", text: "Some of it is that CX made its home in the service layer. It concerned itself with how interactions felt rather than how systems worked. Training your customer-facing people to be warmer and more sympathetic, while leaving intact the phone tree that exhausted the customer before they got to those people, is a very expensive way to not solve the problem." },
+            { type: "p", text: "The companies that actually close the gap aren't the ones with the most sophisticated measurement programs. They're the ones where someone with authority looked at the customer journey from the outside and asked one question: would I accept this? And then changed the thing. Not the measurement of the thing. You can measure your way to an accurate diagnosis. You cannot measure your way to a cure." }
+        ]
+    },
+
+    // 8. Gap No. 5 — touchscreens
     {
         slug: "engineering-precision-three-taps",
         title: "Engineering. Precision. Three taps to defrost your windshield.",
         dek: "The knob never asked for any of this. The knob had a position that corresponded to an outcome. The touchscreen is solving a different problem: how to make the interior look like the bridge of a spacecraft.",
-        date: "June 23, 2025",
-        dateIso: "2025-06-23",
         readTime: "4 min",
         category: "Gap Series",
         series: "Gap Series",
-        seriesLabel: "Gap Series · Post 07",
+        seriesLabel: "Gap Series · No. 5",
         body: [
             { type: "p", text: "Let me be clear up front: I've no ideological commitment to knobs. Knobs are not inherently superior to touchscreens in any principled sense. What I'm committed to is a simpler idea: a control should be easier to use than the thing it controls." },
             { type: "p", text: "The great automotive touchscreen consolidation has produced vehicles where the climate control, the seat heaters, the mirror adjustment, and in some cases the windshield defroster all live inside a central display. One that requires the driver to look away from the road, navigate a menu, and tap a precise location on a sheet of glass. While the car is moving." },
@@ -167,16 +168,16 @@ export const writing = [
             { type: "p", text: "Picture it. Snowstorm. Visibility dropping. Both hands needed. And somewhere in there, a driver hunting through a submenu for the defroster." }
         ]
     },
+
+    // 9. Gap No. 6 — loyalty
     {
         slug: "loyalty-program-that-rewards-everyone-except-loyal-customers",
         title: "The loyalty program that rewards everyone except loyal customers.",
         dek: "A data collection mechanism wearing a thank-you note as a costume. The welcome discount is the actual function. The data collection is the actual product.",
-        date: "June 30, 2025",
-        dateIso: "2025-06-30",
         readTime: "6 min",
         category: "Gap Series",
         series: "Gap Series",
-        seriesLabel: "Gap Series · Post 08",
+        seriesLabel: "Gap Series · No. 6",
         body: [
             { type: "p", text: "The premise of a loyalty program is sound. Customers who return repeatedly are worth more than customers who appear once and vanish. Rewarding them makes sense as both a thank-you and an incentive. Simple math, sound logic." },
             { type: "p", text: "What happened between the premise and the execution is one of the more complete bait-and-switches in modern marketing. The contemporary loyalty program is, in most cases, a data collection mechanism wearing a thank-you note as a costume. The points are real in the sense that they exist in a database. They're not real in the sense that they can be exchanged for anything you'd actually want without years of accumulation. The reward that requires 47,000 points for a free appetizer isn't a joke. It's a calibration. The math was done. The number was chosen because most people won't reach it. Or will reach it, find the redemption process inconvenient, and let the points expire. Which they do. On a schedule disclosed in the terms and conditions nobody reads." },
@@ -186,16 +187,16 @@ export const writing = [
             { type: "p", text: "We're both \"members.\" The loyalty program became an acquisition tool that calls itself a retention tool, because retention sounds more valuable to the CFO. The welcome discount is the actual function. The data collection is the actual product. Loyalty, in the original sense, was something a company earned. The program uses the word to describe something a customer signs up for." }
         ]
     },
+
+    // 10. Gap No. 7 — Trader Joe's
     {
         slug: "one-company-that-got-it-right",
         title: "One company that got it right. It's worth noting when it happens.",
         dek: "Trader Joe's has that reputation. The story hasn't changed in a decade, which is itself the point. Closing the gap isn't a messaging challenge. It's an operational design challenge.",
-        date: "July 14, 2025",
-        dateIso: "2025-07-14",
         readTime: "4 min",
         category: "Gap Series",
         series: "Gap Series",
-        seriesLabel: "Gap Series · Post 09",
+        seriesLabel: "Gap Series · No. 7",
         body: [
             { type: "p", text: "This series has spent a few months poking at the gap between what companies promise and what they deliver. Fair is fair: the gap isn't universal. There are companies where the promise and the experience are the same thing, where someone upstream made a decision that cost more and served the customer better, and where that decision shows up at every point of contact." },
             { type: "p", text: "Trader Joe's has that reputation. Full disclosure: I haven't set foot in one in over a decade (there isn't one near me) so I'm reporting from years of past firsthand experience and from what people I trust consistently say. The story hasn't changed in all that time, which is itself the point." },
@@ -204,15 +205,15 @@ export const writing = [
             { type: "p", text: "That's the lesson. Closing the gap isn't a messaging challenge. It's an operational design challenge. The question isn't how to describe the experience better. It's how to build the systems that produce the experience you want people to have. Get that right and the marketing almost writes itself. The customers become the marketing. The stores are full." }
         ]
     },
+
+    // 11. PoV — AI (hands off to Discernment)
     {
         slug: "ai-hasnt-made-marketing-cheaper",
         title: "AI hasn't made marketing cheaper. It's made bad strategy faster.",
         dek: "Volume was never the constraint. What AI has actually done is reduce the cost of executing a bad strategy to nearly zero.",
-        date: "July 21, 2025",
-        dateIso: "2025-07-21",
         readTime: "5 min",
         category: "Point of View",
-        seriesLabel: "Post 10 · Point of View",
+        seriesLabel: "Point of View",
         body: [
             { type: "p", text: "There's a version of the AI conversation in marketing that goes like this: content is now essentially free, distribution is essentially free, and any company willing to invest in the tooling can produce the volume that used to require a whole team. All true." },
             { type: "p", text: "It's also a description of a problem dressed up as a solution. Volume was never the constraint. The constraint was always the question that precedes volume: what should we be saying, to whom, and why does it matter to them? That question isn't answerable by a language model that hasn't studied your business, doesn't know your customers, and has no stake in the outcome." },
@@ -224,13 +225,11 @@ export const writing = [
     }
 ];
 
-// Sorted newest-first for the index page.
-export const writingSorted = [...writing].sort(
-    (a, b) => new Date(b.dateIso) - new Date(a.dateIso)
-);
+// Release order — used for site navigation, prev/next, and RSS.
+// (No dates in this project; sequencing is intentional.)
+export const writingSorted = writing;
 
 export const writingBySlug = (slug) => writing.find((w) => w.slug === slug);
 
-export const gapSeries = writing
-    .filter((w) => w.series === "Gap Series")
-    .sort((a, b) => new Date(a.dateIso) - new Date(b.dateIso));
+// Gap Series in release order (intro + No. 1 → No. 7).
+export const gapSeries = writing.filter((w) => w.series === "Gap Series");

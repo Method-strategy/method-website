@@ -33,6 +33,14 @@ export default function Writing() {
                                 and the gap between what companies promise and
                                 what they actually deliver.
                             </p>
+                            <a
+                                href="/writing/rss.xml"
+                                data-testid="writing-rss"
+                                className="nav-link mt-6 inline-flex items-baseline gap-2 text-[0.78rem] tracking-[0.22em] uppercase font-medium text-navy/70"
+                            >
+                                <span>Subscribe · RSS</span>
+                                <span aria-hidden="true">→</span>
+                            </a>
                         </RevealItem>
                     </RevealStagger>
                 </div>
@@ -92,13 +100,13 @@ export default function Writing() {
                 </div>
             </section>
 
-            {/* Featured (most recent) */}
+            {/* Featured (Start here — the Intro) */}
             <section
                 data-testid="writing-featured"
                 className="row-full-loose border-t border-navy/15 bg-cream"
             >
                 <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-16 md:py-24">
-                    <div className="eyebrow text-navy/60 mb-8">Latest</div>
+                    <div className="eyebrow text-navy/60 mb-8">Start here</div>
                     <RevealStagger>
                         <RevealItem>
                             <Link
@@ -113,7 +121,7 @@ export default function Writing() {
                                         </span>
                                     </div>
                                     <div className="lg:col-span-8">
-                                        <h2 className="serif italic text-3xl md:text-5xl lg:text-[3.5rem] font-normal leading-[1.05] text-navy transition-colors duration-300 group-hover:text-steel">
+                                        <h2 className="serif italic text-3xl md:text-5xl lg:text-[3.5rem] font-normal leading-[1.14] text-navy transition-colors duration-300 group-hover:text-steel">
                                             {feature.title}
                                         </h2>
                                         <p className="prose-method max-w-2xl mt-6">
@@ -121,9 +129,6 @@ export default function Writing() {
                                         </p>
                                     </div>
                                     <div className="lg:col-span-2 lg:text-right">
-                                        <div className="eyebrow text-navy/55 mb-2">
-                                            {feature.date}
-                                        </div>
                                         <span className="nav-link text-[0.82rem] tracking-[0.18em] uppercase font-medium text-navy">
                                             Read →
                                         </span>
@@ -135,13 +140,13 @@ export default function Writing() {
                 </div>
             </section>
 
-            {/* Archive list */}
+            {/* Archive list — release order */}
             <section
                 data-testid="writing-list"
                 className="row-full-loose border-t border-navy/15"
             >
                 <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-12 md:py-16">
-                    <div className="eyebrow text-navy/60 mb-8">Archive</div>
+                    <div className="eyebrow text-navy/60 mb-8">The Series</div>
                     <RevealStagger
                         as="ul"
                         className="divide-y divide-navy/15 border-t border-b border-navy/15"
@@ -158,14 +163,11 @@ export default function Writing() {
                                     <div className="grid grid-cols-12 gap-4 md:gap-8 items-start">
                                         <div className="col-span-12 md:col-span-2">
                                             <div className="eyebrow text-navy/55">
-                                                {w.category}
-                                            </div>
-                                            <div className="text-sm text-navy/55 mt-2 tracking-wide">
-                                                {w.date}
+                                                {w.seriesLabel || w.category}
                                             </div>
                                         </div>
                                         <div className="col-span-12 md:col-span-8">
-                                            <h3 className="serif italic text-2xl md:text-3xl font-normal leading-[1.15] text-navy transition-colors duration-300 group-hover:text-steel">
+                                            <h3 className="serif italic text-2xl md:text-3xl font-normal leading-[1.18] text-navy transition-colors duration-300 group-hover:text-steel">
                                                 {w.title}
                                             </h3>
                                             <p className="prose-method max-w-2xl mt-4">

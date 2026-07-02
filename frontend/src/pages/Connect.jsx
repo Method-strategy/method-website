@@ -18,15 +18,16 @@ export default function Connect() {
 
                         <RevealItem className="lg:col-span-8">
                             <h1
-                                className="serif italic font-normal text-4xl md:text-6xl lg:text-[5rem] leading-[1.05] text-cream"
-                                style={{ letterSpacing: "-0.005em" }}
+                                className="wordmark text-5xl md:text-7xl lg:text-[6rem] leading-[0.92] tracking-tight text-cream"
                                 data-testid="connect-headline"
                             >
                                 If the fit is right,
                                 <br />
                                 we're worth
                                 <br />
-                                a conversation.
+                                <span className="serif italic font-normal text-steel">
+                                    a conversation.
+                                </span>
                             </h1>
                         </RevealItem>
 

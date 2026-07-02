@@ -1,7 +1,7 @@
 [build]
   # Repo is monorepo-style. React app lives in /frontend.
   base    = "frontend"
-  command = "yarn install && yarn build && node scripts/strip-emergent.js && node scripts/prerender-og.js && node scripts/generate-sitemap.js"
+  command = "yarn install && yarn build && node scripts/strip-emergent.js && node scripts/prerender-og.js && node scripts/generate-sitemap.js && node scripts/generate-rss.js"
   publish = "build"
 
 [build.environment]

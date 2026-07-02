@@ -1,0 +1,36 @@
+{
+  "summary": "Frontend polish sweep verification: post release order, No.-numbering, date removal, Connect H1 Scandia font, h2.wordmark line-height 1.06, tab titles, RSS link, and 0 console errors. Nearly all criteria pass. Two minor issues found: Discernment page tab title not updated (falls back to Home default), and /writing/rss.xml preview URL returns SPA HTML fallback (not the built XML). Also noted: ShareRow not detected on work detail pages (only Save as PDF present).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Discernment page (useDocumentTitle)", "issue": "document.title on /discernment is 'Method — Clarifying how you show up in the market.' (same as Home default) — useDocumentTitle hook is not being invoked on Discernment.jsx, so tab title does not update on navigation to /discernment.", "selector": "document.title on /discernment", "priority": "LOW"},
+      {"component": "WorkDetail ShareRow", "issue": "No 'Share' UI or 'Copy link' control detected on /work/manufacturing-performance or /work/medtech — only 'Save as PDF' is rendered. Requirement calls for ShareRow + Save as PDF. Verify whether ShareRow was intentionally removed or is missing.", "selector": "[data-testid*='share'], .share*", "priority": "LOW"}
+    ],
+    "integration_issues": [
+      {"flow": "RSS feed", "issue": "GET /writing/rss.xml returns HTTP 200 with Content-Type text/html (SPA index.html fallback) in the preview environment, not the built RSS XML. The subscribe link on /writing correctly points to /writing/rss.xml, and generate-rss.js exists — this is presumably a Netlify build artifact that only materialises on production deploy. Confirm the Netlify build step runs scripts/generate-rss.js and emits public/writing/rss.xml. In the current preview, the feed URL will not validate as RSS.", "affected_selectors": ["[data-testid='writing-rss']"]}
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Invoke useDocumentTitle('Discernment — Method') (or similar) in Discernment.jsx so the browser tab title updates on that route.",
+    "Confirm ShareRow component render on /work/:slug pages, or explicitly document that only Save-as-PDF is exposed there.",
+    "Ensure Netlify build runs scripts/generate-rss.js and writes /public/writing/rss.xml so the feed is served as application/rss+xml in production (preview currently returns SPA HTML)."
+  ],
+  "critical_code_review_comments": [
+    "All 11 writing posts render in the EXACT required release order on /writing (intro → No.1 MWCC → No.2 wrap-rage → PoV Bernbach → No.3 → No.4 → PoV CX → No.5 → No.6 → No.7 → PoV AI). ✓",
+    "No dates leak into UI anywhere — checked with month-name regex and ISO-date regex on /writing and /writing/wrap-rage; zero matches. ✓",
+    "Gap Series eyebrows use 'Gap Series · No. N' consistently; PoV posts show 'Point of View' with no chapter number. ✓",
+    "wrap-rage bottom series list contains Intro + No. 1..No. 7 (8 entries; current post shows 'Reading' badge in place of No. 2, which is expected). ✓",
+    "Connect H1 [data-testid='connect-headline'] computed fontFamily = 'scandia-web, scandia, Manrope, ...' weight 800; italic accent 'a conversation.' is Cormorant Garamond italic in steel-blue rgb(90,125,154). ✓",
+    "h2.wordmark computed line-height / font-size ratio is 1.06 on Home, Writing, About, and Discernment — well within the 0.95–1.10 acceptable range and no longer the broken 0.71. ✓",
+    "Zero JavaScript console errors across Home, Writing, WritingDetail (x4), Connect, About, Work, Work detail (x2), Discernment. ✓",
+    "Tab titles update correctly via useDocumentTitle on /, /writing, /writing/*, /connect, /about, /work, /work/* — EXCEPT /discernment which still shows Home default."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "94%"},
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Static SPA at https://method-positioning.preview.emergentagent.com. Post order, numbering, date removal, Connect Scandia H1, and h2.wordmark leading (1.06) are all verified good. Only outstanding gaps: (1) /discernment document.title not overridden, (2) RSS xml only exists as build artifact on production Netlify, (3) ShareRow apparently missing/not detected on /work/* detail pages."
+}

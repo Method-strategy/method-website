@@ -56,8 +56,6 @@ export default function WritingDetail() {
                         <div className="mt-8 text-navy/60 text-sm md:text-base tracking-wide flex flex-wrap items-center gap-x-6 gap-y-2">
                             <span>By Gary Hopkins</span>
                             <span className="w-px h-4 bg-navy/25 hidden sm:inline-block" />
-                            <span>{post.date}</span>
-                            <span className="w-px h-4 bg-navy/25 hidden sm:inline-block" />
                             <span>{post.readTime} read</span>
                         </div>
                     </RevealItem>
@@ -152,7 +150,7 @@ export default function WritingDetail() {
                                                 {p.title}
                                             </span>
                                             <span className="col-span-2 text-right text-navy/55 text-xs md:text-sm tracking-wide">
-                                                {active ? "Reading" : p.date.split(",")[0]}
+                                                {active ? "Reading" : (i === 0 ? "Intro" : `No. ${i}`)}
                                             </span>
                                         </Link>
                                     </li>
@@ -230,10 +228,7 @@ export default function WritingDetail() {
                                     <div className="grid grid-cols-12 gap-4 md:gap-8 items-start">
                                         <div className="col-span-12 md:col-span-2">
                                             <div className="eyebrow text-navy/55">
-                                                {w.category}
-                                            </div>
-                                            <div className="text-sm text-navy/55 mt-2">
-                                                {w.date}
+                                                {w.seriesLabel || w.category}
                                             </div>
                                         </div>
                                         <div className="col-span-12 md:col-span-8">

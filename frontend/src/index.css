@@ -114,11 +114,11 @@ body {
     line-height: 0.85;
 }
 
-/* H2 subheads use Scandia at display sizes but need openable editorial leading
+/* H2 subheads use Scandia at display sizes but need a small breath of leading
      so ascenders/descenders don't collide across lines. Scoped selector wins over
      Tailwind's `text-3xl`/`md:text-4xl` bundled line-height (specificity 0,1,1 > 0,1,0). */
 h2.wordmark {
-    line-height: 1.15;
+    line-height: 1.06;
 }
 
 /* Eyebrow — small tracked caps in Scandia. Signage moments only. */
@@ -276,7 +276,7 @@ h2.wordmark {
     font-family: "Cormorant Garamond", serif;
     font-weight: 400;
     font-size: clamp(1.75rem, 3.4vw, 2.75rem);
-    line-height: 1.22;
+    line-height: 1.15;
     letter-spacing: -0.008em;
     color: #13243d;
 }
@@ -295,7 +295,7 @@ h2.wordmark {
     font-style: italic;
     font-weight: 400;
     font-size: clamp(1.5rem, 2.6vw, 2rem);
-    line-height: 1.28;
+    line-height: 1.18;
     letter-spacing: -0.005em;
     color: #5A7D9A;
 }
