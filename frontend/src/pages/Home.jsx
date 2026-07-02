@@ -50,7 +50,7 @@ export default function Home() {
                             </div>
                         </RevealItem>
                         <RevealItem className="lg:col-span-9 lg:col-start-4">
-                            <h2 className="wordmark text-3xl md:text-4xl lg:text-[3rem] xl:text-[3.5rem] leading-[1.05] tracking-tight text-navy">
+                            <h2 className="wordmark text-3xl md:text-4xl lg:text-[3rem] xl:text-[3.5rem] leading-[1.12] tracking-tight text-navy">
                                 Most B2B firms are better
                                 <br />
                                 than their market presence
@@ -93,7 +93,7 @@ export default function Home() {
                             <div className="eyebrow text-navy/60 mb-6">
                                 The Model
                             </div>
-                            <h2 className="wordmark text-4xl md:text-5xl lg:text-[3.5rem] leading-[0.95] tracking-tight">
+                            <h2 className="wordmark text-4xl md:text-5xl lg:text-[3.5rem] leading-[1.05] tracking-tight">
                                 A practice
                                 <br />
                                 built around
@@ -141,7 +141,7 @@ export default function Home() {
                             <div className="eyebrow text-navy/60 mb-6">
                                 Who We Work With
                             </div>
-                            <h2 className="wordmark text-4xl md:text-5xl lg:text-[3.25rem] leading-[0.98] tracking-tight">
+                            <h2 className="wordmark text-4xl md:text-5xl lg:text-[3.25rem] leading-[1.05] tracking-tight">
                                 B2B firms that
                                 <br />
                                 have outgrown a

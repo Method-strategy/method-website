@@ -49,7 +49,7 @@ export default function Writing() {
                             <div className="eyebrow text-cream/60 mb-6">
                                 The Gap Series · Ongoing
                             </div>
-                            <h2 className="wordmark text-4xl md:text-5xl lg:text-[3.5rem] leading-[1] tracking-tight text-cream">
+                            <h2 className="wordmark text-4xl md:text-5xl lg:text-[3.5rem] leading-[1.05] tracking-tight text-cream">
                                 Most brand damage
                                 <br />
                                 doesn't happen

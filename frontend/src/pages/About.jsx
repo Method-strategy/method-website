@@ -129,7 +129,7 @@ export default function About() {
                             <div className="eyebrow text-navy/60 mb-6">
                                 Founder & Principal
                             </div>
-                            <h2 className="wordmark text-4xl md:text-5xl lg:text-[3.5rem] leading-[0.98] tracking-tight">
+                            <h2 className="wordmark text-4xl md:text-5xl lg:text-[3.5rem] leading-[1.05] tracking-tight">
                                 Gary
                                 <br />
                                 Hopkins.

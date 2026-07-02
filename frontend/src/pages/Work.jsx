@@ -67,7 +67,7 @@ export default function Work() {
                             <div className="eyebrow text-navy/60 mb-4">
                                 What we do
                             </div>
-                            <h2 className="wordmark text-3xl md:text-4xl lg:text-5xl leading-[1] tracking-tight">
+                            <h2 className="wordmark text-3xl md:text-4xl lg:text-5xl leading-[1.08] tracking-tight">
                                 The full range
                                 <br />
                                 of the CMO

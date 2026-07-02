@@ -1,0 +1,42 @@
+{
+  "summary": "Frontend-only smoke + typography QA across Home, Work, About, Writing, Discernment, Connect, WorkDetail, WritingDetail. All 8 pages load with 0 console errors, LinkedIn footer link present, ShareRow + SaveAsPdf render on detail pages. HOWEVER: the recently applied 'looser leading' fix on H2 subheads did NOT take effect on the Home page hero subhead (and Discernment page, which reuses the same block). Computed line-height on the hero subhead is 40px against a 56px font — that is negative/cramped leading, the exact 'characters colliding with line above' issue the user complained about.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Home.jsx (and Discernment.jsx which mirrors the same block)",
+        "issue": "First hero subhead H2 ('Most B2B firms are better than their market presence suggests.') has computed line-height: 40px on font-size: 56px at xl breakpoint. That is cramped leading (<1.0) — dot of 'i', ascenders, and descenders will collide across lines. The other H2 subheads on Home compute at lh==fs (1.0), which is also very tight but not colliding. RCA: the class list is `wordmark text-3xl md:text-4xl lg:text-[3rem] xl:text-[3.5rem] leading-[1.12] tracking-tight text-navy`. Tailwind's `md:text-4xl` utility bundles `line-height: 2.5rem` (40px), which overrides the non-responsive `leading-[1.12]` at md/lg/xl breakpoints (specificity tie; utility declared later in the cascade wins). The `xl:text-[3.5rem]` arbitrary utility only sets font-size, not line-height, so the 40px bundled from md:text-4xl sticks even though font-size grows to 56px. Additionally, `.wordmark { line-height: 0.85 }` in index.css is a competing default. Fix: use responsive leading utilities that match every breakpoint that changes font-size, e.g. `leading-[1.12] md:leading-[1.15] lg:leading-[1.15] xl:leading-[1.15]`, or switch font-size utilities to arbitrary values that don't bundle line-height (e.g. `text-[1.875rem] md:text-[2.25rem]`), or add `!important` (`!leading-[1.15]`). Same pattern likely to appear on any H2 that mixes `md:text-4xl` / `text-3xl` (which bundle lh) with `xl:text-[...]` arbitrary sizes.",
+        "selector": "main h2.wordmark (first hero subhead on / and /discernment)",
+        "priority": "HIGH"
+      },
+      {
+        "component": "Home.jsx / Work.jsx / About.jsx H2 subheads (secondary)",
+        "issue": "H2s using `lg:text-[3.5rem] leading-[1.05]` (e.g. 'A practice built around strategic depth, not headcount.') compute to lh==fs (56px/56px, 52px/52px, 48px/48px, 72px/72px) — i.e. exactly 1.0. This is workable for Scandia display but still on the tight side; user asked for 'opened up' leading. Recommend bumping to `leading-[1.1]` to `leading-[1.15]` sitewide for editorial breathing room. Note: `.wordmark { line-height: 0.85 }` in /app/frontend/src/index.css is the default that's fighting Tailwind's arbitrary leading classes.",
+        "selector": "h2.wordmark across Home, Work, About",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Home / Discernment", "issues": ["Hero subhead 'Most B2B firms are better than their market presence suggests.' visibly cramped due to 40px line-height on 56px font — the exact bug the user flagged"]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Fix the H2 leading override on the first hero subhead of Home.jsx (and Discernment.jsx if it mirrors) so `leading-[1.12]`/`leading-[1.15]` actually applies at md/lg/xl breakpoints. Options: (a) add responsive leading utilities `md:leading-[1.15] lg:leading-[1.15] xl:leading-[1.15]`, (b) replace Tailwind size utilities with arbitrary values (`text-[3.5rem]`) so no line-height is bundled, (c) use `!leading-[1.15]` with important prefix, (d) override `.wordmark` line-height in index.css to a higher value and let per-element utilities tighten as needed.",
+    "Consider a sitewide `h2.wordmark { line-height: 1.12 }` (or similar) in index.css scoped to non-print media to prevent the Tailwind text-utility line-height bundling from leaking through elsewhere.",
+    "After fix, re-verify computed line-height on the first Home h2 is > font-size (e.g. 62.7px on 56px)."
+  ],
+  "critical_code_review_comments": [
+    "index.css `.wordmark { line-height: 0.85 }` is the root default and is aggressively tight; every H2 has to fight it, which is why the leading pass is inconsistent.",
+    "Mixing bundled Tailwind size utilities (`text-3xl`, `md:text-4xl`) with arbitrary-size utilities (`lg:text-[3rem]`, `xl:text-[3.5rem]`) is fragile because the bundled ones carry line-height and the arbitrary ones don't — creates unpredictable leading across breakpoints.",
+    "Home.jsx and Discernment.jsx appear to duplicate the hero H2 block — extract to a shared component so leading fixes propagate in one place."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (skipped per request)", "frontend": "80% — all pages render and no console errors, but the specific leading regression the user complained about is still present on Home/Discernment hero subhead"},
+  "seed_data_creation": "none",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Static React SPA at https://method-positioning.preview.emergentagent.com/. No backend. All 6 top-level routes + WorkDetail (/work/manufacturing-performance) + WritingDetail (/writing/the-gap-series-introduction) tested and load cleanly with 0 console errors. LinkedIn link present on /connect. SaveAsPdf + ShareRow render on detail pages. Focus of any re-test: computed line-height on first H2 of Home (and Discernment) — should be > 56px (font-size), currently 40px. Use page.evaluate to read getComputedStyle(h2).lineHeight to verify.",
+  "rca of the issue": "Tailwind size utilities `text-3xl`/`md:text-4xl` inject bundled `line-height: 2.5rem` (40px). At the xl breakpoint the class list bumps font-size to 3.5rem (56px) via an arbitrary utility that carries no line-height, but the 40px bundled from `md:text-4xl` persists and beats the earlier-declared `leading-[1.12]` in the cascade. Result: 56px font on 40px line — descenders collide with next line's ascenders/dots. Fix by either dropping the bundled utilities in favor of arbitrary sizes only, or by adding responsive `leading-[..]` utilities at every breakpoint that changes size, or by making `.wordmark`/H2 leading in index.css authoritative."
+}
