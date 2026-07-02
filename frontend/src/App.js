@@ -11,9 +11,11 @@ import Writing from "@/pages/Writing";
 import WritingDetail from "@/pages/WritingDetail";
 import Connect from "@/pages/Connect";
 import Discernment from "@/pages/Discernment";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 function Shell() {
     const { pathname } = useLocation();
+    useDocumentTitle();
     // Pages whose FIRST band is navy — nav needs a light color from the start.
     const navyStart = pathname === "/" || pathname === "/connect";
     const hideFooter = pathname === "/connect";
