@@ -25,7 +25,7 @@ export default function Home() {
                             </h1>
                             <p
                                 data-testid="home-hero-subhead"
-                                className="emphasis-line max-w-sm mt-8 md:mt-10 pt-6 border-t border-cream/20"
+                                className="pull max-w-md mt-8 md:mt-10 pt-6 border-t border-cream/20"
                             >
                                 A strategic marketing practice nearly forty
                                 years in the making.
