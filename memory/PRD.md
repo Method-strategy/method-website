@@ -48,7 +48,16 @@ Marketing website for Method, a strategic marketing practice (fractional CMO-lev
 
 - **Sitewide typographic OG image (2026-02)**: `/app/frontend/public/og-default.jpg` (1200×630, 64 KB) — real Scandia display + Cormorant italic "show up" in steel blue, on navy, with wordmark + eyebrow + hairline divider + domain in the corner. Rendered from an HTML template via Playwright/Chromium so real Typekit + Google fonts are baked in as pixels. No stock photography (per client's "images are a bit of a trap" instruction).
 
-- **Sitemap + robots.txt (2026-02)**: `/app/frontend/scripts/generate-sitemap.js` emits `build/sitemap.xml` (19 URLs, per-route lastmod using each post's `dateIso`, changefreq + priority tuned for a marketing site) and `build/robots.txt` referencing the sitemap. Auto-discovers new writing posts on every build.
+- **Sitemap + robots.txt (2026-02)**: `/app/frontend/scripts/generate-sitemap.js` emits `build/sitemap.xml` (19 URLs, tuned changefreq + priority) and `build/robots.txt` referencing the sitemap. Auto-discovers new writing posts on every build.
+
+## Session 2026-02 (part 2) — Editorial finalize
+- **Blog dates removed everywhere.** `writing.js` posts no longer carry `date` / `dateIso` — sequencing is now array-order only. `Writing.jsx` and `WritingDetail.jsx` stripped of every date-rendering hook. Sitemap uses build day for `lastmod`, RSS uses staggered per-post pub dates around build time.
+- **Release order + Gap Series renumbering.** New canonical order: Intro → Gap No. 1 (perforations) → No. 2 (wrap rage) → PoV Bernbach → No. 3 (phone tree) → No. 4 (cancel anytime) → PoV CX religion → No. 5 (touchscreens) → No. 6 (loyalty) → No. 7 (Trader Joe's) → PoV AI (closer, hands off to Discernment). Gap Series eyebrows now read "Gap Series · No. 1..7"; PoV posts show "Point of View" with no number. Verified by testing agent iteration 14.
+- **Line-spacing dialed back.** Sitewide `h2.wordmark { line-height: 1.06 }` (was 1.15 — too open). `.lede` → 1.15 (was 1.22). `.pull` → 1.18 (was 1.28). All Writing-page featured/archive H2s trimmed to `leading-[1.14]` / `leading-[1.18]` inline overrides. Verified no character collisions on any breakpoint.
+- **Connect H1 fixed** to use `wordmark` (Scandia display) with a Cormorant italic accent line ("*a conversation.*" in steel blue), matching the site's H1 pattern. Was serif-only, which broke the "Scandia for display" typography rule.
+- **RSS feed.** `/app/frontend/scripts/generate-rss.js` emits `build/writing/rss.xml` (11 items, full HTML in `content:encoded`, staggered pub dates, LinkedIn Newsletter–compatible). "Subscribe · RSS" link added to Writing opener.
+- **ShareRow on WorkDetail.** Case study detail pages now render the same LinkedIn/X/Email/Copy-link share row + Save-as-PDF row as writing posts. Was missing per the testing agent's iteration-14 gap analysis.
+- **Netlify build chain**: `yarn install && yarn build && strip-emergent → prerender-og → generate-sitemap → generate-rss`.
 
 ## Prioritized Backlog
 

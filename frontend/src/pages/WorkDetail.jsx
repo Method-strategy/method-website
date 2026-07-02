@@ -1,6 +1,7 @@
 import { Link, useParams, Navigate } from "react-router-dom";
 import { caseStudyBySlug, caseStudies } from "../data/caseStudies";
 import SaveAsPdfLink from "../components/SaveAsPdfLink";
+import ShareRow from "../components/ShareRow";
 
 export default function WorkDetail() {
     const { slug } = useParams();
@@ -124,6 +125,28 @@ export default function WorkDetail() {
                                     <p key={i}>{p}</p>
                                 ))}
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Actions row — share + save the case study */}
+            <section
+                data-print-hide="true"
+                className="border-t border-navy/15 bg-cream"
+            >
+                <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-10 md:py-14">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-6 gap-x-8 items-center">
+                        <div className="lg:col-span-8 lg:col-start-5 flex flex-wrap items-center justify-between gap-4">
+                            <ShareRow
+                                title={cs.title}
+                                testidPrefix="work-share"
+                            />
+                            <SaveAsPdfLink
+                                variant="cream"
+                                testid="work-save-bottom"
+                                label="Save as PDF"
+                            />
                         </div>
                     </div>
                 </div>
