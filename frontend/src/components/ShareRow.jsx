@@ -25,12 +25,33 @@ export default function ShareRow({
     const email = `mailto:?subject=${encodedTitle}&body=${encodedTitle}%0A%0A${encodedUrl}`;
 
     const copyLink = async () => {
+        let ok = false;
         try {
-            await navigator.clipboard.writeText(shareUrl);
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(shareUrl);
+                ok = true;
+            }
+        } catch {
+            /* fall through to execCommand */
+        }
+        if (!ok) {
+            try {
+                const ta = document.createElement("textarea");
+                ta.value = shareUrl;
+                ta.setAttribute("readonly", "");
+                ta.style.position = "fixed";
+                ta.style.opacity = "0";
+                document.body.appendChild(ta);
+                ta.select();
+                ok = document.execCommand("copy");
+                document.body.removeChild(ta);
+            } catch {
+                ok = false;
+            }
+        }
+        if (ok) {
             setCopied(true);
             setTimeout(() => setCopied(false), 1600);
-        } catch {
-            /* clipboard denied — silent fail is fine */
         }
     };
 
