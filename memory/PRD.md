@@ -89,7 +89,13 @@ Marketing website for Method, a strategic marketing practice (fractional CMO-lev
 - Simple email obfuscation on the mailto to reduce scraping.
 
 ## Next Tasks List
-1. Confirm content of the 8 mock blog posts (currently written to fit the Method voice — user should approve or replace).
-2. Add OG/Twitter meta per route before launch.
-3. Netlify deploy config (build command, publish dir, `_redirects`).
-4. Decide on blog CMS approach or keep hand-authored MDX.
+1. ~~Confirm content of the 8 mock blog posts~~ DONE — 10 Gap Series/PoV posts finalized with author copy.
+2. ~~Add OG/Twitter meta per route~~ DONE — prerender-og.js pipeline.
+3. ~~Netlify deploy config~~ DONE — netlify.toml + full SSG script chain.
+4. Custom domain DNS cutover (in progress by user).
+
+## June 2026 — Deployment Finalization
+- Site fully complete, SSG pipeline verified, user signed off on live Netlify deploy.
+- Fixed Netlify "cancelled" deploys: added `ignore = "exit 1"` to netlify.toml [build] so builds always run despite `base = "frontend"` no-diff auto-cancel (Save-to-GitHub pushes sometimes touch no frontend files).
+- User confirmed final version deployed and showing correctly on Netlify.
+- Remaining (user-side): point Bluehost DNS at Netlify — A record `@` → 75.2.60.5, CNAME `www` → site.netlify.app, then provision SSL and set primary domain in Netlify Domain management.
