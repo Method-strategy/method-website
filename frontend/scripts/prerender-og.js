@@ -62,6 +62,32 @@ const SITE =
 // image, content specificity in the text.
 const OG_IMAGE = `${SITE}/og-default.jpg`;
 
+// ---------- Structured data (JSON-LD) constants ----------
+// Site launch / first-public date. Used as datePublished for every article
+// in Article schema. All 11 writing posts + /about/discernment were made
+// publicly available at methodmarketinggroup.com on this date, so a single
+// value is factually correct. Not exposed anywhere in the UI — schema only.
+const SITE_LAUNCH_DATE = "2026-07-07";
+
+// Hosted brand logo. Referenced by Organization schema so Google Knowledge
+// Panel and AI answer engines can pick up Method's mark. Full-color reverse
+// wordmark on navy — the definitive lockup.
+const ORG_LOGO_URL =
+    "https://customer-assets.emergentagent.com/job_method-positioning/artifacts/4hl65dkx_Method-Logo-Reverse-Final.webp";
+
+// LinkedIn URLs (sameAs). LinkedIn is the only social channel Method
+// maintains. sameAs is what Google uses to associate an Organization /
+// Person entity with its verified profiles.
+const ORG_LINKEDIN = "https://www.linkedin.com/company/method-strategic-marketing/";
+const PERSON_LINKEDIN = "https://www.linkedin.com/in/gary-hopkins-brand/";
+
+// Stable @id anchors so schema entities can reference each other across
+// the graph (e.g. Article.author -> Person.@id -> Organization.@id).
+const ORG_ID = `${SITE}/#organization`;
+const WEBSITE_ID = `${SITE}/#website`;
+const PERSON_GARY_ID = `${SITE}/#gary-hopkins`;
+const PROFESSIONAL_SERVICE_ID = `${SITE}/#service`;
+
 // ---------- Route manifest ----------
 const staticRoutes = [
     {
@@ -87,6 +113,8 @@ const staticRoutes = [
         title: "Discernment — Method",
         desc: "A basement in Cincinnati, a stat camera, an Ogilvy cassette set, and what four decades of craft actually teach. Gary Hopkins on where standards come from.",
         type: "article",
+        isArticle: true,
+        articleHeadline: "Where discernment comes from.",
     },
     {
         path: "/writing",
@@ -140,6 +168,10 @@ const writingRoutes = writing.map((w) => ({
     // its own share copy yet.
     desc: w.share || w.dek,
     type: "article",
+    isArticle: true,
+    // Article schema headline should match the visible <h1> on the page,
+    // which is `w.title` (rendered as-is in WritingDetail).
+    articleHeadline: w.title,
 }));
 
 const routes = [...staticRoutes, ...workRoutes, ...writingRoutes];
@@ -191,7 +223,87 @@ function buildMetaBlock(route) {
     <meta name="twitter:title" content="${t}" />
     <meta name="twitter:description" content="${d}" />
     <meta name="twitter:image" content="${escapeAttr(OG_IMAGE)}" />
+    <script type="application/ld+json">${buildJsonLd(route)}</script>
     <meta name="method-seo-block" content="end" />`;
+}
+
+// ---------- JSON-LD graph builders ----------
+// Sitewide entities. Every indexable page emits Organization + WebSite +
+// Person (Gary) so any single page provides a complete entity picture to
+// Google's Knowledge Graph and to AI answer engines. Homepage adds
+// ProfessionalService. Article routes add Article. Nothing is invented:
+// only fields we can populate truthfully are included.
+function orgSchema() {
+    return {
+        "@type": "Organization",
+        "@id": ORG_ID,
+        name: "Method Marketing Group",
+        alternateName: "Method",
+        url: SITE,
+        logo: {
+            "@type": "ImageObject",
+            url: ORG_LOGO_URL,
+        },
+        founder: { "@id": PERSON_GARY_ID },
+        foundingDate: "2020",
+        sameAs: [ORG_LINKEDIN],
+    };
+}
+
+function personGarySchema() {
+    return {
+        "@type": "Person",
+        "@id": PERSON_GARY_ID,
+        name: "Gary Hopkins",
+        jobTitle: "Founder and Principal",
+        worksFor: { "@id": ORG_ID },
+        sameAs: [PERSON_LINKEDIN],
+    };
+}
+
+function websiteSchema() {
+    return {
+        "@type": "WebSite",
+        "@id": WEBSITE_ID,
+        url: SITE,
+        name: "Method",
+        publisher: { "@id": ORG_ID },
+    };
+}
+
+function professionalServiceSchema() {
+    return {
+        "@type": "ProfessionalService",
+        "@id": PROFESSIONAL_SERVICE_ID,
+        name: "Method Marketing Group",
+        url: SITE,
+        provider: { "@id": ORG_ID },
+        serviceType: "Fractional CMO / Strategic marketing",
+        areaServed: { "@type": "Country", name: "United States" },
+    };
+}
+
+function articleSchema(route) {
+    const url = `${SITE}${route.path === "/" ? "" : route.path}`;
+    return {
+        "@type": "Article",
+        headline: route.articleHeadline,
+        description: route.desc,
+        image: OG_IMAGE,
+        datePublished: SITE_LAUNCH_DATE,
+        author: { "@id": PERSON_GARY_ID },
+        publisher: { "@id": ORG_ID },
+        mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    };
+}
+
+function buildJsonLd(route) {
+    const graph = [orgSchema(), websiteSchema(), personGarySchema()];
+    if (route.path === "/") graph.push(professionalServiceSchema());
+    if (route.isArticle) graph.push(articleSchema(route));
+    const doc = { "@context": "https://schema.org", "@graph": graph };
+    // Escape </ so browsers don't prematurely terminate the <script> block.
+    return JSON.stringify(doc).replace(/<\/(script)/gi, "<\\/$1");
 }
 
 function renderRoute(html, route) {
@@ -259,6 +371,11 @@ const checks = [
     { test: /rel="canonical"/, label: "canonical link" },
     { test: /id="root"/, label: "div#root preserved" },
     { test: /static\/js\/main\./, label: "CRA main.js bundle preserved" },
+    { test: /<script type="application\/ld\+json">/, label: "JSON-LD script tag" },
+    { test: /"@type":"Article"/, label: "Article schema on writing route" },
+    { test: /"@type":"Organization"/, label: "Organization schema present" },
+    { test: /"@type":"Person"/, label: "Person schema present" },
+    { test: /"datePublished":"2026-07-07"/, label: "datePublished present" },
 ];
 const failed = checks.filter((c) => !c.test.test(sample)).map((c) => c.label);
 if (failed.length) {
@@ -270,4 +387,21 @@ if (failed.length) {
 
 console.log(`[prerender-og] Wrote ${count} per-route index.html files:`);
 for (const w of written) console.log(`  - ${w}`);
+
+// Additional sanity check: homepage must carry ProfessionalService schema,
+// and a non-article route (e.g. /work) must NOT carry Article schema.
+const homeSample = fs.readFileSync(path.join(BUILD_DIR, "index.html"), "utf8");
+const workSample = fs.readFileSync(path.join(BUILD_DIR, "work", "index.html"), "utf8");
+const extraChecks = [
+    { file: "home", ok: /"@type":"ProfessionalService"/.test(homeSample), label: "ProfessionalService on /" },
+    { file: "home", ok: !/"@type":"Article"/.test(homeSample), label: "no Article schema on /" },
+    { file: "work", ok: !/"@type":"Article"/.test(workSample), label: "no Article schema on /work" },
+    { file: "work", ok: /"@type":"Organization"/.test(workSample), label: "Organization on /work" },
+];
+const extraFailed = extraChecks.filter((c) => !c.ok).map((c) => `${c.file}:${c.label}`);
+if (extraFailed.length) {
+    console.error(`[prerender-og] FAILED schema-scope checks: ${extraFailed.join(", ")}`);
+    process.exit(1);
+}
+
 console.log("[prerender-og] Sanity check: OK");

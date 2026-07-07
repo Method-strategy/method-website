@@ -170,9 +170,9 @@ export default function WorkDetail() {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6">
-                                <h3 className="serif italic text-2xl md:text-4xl leading-tight text-navy transition-colors duration-300 group-hover:text-steel">
+                                <h2 className="serif italic text-2xl md:text-4xl leading-tight text-navy transition-colors duration-300 group-hover:text-steel">
                                     {next.title}
-                                </h3>
+                                </h2>
                             </div>
                             <div className="col-span-12 md:col-span-2 md:text-right">
                                 <span className="nav-link text-[0.82rem] tracking-[0.18em] uppercase font-medium">
