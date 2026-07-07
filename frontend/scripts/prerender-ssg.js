@@ -56,6 +56,7 @@ const routes = [
     "/connect",
     ...caseStudies.map((c) => `/work/${c.slug}`),
     ...writing.map((w) => `/writing/${w.slug}`),
+    "/404",
 ];
 
 // ------------------------------------------------------------------
@@ -99,6 +100,8 @@ const { render } = require(OUT_FILE);
 
 function shellPathForRoute(route) {
     if (route === "/") return path.join(BUILD_DIR, "index.html");
+    // Netlify serves build/404.html for unknown paths (see public/_redirects).
+    if (route === "/404") return path.join(BUILD_DIR, "404.html");
     return path.join(
         BUILD_DIR,
         ...route.split("/").filter(Boolean),

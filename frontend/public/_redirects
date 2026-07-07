@@ -1,1 +1,16 @@
-/*    /index.html   200
+# Legacy WordPress URLs -> new site sections. 301s preserve inbound link
+# equity from old backlinks and search results. Splats also catch any
+# sub-paths (e.g. old blog post permalinks under /method-marketers-blog/).
+/marketing-strategy/*              /work      301
+/branding/*                        /work      301
+/marketing-creative/*              /work      301
+/marketing-implementation/*        /work      301
+/how-we-work/*                     /work      301
+/whow-we-are/*                     /about     301
+/who-we-are/*                      /about     301
+/method-marketers-blog/*           /writing   301
+/connect-with-method-marketing/*   /connect   301
+
+# Everything else unknown -> styled 404 page with a real 404 status.
+# Netlify serves exact prerendered files first, so real routes never hit this.
+/*    /404.html    404

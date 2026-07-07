@@ -100,6 +100,17 @@ const staticRoutes = [
         desc: "Contact Method to discuss a strategic marketing engagement.",
         type: "website",
     },
+    {
+        // Netlify serves build/404.html with a real 404 status for any
+        // unknown path (see public/_redirects). noindex keeps it out of
+        // search results.
+        path: "/404",
+        outFile: "404.html",
+        title: "Page not found — Method",
+        desc: "This page doesn't exist. It may have once. Things have changed around here.",
+        type: "website",
+        noindex: true,
+    },
 ];
 
 const workRoutes = caseStudies.map((c) => ({
@@ -145,6 +156,14 @@ function buildMetaBlock(route) {
     const url = `${SITE}${route.path === "/" ? "" : route.path}`;
     const t = escapeAttr(route.title);
     const d = escapeAttr(route.desc);
+    if (route.noindex) {
+        return `<meta name="method-seo-block" content="start" />
+    <meta name="robots" content="noindex" />
+    <meta property="og:site_name" content="Method" />
+    <meta property="og:title" content="${t}" />
+    <meta property="og:description" content="${d}" />
+    <meta name="method-seo-block" content="end" />`;
+    }
     return `<meta name="method-seo-block" content="start" />
     <link rel="canonical" href="${escapeAttr(url)}" />
     <meta property="og:type" content="${route.type}" />
@@ -193,12 +212,17 @@ function renderRoute(html, route) {
 let count = 0;
 const written = [];
 for (const route of routes) {
-    const dir =
-        route.path === "/"
-            ? BUILD_DIR
-            : path.join(BUILD_DIR, ...route.path.split("/").filter(Boolean));
-    fs.mkdirSync(dir, { recursive: true });
-    const outFile = path.join(dir, "index.html");
+    let outFile;
+    if (route.outFile) {
+        outFile = path.join(BUILD_DIR, route.outFile);
+    } else {
+        const dir =
+            route.path === "/"
+                ? BUILD_DIR
+                : path.join(BUILD_DIR, ...route.path.split("/").filter(Boolean));
+        fs.mkdirSync(dir, { recursive: true });
+        outFile = path.join(dir, "index.html");
+    }
     fs.writeFileSync(outFile, renderRoute(baseHtml, route), "utf8");
     written.push(path.relative(BUILD_DIR, outFile));
     count++;

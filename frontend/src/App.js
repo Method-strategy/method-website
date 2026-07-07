@@ -11,6 +11,7 @@ import Writing from "@/pages/Writing";
 import WritingDetail from "@/pages/WritingDetail";
 import Connect from "@/pages/Connect";
 import Discernment from "@/pages/Discernment";
+import NotFound from "@/pages/NotFound";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 // Exported so the SSG build (scripts/ssr-entry.jsx) can render each route
@@ -34,7 +35,7 @@ export function AppShell() {
                 <Route path="/writing" element={<Writing />} />
                 <Route path="/writing/:slug" element={<WritingDetail />} />
                 <Route path="/connect" element={<Connect />} />
-                <Route path="*" element={<Home />} />
+                <Route path="*" element={<NotFound />} />
             </Routes>
             <Footer />
         </div>

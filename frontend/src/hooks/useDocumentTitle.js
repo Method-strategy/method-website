@@ -27,7 +27,7 @@ function resolveTitle(pathname) {
         if (w) return `${w.title} — Method`;
     }
 
-    return "Method — Clarifying how you show up in the market.";
+    return "Page not found — Method";
 }
 
 /**
