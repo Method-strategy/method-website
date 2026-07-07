@@ -79,8 +79,34 @@ export default function PrivacyPolicy() {
                         </RevealItem>
                     </RevealStagger>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-8 mt-16 md:mt-20">
-                        <div className="lg:col-span-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-8 mt-16 md:mt-20 items-start">
+                        {/* Sticky TOC sidebar */}
+                        <aside
+                            data-testid="privacy-toc-sidebar"
+                            className="lg:col-span-3 lg:sticky lg:top-28 lg:max-h-[calc(100vh-9rem)] lg:overflow-y-auto mb-14 lg:mb-0 lg:pr-6"
+                        >
+                            <div className="eyebrow text-navy/60 mb-5">
+                                Contents
+                            </div>
+                            <ol className="space-y-2.5">
+                                {toc.map((t, i) => (
+                                    <li key={t.id} className="flex gap-2.5 items-baseline">
+                                        <span className="text-xs text-navy/40 tabular-nums shrink-0">
+                                            {String(i + 1).padStart(2, "0")}
+                                        </span>
+                                        <a
+                                            href={`#${t.id}`}
+                                            data-testid={`privacy-toc-${t.id}`}
+                                            className="nav-link text-sm leading-snug text-navy/75 hover:text-navy"
+                                        >
+                                            {t.label}
+                                        </a>
+                                    </li>
+                                ))}
+                            </ol>
+                        </aside>
+
+                        <div className="lg:col-span-8 lg:col-start-5">
                             <div className="prose-method space-y-5">
                                 <p>
                                     This Privacy Notice for Method Marketing Group LLC
@@ -212,26 +238,6 @@ export default function PrivacyPolicy() {
                                         in full below.
                                     </p>
                                 </div>
-                            </div>
-
-                            {/* Table of contents */}
-                            <div className="mt-14 pt-10 border-t border-navy/15">
-                                <h2 className="wordmark text-2xl md:text-3xl leading-tight tracking-tight text-navy mb-6">
-                                    Table of contents
-                                </h2>
-                                <ol className="space-y-3 list-decimal pl-6">
-                                    {toc.map((t) => (
-                                        <li key={t.id}>
-                                            <a
-                                                href={`#${t.id}`}
-                                                data-testid={`privacy-toc-${t.id}`}
-                                                className="ed-link"
-                                            >
-                                                {t.label}
-                                            </a>
-                                        </li>
-                                    ))}
-                                </ol>
                             </div>
 
                             <Section id="info-collect" num={1} title="What information do we collect?">

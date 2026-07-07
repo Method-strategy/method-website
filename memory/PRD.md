@@ -107,4 +107,5 @@ Marketing website for Method, a strategic marketing practice (fractional CMO-lev
 - BingSiteAuth.xml added to frontend/public/ (serves at site root for Bing Webmaster verification).
 - New /sitemap page (HTML, Method-styled, lists all pages + case studies + writing) and /privacy-policy page (full policy from user's docx, 13-section TOC with anchor links, categories table, mailto/external links). Both wired into: App.js routes, useDocumentTitle, prerender-og, prerender-ssg (22 routes now), generate-sitemap (21 URLs). Legacy /sitemap/ and /privacy-policy/ WordPress URLs resolve natively to these pages.
 - Footer bottom line updated: "© {year} Method Marketing Group LLC. All Rights Reserved. | Sitemap | Privacy Policy".
+- Privacy policy TOC converted to sticky left sidebar (numbered 01–13, pinned below nav on desktop, stacks on mobile).
 - All verified locally: build chain OK, SSG output correct, screenshots confirm design. Awaiting user push to Netlify for live verification.
