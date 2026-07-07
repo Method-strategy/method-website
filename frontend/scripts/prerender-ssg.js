@@ -54,6 +54,8 @@ const routes = [
     "/about/discernment",
     "/writing",
     "/connect",
+    "/sitemap",
+    "/privacy-policy",
     ...caseStudies.map((c) => `/work/${c.slug}`),
     ...writing.map((w) => `/writing/${w.slug}`),
     "/404",

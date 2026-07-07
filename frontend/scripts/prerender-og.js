@@ -101,6 +101,18 @@ const staticRoutes = [
         type: "website",
     },
     {
+        path: "/sitemap",
+        title: "Sitemap — Method",
+        desc: "Every page on the Method site: work, writing, and how to connect.",
+        type: "website",
+    },
+    {
+        path: "/privacy-policy",
+        title: "Privacy Policy — Method",
+        desc: "How Method Marketing Group LLC collects, uses, and protects your personal information.",
+        type: "website",
+    },
+    {
         // Netlify serves build/404.html with a real 404 status for any
         // unknown path (see public/_redirects). noindex keeps it out of
         // search results.

@@ -45,6 +45,8 @@ const staticRoutes = [
     { path: "/about/discernment", changefreq: "yearly", priority: "0.5" },
     { path: "/writing", changefreq: "weekly", priority: "0.9" },
     { path: "/connect", changefreq: "yearly", priority: "0.7" },
+    { path: "/sitemap", changefreq: "monthly", priority: "0.3" },
+    { path: "/privacy-policy", changefreq: "yearly", priority: "0.3" },
 ];
 
 const workRoutes = caseStudies.map((c) => ({

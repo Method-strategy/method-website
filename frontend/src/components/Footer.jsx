@@ -112,7 +112,25 @@ export default function Footer() {
                 </div>
 
                 <div className="mt-16 md:mt-20 pt-6 border-t border-cream/15 flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-xs tracking-widest uppercase text-cream/55">
-                    <span>© {year} Method Marketing Group</span>
+                    <span data-testid="footer-legal-line" className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                        <span>© {year} Method Marketing Group LLC. All Rights Reserved.</span>
+                        <span aria-hidden="true">|</span>
+                        <Link
+                            to="/sitemap"
+                            data-testid="footer-link-sitemap"
+                            className="nav-link text-cream/70 hover:text-cream"
+                        >
+                            Sitemap
+                        </Link>
+                        <span aria-hidden="true">|</span>
+                        <Link
+                            to="/privacy-policy"
+                            data-testid="footer-link-privacy"
+                            className="nav-link text-cream/70 hover:text-cream"
+                        >
+                            Privacy Policy
+                        </Link>
+                    </span>
                     <span className="serif italic normal-case tracking-normal text-cream/70 text-sm">
                         There is a method to this.
                     </span>

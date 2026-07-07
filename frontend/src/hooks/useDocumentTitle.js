@@ -10,6 +10,8 @@ const STATIC_TITLES = {
     "/about/discernment": "Discernment — Method",
     "/writing": "Writing — Method",
     "/connect": "Connect — Method",
+    "/sitemap": "Sitemap — Method",
+    "/privacy-policy": "Privacy Policy — Method",
 };
 
 function resolveTitle(pathname) {
