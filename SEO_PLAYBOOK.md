@@ -6,10 +6,11 @@ breaking the build.
 
 Method's SEO is code, not a CMS. All SEO artifacts (titles, meta
 descriptions, canonicals, Open Graph, Twitter cards, JSON-LD structured
-data, sitemap, RSS, robots.txt) are baked into the static HTML at build
-time and served by Netlify as flat files. Nothing depends on JavaScript
-execution at read time — Google, Bing, LinkedIn's unfurler, Claude,
-Perplexity, and any other crawler sees the finished HTML.
+data, sitemap, RSS, robots.txt, IndexNow key + diff-based ping) are
+baked into the static HTML at build time and served by Netlify as flat
+files. Nothing depends on JavaScript execution at read time — Google,
+Bing, LinkedIn's unfurler, Claude, Perplexity, and any other crawler
+sees the finished HTML.
 
 ---
 
@@ -26,6 +27,8 @@ There is **no CMS**. Content and SEO metadata live in three places:
 | Domain / canonical | `frontend/scripts/prerender-og.js`, `frontend/scripts/generate-sitemap.js`, `frontend/scripts/generate-rss.js`, `frontend/src/hooks/useDocumentTitle.js` | `https://methodmarketinggroup.com` — hardcoded in all four |
 | Legacy WordPress redirects | `frontend/public/_redirects` | Explicit 301 rules per old URL |
 | Sitemap priorities / changefreq | `frontend/scripts/generate-sitemap.js` | Static routes list at top |
+| IndexNow key file | `frontend/public/f2da102fbb1f98cf309ec46aeefef39e.txt` | Public; copied to build root by CRA; do not rename |
+| IndexNow ping script | `frontend/scripts/indexnow-ping.js` | Diff-based; last step in build chain; see §8 |
 
 ---
 
@@ -128,13 +131,20 @@ Local:
 
 ```bash
 cd /app/frontend
+SKIP_INDEXNOW=1 \
 yarn build \
   && node scripts/strip-emergent.js \
   && node scripts/prerender-og.js \
   && node scripts/prerender-ssg.js \
   && node scripts/generate-sitemap.js \
-  && node scripts/generate-rss.js
+  && node scripts/generate-rss.js \
+  && node scripts/indexnow-ping.js
 ```
+
+`SKIP_INDEXNOW=1` prevents local runs from pinging the production
+IndexNow endpoint. Netlify's production build does NOT set this, so the
+ping runs there. Deploy previews and branch deploys skip it via
+`NETLIFY_CONTEXT` (see §8.3).
 
 Netlify runs this same chain on every deploy (see `netlify.toml`). Do not
 alter the order — later scripts depend on earlier ones.
@@ -199,7 +209,125 @@ Static route priorities and `changefreq` values live at the top of
 
 ---
 
-## 8. Legacy WordPress redirects
+## 8. IndexNow (Bing, Yandex, and other IndexNow-participating engines)
+
+IndexNow is a lightweight push protocol: when a page is new or has
+changed, we POST the URL to a shared endpoint and every participating
+engine (Bing, Yandex, Seznam, Naver, etc.) is notified in one call. It
+does not replace crawling — it just makes crawling faster. Google is
+NOT an IndexNow participant, so IndexNow does not affect Google
+indexing. Sitemap + robots.txt + Google Search Console remain the
+Google-side plumbing.
+
+### 8.1 The key
+
+Method's IndexNow key is a fixed 32-hex-char string:
+
+```
+f2da102fbb1f98cf309ec46aeefef39e
+```
+
+The key is public by design. It only authenticates that the site owner
+controls the domain, by requiring a file at:
+
+```
+https://methodmarketinggroup.com/f2da102fbb1f98cf309ec46aeefef39e.txt
+```
+
+whose body is exactly the key. That file lives in the repo at
+`frontend/public/f2da102fbb1f98cf309ec46aeefef39e.txt` and CRA copies it
+to the site root on every build. **Do not delete or rename it.** If you
+ever need to rotate the key: generate a new 32-hex-char string, replace
+both the file (in `public/`) and the `INDEXNOW_KEY` constant at the top
+of `frontend/scripts/indexnow-ping.js`, and deploy. The old key stops
+working the moment the file is gone.
+
+### 8.2 The diff-based ping
+
+`frontend/scripts/indexnow-ping.js` runs as the last step of the build
+chain (see `netlify.toml`). On every deploy it:
+
+1. Walks the freshly-built `build/` directory, computes a SHA-256 of
+   every HTML file, and writes `build/indexnow-manifest.json` as
+   `{ url: hash }`.
+2. Fetches the previous manifest from
+   `https://methodmarketinggroup.com/indexnow-manifest.json` — this is
+   what the site currently serves, i.e. the state this deploy is about
+   to replace.
+3. Diffs the two hash maps. Any URL whose hash changed, or is entirely
+   new, is added to the submission list. **If nothing changed, no ping
+   goes out.** We never spam the endpoint with the full sitemap.
+4. POSTs the list (max 10,000 URLs per request) to
+   `https://api.indexnow.org/indexnow`, which fans out to all
+   participating engines.
+
+Submission failures never fail the build — the script logs and
+continues. IndexNow is best-effort.
+
+### 8.3 Guardrails
+
+- `SKIP_INDEXNOW=1` — skips the ping (useful for local test runs).
+- `NETLIFY_CONTEXT` — only production deploys ping. Deploy previews and
+  branch deploys are automatically skipped so preview builds don't
+  announce staging URLs.
+
+### 8.4 Verifying a ping succeeded
+
+Two levels of verification. Both should be checked after a change:
+
+**Level 1 — build log:**
+
+Check the Netlify deploy log for a line like:
+
+```
+[indexnow] Submitting N URL(s):
+  - https://methodmarketinggroup.com/writing/your-slug
+[indexnow] Batch 1 accepted (HTTP 202).
+[indexnow] Done.
+```
+
+`HTTP 200` or `HTTP 202` means the endpoint accepted the payload.
+Any other status is logged as a warning; the build still passes.
+
+If the log shows `No new or changed URLs in this deploy — nothing to
+submit`, that's also success — the diff correctly found nothing.
+
+**Level 2 — Bing Webmaster Tools:**
+
+After the deploy completes, go to Bing Webmaster Tools →
+`https://www.bing.com/webmasters` → select `methodmarketinggroup.com`
+→ Configure My Site → IndexNow. The "Submissions" panel shows the
+count of URLs submitted per day. It updates within minutes of a
+successful ping.
+
+**Level 3 — key file:**
+
+Anytime you're debugging, confirm the key file is still reachable:
+
+```bash
+curl -sL https://methodmarketinggroup.com/f2da102fbb1f98cf309ec46aeefef39e.txt
+# Expected output: f2da102fbb1f98cf309ec46aeefef39e
+```
+
+If this returns anything else (404, HTML, empty), Bing will silently
+reject every subsequent submission until the file is restored.
+
+### 8.5 Debugging "why didn't my URL get pinged?"
+
+1. Was the deploy actually a production deploy? Preview builds skip
+   IndexNow by design (see 8.3).
+2. Did the content of that page actually change? If the HTML is
+   byte-identical to what's currently live, the diff is empty and no
+   ping fires — this is correct behaviour, not a bug.
+3. If you want to force a ping (say, after a big invisible SEO change
+   the hash didn't catch), you can temporarily delete
+   `build/indexnow-manifest.json` locally and push — the next build
+   will treat every URL as new and submit all 21.
+4. Check the Netlify deploy log for `[indexnow]` lines.
+
+---
+
+## 9. Legacy WordPress redirects
 
 All old WordPress URLs are 301'd to the closest equivalent new URL via
 `frontend/public/_redirects`. This file is served verbatim by Netlify.
@@ -214,7 +342,7 @@ it's what gives unknown paths a proper 404 status + our stylized 404 page.
 
 ---
 
-## 9. Acceptance test for any SEO change
+## 10. Acceptance test for any SEO change
 
 **The acceptance test — run against the live Netlify deploy, not local.**
 The change must appear in the raw HTML response with no JavaScript
@@ -266,7 +394,7 @@ canonical, OG, Twitter, JSON-LD) must be present in the raw HTML.
 
 ---
 
-## 10. Currently-flagged items (informational; do not rewrite without approval)
+## 11. Currently-flagged items (informational; do not rewrite without approval)
 
 These titles / descriptions exceed the conventional soft limits. They are
 **authored copy** and were not rewritten during the technical audit;
@@ -301,7 +429,7 @@ needs shortening later, get author sign-off first.
 
 ---
 
-## 11. Technical audit results (as of last SEO pass)
+## 12. Technical audit results (as of last SEO pass)
 
 - ✓ Exactly one H1 per page across all 22 routes
 - ✓ Heading hierarchy contains no skips (h1 → h2 → h3 …)
@@ -314,10 +442,13 @@ needs shortening later, get author sign-off first.
 - ✓ JSON-LD present in raw HTML on all indexable pages, no JS required
 - ✓ Site verified in Google Search Console and Bing Webmaster Tools;
   sitemap submitted to both
+- ✓ IndexNow wired into build chain; diff-based ping runs on every
+  production Netlify deploy (see §8); key file live at
+  `/f2da102fbb1f98cf309ec46aeefef39e.txt`
 
 ---
 
-## 12. When you should call this playbook out of date
+## 13. When you should call this playbook out of date
 
 - Method adds an X / Twitter / Bluesky / GitHub account → update `sameAs`
   arrays in `orgSchema()` (and `personGarySchema()` if it's Gary's).
