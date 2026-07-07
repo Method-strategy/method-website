@@ -34,7 +34,6 @@ const { caseStudies } = loadEsmData(path.join(DATA_DIR, "caseStudies.js"));
 
 const SITE =
     process.env.SITE_URL ||
-    process.env.URL ||
     "https://methodmarketinggroup.com";
 
 const today = new Date().toISOString().split("T")[0];

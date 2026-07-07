@@ -34,7 +34,6 @@ const { writing } = loadEsmData(path.join(DATA_DIR, "writing.js"));
 
 const SITE =
     process.env.SITE_URL ||
-    process.env.URL ||
     "https://methodmarketinggroup.com";
 
 const escapeXml = (s) =>

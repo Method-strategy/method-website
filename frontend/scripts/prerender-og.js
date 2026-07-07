@@ -53,7 +53,6 @@ const { caseStudies } = loadEsmData(path.join(DATA_DIR, "caseStudies.js"));
 // ---------- Site + defaults ----------
 const SITE =
     process.env.SITE_URL ||
-    process.env.URL ||
     "https://methodmarketinggroup.com";
 
 // Single sitewide typographic OG card. Lives at /public/og-default.jpg and is
