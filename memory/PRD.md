@@ -98,4 +98,6 @@ Marketing website for Method, a strategic marketing practice (fractional CMO-lev
 - Site fully complete, SSG pipeline verified, user signed off on live Netlify deploy.
 - Fixed Netlify "cancelled" deploys: added `ignore = "exit 1"` to netlify.toml [build] so builds always run despite `base = "frontend"` no-diff auto-cancel (Save-to-GitHub pushes sometimes touch no frontend files).
 - User confirmed final version deployed and showing correctly on Netlify.
-- Remaining (user-side): point Bluehost DNS at Netlify — A record `@` → 75.2.60.5, CNAME `www` → site.netlify.app, then provision SSL and set primary domain in Netlify Domain management.
+- DNS cutover COMPLETE: methodmarketinggroup.com live on Netlify with SSL, apex primary, www/http 301 → apex.
+- Fixed canonical-domain bug: scripts preferred Netlify's `process.env.URL` (baked `.netlify.app` URLs into sitemap/RSS/canonical/OG). Removed env.URL from generate-sitemap.js, generate-rss.js, prerender-og.js — apex now hardcoded (SITE_URL env still overrides).
+- Full live verification passed: sitemap, RSS, canonical, og:url/og:image, robots.txt, redirects, SSG content all correct on apex domain. SITE FULLY LAUNCHED (July 2026).
