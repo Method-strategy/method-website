@@ -1,4 +1,4 @@
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 const links = [
@@ -11,6 +11,14 @@ const links = [
 export default function Nav({ variant = "cream" }) {
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
+    const { pathname } = useLocation();
+
+    const handleWordmarkClick = (e) => {
+        if (pathname === "/") {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+    };
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 12);
@@ -39,6 +47,7 @@ export default function Nav({ variant = "cream" }) {
             <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 h-20 md:h-24 flex items-center justify-between">
                 <Link
                     to="/"
+                    onClick={handleWordmarkClick}
                     data-testid="nav-wordmark"
                     className="plain wordmark text-[1.65rem] md:text-[2rem] leading-none"
                     aria-label="Method — Home"
