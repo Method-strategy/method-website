@@ -109,3 +109,18 @@ Marketing website for Method, a strategic marketing practice (fractional CMO-lev
 - Footer bottom line updated: "© {year} Method Marketing Group LLC. All Rights Reserved. | Sitemap | Privacy Policy".
 - Privacy policy TOC converted to sticky left sidebar (numbered 01–13, pinned below nav on desktop, stacks on mobile).
 - All verified locally: build chain OK, SSG output correct, screenshots confirm design. Awaiting user push to Netlify for live verification.
+
+
+## July 2026 — SEO Technical Completion Pass & Launch Complete
+- Nav wordmark now smooth-scrolls to top when clicked from `/` (consistent affordance across every page — was previously a no-op on homepage). See Nav.jsx `handleWordmarkClick`.
+- **JSON-LD structured data** implemented in `prerender-og.js` (baked into raw HTML, sentinel-bounded, idempotent):
+  - Every indexable page: Organization (name, url, logo, founder, foundingDate 2020, sameAs LinkedIn) + WebSite + Person (Gary Hopkins, jobTitle "Founder and Principal", sameAs LinkedIn).
+  - `/` adds ProfessionalService (serviceType fractional CMO/strategic marketing, areaServed United States).
+  - All 11 writing posts + `/about/discernment` add Article (headline, description, author→Person, publisher→Org, mainEntityOfPage, datePublished = single site-launch date 2026-07-07 stored as `SITE_LAUNCH_DATE` constant, image = og-default).
+  - `/404` emits no schema (noindex).
+  - Zero invented data — no aggregateRating, review, address, phone. Constants at top of prerender-og.js: SITE_LAUNCH_DATE, ORG_LOGO_URL, ORG_LINKEDIN, PERSON_LINKEDIN.
+- **Live acceptance test passed** (curl, no JS) against methodmarketinggroup.com: JSON-LD present in raw HTML for homepage, article (writing), /about, /about/discernment, case study. Correct schema graph per page type. All @id refs resolve. robots.txt + sitemap.xml (21 URLs) verified live.
+- **Technical audit results**: 22/22 pages have exactly one H1; heading hierarchy has no skips (fixed WorkDetail h1→h3 → h1→h2 on "Next Engagement" title); all `<img>` have alt; zero generic anchor text; robots.txt allows crawling and references sitemap; sitemap auto-updates when a writing.js/caseStudies.js slug is added. Flagged only (not rewritten per instruction): 9 titles > 60 chars and 2 meta descriptions > 160 chars — all authored editorial voice, documented in SEO_PLAYBOOK.md §10.
+- **`SEO_PLAYBOOK.md` created at /app/SEO_PLAYBOOK.md** — 12-section replacement for the WordPress/RankMath plugin interface. Documents where SEO source-of-truth lives, how to edit titles/descriptions, how to add a new writing post (fully automated downstream: sitemap, RSS, Article schema, share cards, prerender all update), the build command chain, structured-data reference, sitemap/robots, legacy redirects, and the exact curl acceptance test protocol.
+- Colour system verified: `#f5f1eb` (cream) is the single Tailwind `bg-cream`/`text-cream` token used everywhere; zero `bg-white`/`text-white` in components; the only `#ffffff` values live in `@media print { }` (intentional paper output). Site colour audit clean.
+- **SITE LAUNCH FULLY COMPLETE.** SEO, deploy, redirects, verification (Google + Bing), structured data, playbook — all shipped.
