@@ -6,11 +6,12 @@ breaking the build.
 
 Method's SEO is code, not a CMS. All SEO artifacts (titles, meta
 descriptions, canonicals, Open Graph, Twitter cards, JSON-LD structured
-data, sitemap, RSS, robots.txt, IndexNow key + diff-based ping, and the
-GA4 measurement tag) are baked into the static HTML at build time and
-served by Netlify as flat files. Nothing depends on JavaScript execution
-at read time — Google, Bing, LinkedIn's unfurler, Claude, Perplexity,
-and any other crawler sees the finished HTML.
+data, sitemap, RSS, robots.txt, IndexNow key + diff-based ping, the GA4
+measurement tag, and the Microsoft Clarity tag) are baked into the
+static HTML at build time and served by Netlify as flat files. Nothing
+depends on JavaScript execution at read time — Google, Bing, LinkedIn's
+unfurler, Claude, Perplexity, and any other crawler sees the finished
+HTML.
 
 ---
 
@@ -30,6 +31,7 @@ There is **no CMS**. Content and SEO metadata live in three places:
 | IndexNow key file | `frontend/public/f2da102fbb1f98cf309ec46aeefef39e.txt` | Public; copied to build root by CRA; do not rename |
 | IndexNow ping script | `frontend/scripts/indexnow-ping.js` | Diff-based; last step in build chain; see §8 |
 | Google Analytics 4 tag | `frontend/public/index.html` head + `frontend/src/hooks/useGAPageView.js` | GA4 gtag.js snippet baked into every prerendered page; SPA route changes fire page_view; see §9 |
+| Microsoft Clarity tag | `frontend/public/index.html` head | Clarity snippet baked into every prerendered page; handles SPA route changes natively; see §10 |
 
 ---
 
@@ -451,7 +453,102 @@ need to change.
 
 ---
 
-## 10. Legacy WordPress redirects
+## 10. Microsoft Clarity
+
+**Project ID:** `xj8oadt46d`
+**Property owner:** Method Marketing Group
+**Privacy disclosure:** See `/privacy-policy` §1 (Information
+automatically collected) and §4 (Cookies and tracking technologies)
+
+### 10.1 Where the tag lives
+
+The Clarity snippet is baked directly into `frontend/public/index.html`
+inside the `<head>`, immediately after the GA4 gtag block. It follows
+the identical pattern to GA4: because prerender-og.js and prerender-ssg.js
+both work by editing that same base HTML shell, the snippet is
+inherited into every one of the 21 prerendered per-route HTML files
+automatically. There is nothing to add on a per-page basis.
+
+The snippet is Microsoft's stock async loader — it self-inserts a
+`<script async>` for `https://www.clarity.ms/tag/xj8oadt46d`, so it
+never blocks render.
+
+### 10.2 SPA route handling
+
+Unlike GA4, Clarity requires no companion hook. Its client library
+listens to `history.pushState` / `popstate` events natively and stitches
+every route change in the SPA into a single continuous session
+recording. This means:
+
+- One Clarity session = one visitor session, spanning any number of
+  route changes.
+- The heatmaps for each URL correctly attribute clicks and scrolls to
+  the page they occurred on, not the initial landing page.
+- No `useGAPageView`-equivalent hook exists or is needed.
+
+Verified in a local browser test: navigating `/` → `/writing` →
+`/writing/wrap-rage` produced a single Clarity session with three
+route entries and all interactions on the correct pages.
+
+### 10.3 GA4 ↔ Clarity integration
+
+The Clarity ↔ GA4 bridge is enabled on the **Clarity side** (Clarity
+project → Settings → Integrations → Google Analytics). Once linked,
+GA4 receives a custom dimension containing the Clarity session URL, so
+you can jump from any GA4 report row directly to the corresponding
+Clarity replay. Nothing about that integration is code-side; if the
+GA4 property ever changes, re-link it in the Clarity dashboard.
+
+### 10.4 Verifying the tag is live
+
+**Level 1 — raw HTML:**
+
+```bash
+curl -sL https://methodmarketinggroup.com/ | grep -c "xj8oadt46d"
+# Expected: 1
+
+curl -sL https://methodmarketinggroup.com/writing/wrap-rage | grep -c "xj8oadt46d"
+# Expected: 1  (same tag on every prerendered page)
+```
+
+**Level 2 — network tab in DevTools:**
+
+Load any page on the live site. In the Network tab, filter by "clarity"
+— you should see:
+
+- A `GET https://www.clarity.ms/tag/xj8oadt46d` returning 200 (the
+  loader) followed by additional `clarity.ms/collect` requests as you
+  interact with the page.
+
+**Level 3 — Clarity dashboard:**
+
+Open `https://clarity.microsoft.com/projects/view/xj8oadt46d`.
+First-data lag is typically 30 minutes to 2 hours after a live visit;
+recordings appear in the Recordings tab, and dashboard metrics
+(sessions, pages/session, dead clicks, rage clicks, etc.) populate in
+the Dashboard tab.
+
+### 10.5 What we do NOT do
+
+- No advertising, retargeting, or profiling.
+- No enabling of Clarity's IP address collection beyond what's needed
+  for geolocation aggregation (Microsoft truncates by default).
+- No custom user IDs — sessions are anonymous.
+- No unmasked capture of input fields — Clarity's default masking is
+  on and we do not override it.
+
+### 10.6 If the project ID ever changes
+
+Edit these two lines:
+
+- `frontend/public/index.html` — replace `xj8oadt46d` in the Clarity
+  snippet (single occurrence).
+- `frontend/src/pages/PrivacyPolicy.jsx` — update the ID reference in
+  §4.
+
+---
+
+## 11. Legacy WordPress redirects
 
 All old WordPress URLs are 301'd to the closest equivalent new URL via
 `frontend/public/_redirects`. This file is served verbatim by Netlify.
@@ -466,7 +563,7 @@ it's what gives unknown paths a proper 404 status + our stylized 404 page.
 
 ---
 
-## 11. Acceptance test for any SEO change
+## 12. Acceptance test for any SEO change
 
 **The acceptance test — run against the live Netlify deploy, not local.**
 The change must appear in the raw HTML response with no JavaScript
@@ -518,7 +615,7 @@ canonical, OG, Twitter, JSON-LD) must be present in the raw HTML.
 
 ---
 
-## 11. Currently-flagged items (informational; do not rewrite without approval)
+## 13. Currently-flagged items (informational; do not rewrite without approval)
 
 These titles / descriptions exceed the conventional soft limits. They are
 **authored copy** and were not rewritten during the technical audit;
@@ -553,7 +650,7 @@ needs shortening later, get author sign-off first.
 
 ---
 
-## 13. Technical audit results (as of last SEO pass)
+## 14. Technical audit results (as of last SEO pass)
 
 - ✓ Exactly one H1 per page across all 22 routes
 - ✓ Heading hierarchy contains no skips (h1 → h2 → h3 …)
@@ -573,10 +670,13 @@ needs shortening later, get author sign-off first.
   page's `<head>`; SPA route changes fire `page_view` via
   `useGAPageView` (see §9); privacy policy discloses collection
   and cookies
+- ✓ Microsoft Clarity (xj8oadt46d) baked into every prerendered
+  page's `<head>`; native SPA session stitching (see §10); privacy
+  policy discloses collection, cookies, and Microsoft data processing
 
 ---
 
-## 14. When you should call this playbook out of date
+## 15. When you should call this playbook out of date
 
 - Method adds an X / Twitter / Bluesky / GitHub account → update `sameAs`
   arrays in `orgSchema()` (and `personGarySchema()` if it's Gary's).

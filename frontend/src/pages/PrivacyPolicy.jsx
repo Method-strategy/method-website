@@ -74,7 +74,7 @@ export default function PrivacyPolicy() {
                                 </span>
                             </h1>
                             <p className="text-sm text-navy/60 mt-6 tracking-wide uppercase">
-                                Last updated July 7, 2026
+                                Last updated July 8, 2026
                             </p>
                         </RevealItem>
                     </RevealStagger>
@@ -296,13 +296,14 @@ export default function PrivacyPolicy() {
                                     information is primarily needed to maintain the
                                     security and operation of our Services, and for
                                     our internal analytics and reporting purposes. Our
-                                    only analytics provider is Google Analytics 4 —
-                                    see section{" "}
+                                    analytics providers are Google Analytics 4 (traffic
+                                    measurement) and Microsoft Clarity (session replay
+                                    and interaction heatmaps) — see section{" "}
                                     <Anchor id="cookies">
                                         "Do we use cookies and other tracking technologies?"
                                     </Anchor>{" "}
-                                    for details on what Google Analytics collects and
-                                    how to opt out.
+                                    for details on what each collects and how to opt
+                                    out.
                                 </p>
                             </Section>
 
@@ -364,9 +365,11 @@ export default function PrivacyPolicy() {
                             <Section id="cookies" num={4} title="Do we use cookies and other tracking technologies?">
                                 <InShort>
                                     Yes. We use Google Analytics 4 to
-                                    understand how visitors use the site, and
-                                    Google Analytics sets cookies to make that
-                                    measurement possible.
+                                    understand aggregate traffic patterns and
+                                    Microsoft Clarity to understand
+                                    interaction patterns (clicks, scrolls,
+                                    session replays). Both set cookies to
+                                    make that measurement possible.
                                 </InShort>
                                 <p>
                                     We use cookies and similar tracking
@@ -437,6 +440,55 @@ export default function PrivacyPolicy() {
                                         className="ed-link"
                                     >
                                         Google Privacy &amp; Terms page
+                                    </a>
+                                    .
+                                </p>
+                                <p>
+                                    <strong>Microsoft Clarity.</strong> We use
+                                    Microsoft Clarity (project ID
+                                    xj8oadt46d) to understand how visitors
+                                    interact with the site through session
+                                    replay, click and scroll heatmaps, and
+                                    aggregated interaction metrics. When you
+                                    visit the site, Clarity captures a
+                                    recording of your interactions — mouse
+                                    movements, clicks, scrolls, and the pages
+                                    you view — along with your approximate
+                                    location (derived from your IP address),
+                                    device and browser characteristics, and
+                                    referrer. Clarity sets first-party
+                                    cookies (typically{" "}
+                                    <code>_clck</code>, <code>_clsk</code>)
+                                    and reads Microsoft's own third-party
+                                    cookies (such as <code>MUID</code>,{" "}
+                                    <code>ANONCHK</code>, <code>CLID</code>,
+                                    <code>SM</code>, <code>MR</code>) to
+                                    identify unique users and stitch
+                                    interactions into continuous sessions.
+                                    Recordings do not capture keystrokes in
+                                    input fields by default, and sensitive
+                                    content is masked. Data is processed by
+                                    Microsoft on our behalf. We do not use
+                                    Clarity data for advertising, retargeting,
+                                    profiling, or ad personalization. For
+                                    more information on Clarity's privacy
+                                    practices, see Microsoft's{" "}
+                                    <a
+                                        href="https://privacy.microsoft.com/privacystatement"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="ed-link"
+                                    >
+                                        Privacy Statement
+                                    </a>{" "}
+                                    and the{" "}
+                                    <a
+                                        href="https://learn.microsoft.com/en-us/clarity/setup-and-installation/faq#privacy"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="ed-link"
+                                    >
+                                        Clarity privacy FAQ
                                     </a>
                                     .
                                 </p>
