@@ -273,6 +273,37 @@ export default function PrivacyPolicy() {
                                     be true, complete, and accurate, and you must notify
                                     us of any changes to such personal information.
                                 </p>
+                                <h3 className="serif italic text-xl text-navy">
+                                    Information automatically collected
+                                </h3>
+                                <InShort>
+                                    Some information — such as your Internet Protocol
+                                    (IP) address, browser and device characteristics,
+                                    and how you navigate the site — is collected
+                                    automatically when you visit our Services.
+                                </InShort>
+                                <p>
+                                    We automatically collect certain information when
+                                    you visit, use, or navigate the Services. This
+                                    information does not reveal your specific identity
+                                    (like your name or contact information) but may
+                                    include device and usage information, such as your
+                                    IP address, browser and device characteristics,
+                                    operating system, language preferences, referring
+                                    URLs, the pages you view within our Services, the
+                                    order in which you view them, and information
+                                    about how and when you use our Services. This
+                                    information is primarily needed to maintain the
+                                    security and operation of our Services, and for
+                                    our internal analytics and reporting purposes. Our
+                                    only analytics provider is Google Analytics 4 —
+                                    see section{" "}
+                                    <Anchor id="cookies">
+                                        "Do we use cookies and other tracking technologies?"
+                                    </Anchor>{" "}
+                                    for details on what Google Analytics collects and
+                                    how to opt out.
+                                </p>
                             </Section>
 
                             <Section id="process-info" num={2} title="How do we process your information?">
@@ -332,27 +363,26 @@ export default function PrivacyPolicy() {
 
                             <Section id="cookies" num={4} title="Do we use cookies and other tracking technologies?">
                                 <InShort>
-                                    We may use cookies and other tracking technologies to
-                                    collect and store your information.
+                                    Yes. We use Google Analytics 4 to
+                                    understand how visitors use the site, and
+                                    Google Analytics sets cookies to make that
+                                    measurement possible.
                                 </InShort>
                                 <p>
-                                    We may use cookies and similar tracking technologies
-                                    (like web beacons and pixels) to gather information
-                                    when you interact with our Services. Some online
-                                    tracking technologies help us maintain the security
-                                    of our Services, prevent crashes, fix bugs, save your
-                                    preferences, and assist with basic site functions. We
-                                    also permit third parties and service providers to
-                                    use online tracking technologies on our Services for
-                                    analytics and advertising, including to help manage
-                                    and display advertisements, to tailor advertisements
-                                    to your interests, or to send abandoned shopping cart
-                                    reminders (depending on your communication
-                                    preferences). The third parties and service providers
-                                    use their technology to provide advertising about
-                                    products and services tailored to your interests
-                                    which may appear either on our Services or on other
-                                    websites.
+                                    We use cookies and similar tracking
+                                    technologies (like web beacons and pixels)
+                                    to gather information when you interact
+                                    with our Services. Some online tracking
+                                    technologies help us maintain the security
+                                    of our Services, prevent crashes, fix bugs,
+                                    save your preferences, and assist with
+                                    basic site functions. We also permit third
+                                    parties and service providers to use
+                                    online tracking technologies on our
+                                    Services for analytics — see the Google
+                                    Analytics disclosure below. We do not use
+                                    online tracking for advertising, retargeting,
+                                    profiling, or any form of ad personalization.
                                 </p>
                                 <p>
                                     To the extent these online tracking technologies are
@@ -366,11 +396,30 @@ export default function PrivacyPolicy() {
                                     </Anchor>
                                 </p>
                                 <p>
-                                    <strong>Google Analytics.</strong> We may share your
-                                    information with Google Analytics to track and
-                                    analyze the use of the Services. To opt out of being
-                                    tracked by Google Analytics across the Services,
-                                    visit{" "}
+                                    <strong>Google Analytics.</strong> We use
+                                    Google Analytics 4 (measurement ID
+                                    G-7F2PPZPXSK) to measure aggregate site
+                                    traffic and understand which pages are
+                                    read. When you visit the site, Google
+                                    Analytics automatically collects a limited
+                                    set of information about your visit,
+                                    including your approximate location
+                                    (derived from your IP address, which
+                                    Google truncates), the pages you view, how
+                                    you arrived on the site (referrer),
+                                    device and browser characteristics, and
+                                    the sequence of pages you visit within a
+                                    session. Google Analytics sets first-party
+                                    cookies (typically named{" "}
+                                    <code>_ga</code> and{" "}
+                                    <code>_ga_&lt;container-id&gt;</code>) to
+                                    distinguish unique visitors and sessions.
+                                    We do not use this data for advertising,
+                                    remarketing, or ad personalization, and
+                                    we have not enabled Google Signals or
+                                    cross-device tracking. To opt out of
+                                    being tracked by Google Analytics across
+                                    the Services, visit{" "}
                                     <a
                                         href="https://tools.google.com/dlpage/gaoptout"
                                         target="_blank"

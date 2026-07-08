@@ -6,11 +6,11 @@ breaking the build.
 
 Method's SEO is code, not a CMS. All SEO artifacts (titles, meta
 descriptions, canonicals, Open Graph, Twitter cards, JSON-LD structured
-data, sitemap, RSS, robots.txt, IndexNow key + diff-based ping) are
-baked into the static HTML at build time and served by Netlify as flat
-files. Nothing depends on JavaScript execution at read time — Google,
-Bing, LinkedIn's unfurler, Claude, Perplexity, and any other crawler
-sees the finished HTML.
+data, sitemap, RSS, robots.txt, IndexNow key + diff-based ping, and the
+GA4 measurement tag) are baked into the static HTML at build time and
+served by Netlify as flat files. Nothing depends on JavaScript execution
+at read time — Google, Bing, LinkedIn's unfurler, Claude, Perplexity,
+and any other crawler sees the finished HTML.
 
 ---
 
@@ -29,6 +29,7 @@ There is **no CMS**. Content and SEO metadata live in three places:
 | Sitemap priorities / changefreq | `frontend/scripts/generate-sitemap.js` | Static routes list at top |
 | IndexNow key file | `frontend/public/f2da102fbb1f98cf309ec46aeefef39e.txt` | Public; copied to build root by CRA; do not rename |
 | IndexNow ping script | `frontend/scripts/indexnow-ping.js` | Diff-based; last step in build chain; see §8 |
+| Google Analytics 4 tag | `frontend/public/index.html` head + `frontend/src/hooks/useGAPageView.js` | GA4 gtag.js snippet baked into every prerendered page; SPA route changes fire page_view; see §9 |
 
 ---
 
@@ -327,7 +328,130 @@ reject every subsequent submission until the file is restored.
 
 ---
 
-## 9. Legacy WordPress redirects
+---
+
+## 9. Google Analytics 4
+
+**Measurement ID:** `G-7F2PPZPXSK`
+**Property owner:** Method Marketing Group
+**Privacy disclosure:** See `/privacy-policy` §1 (Information automatically
+collected) and §4 (Cookies and tracking technologies)
+
+### 9.1 Where the tag lives
+
+The gtag.js snippet is baked directly into `frontend/public/index.html`
+inside the `<head>`, between the `<title>` and the emergent-related
+shims that `strip-emergent.js` removes. Because prerender-og.js and
+prerender-ssg.js both work by editing that same base HTML shell, the
+snippet is inherited into every one of the 21 prerendered per-route
+HTML files automatically. There is nothing to add on a per-page basis.
+
+Because the script tag is `async`, it never blocks render or hurts
+Lighthouse / Web Vitals scores. Because it's in the raw HTML, it fires
+on the very first paint, before React has hydrated — so first-page
+visits are captured even for visitors on slow devices or with
+JavaScript delays.
+
+### 9.2 SPA route tracking
+
+The initial `gtag('config', ...)` call sets `send_page_view: false`.
+This is deliberate. Without it, GA4 would count the initial navigation
+and MISS every subsequent client-side route change (React Router's
+`history.pushState` does not trigger a document load).
+
+Instead, `frontend/src/hooks/useGAPageView.js` owns page_view for the
+entire session:
+
+```js
+// src/hooks/useGAPageView.js
+export function useGAPageView() {
+    const { pathname, search } = useLocation();
+    useEffect(() => {
+        if (typeof window === "undefined" || typeof window.gtag !== "function")
+            return;
+        window.gtag("event", "page_view", {
+            page_location: window.location.href,
+            page_path: pathname + search,
+            page_title: document.title,
+        });
+    }, [pathname, search]);
+}
+```
+
+Wired into `AppShell` in `src/App.js` AFTER `useDocumentTitle()` so
+`document.title` is already updated when the page_view event fires:
+
+```js
+useDocumentTitle();
+useGAPageView();
+```
+
+Result: exactly one `page_view` per SPA navigation, with the correct
+title, path, and full URL. Verified in a browser session — hitting `/`
+→ `/writing` → `/writing/wrap-rage` produced three clean `page_view`
+events with distinct titles.
+
+### 9.3 SSR safety
+
+`prerender-ssg.js` runs the React tree through `react-dom/server`,
+which has no `window` global. The hook's `typeof window` guard makes
+it a no-op during SSR. It only ever fires client-side, after
+hydration. This is why gtag calls do not appear in the prerendered HTML
+body.
+
+### 9.4 Verifying the tag is live
+
+**Level 1 — raw HTML:**
+
+```bash
+curl -sL https://methodmarketinggroup.com/ | grep -c "G-7F2PPZPXSK"
+# Expected: 2  (one for the script src, one for the config call)
+
+curl -sL https://methodmarketinggroup.com/writing/wrap-rage | grep -c "G-7F2PPZPXSK"
+# Expected: 2  (same tag on every prerendered page)
+```
+
+**Level 2 — GA4 Realtime:**
+
+Open GA4 → Reports → Realtime while loading the site. A visit should
+appear within a few seconds. Click through a couple of internal links
+— you should see the page_path value change with each navigation, and
+the "Views in the last 30 minutes" count should increment on each
+route change (not just on initial load).
+
+**Level 3 — DebugView (for verifying implementation changes):**
+
+If you're validating a change to the tracking hook or config, use
+Google's Tag Assistant browser extension (or set `debug_mode: true`
+temporarily) and check GA4 → Admin → DebugView. This shows every event
+in real time with full parameter payloads.
+
+### 9.5 What we do NOT do
+
+- No Google Signals (cross-device tracking).
+- No advertising features or remarketing audiences.
+- No ad personalization.
+- No third-party integrations (Google Ads, DV360, etc.).
+- No user-ID mapping — sessions are anonymous.
+
+These are all disabled by default in a fresh GA4 property; do not
+enable any of them without also updating the privacy policy at
+`/privacy-policy` §4.
+
+### 9.6 If the measurement ID ever changes
+
+Edit these two lines:
+
+- `frontend/public/index.html` — replace both occurrences of `G-7F2PPZPXSK`
+  (the `src` and the `config` call)
+- `frontend/src/pages/PrivacyPolicy.jsx` — update the ID reference in §4
+
+The hook (`useGAPageView.js`) is measurement-ID-agnostic and does not
+need to change.
+
+---
+
+## 10. Legacy WordPress redirects
 
 All old WordPress URLs are 301'd to the closest equivalent new URL via
 `frontend/public/_redirects`. This file is served verbatim by Netlify.
@@ -342,7 +466,7 @@ it's what gives unknown paths a proper 404 status + our stylized 404 page.
 
 ---
 
-## 10. Acceptance test for any SEO change
+## 11. Acceptance test for any SEO change
 
 **The acceptance test — run against the live Netlify deploy, not local.**
 The change must appear in the raw HTML response with no JavaScript
@@ -429,7 +553,7 @@ needs shortening later, get author sign-off first.
 
 ---
 
-## 12. Technical audit results (as of last SEO pass)
+## 13. Technical audit results (as of last SEO pass)
 
 - ✓ Exactly one H1 per page across all 22 routes
 - ✓ Heading hierarchy contains no skips (h1 → h2 → h3 …)
@@ -445,10 +569,14 @@ needs shortening later, get author sign-off first.
 - ✓ IndexNow wired into build chain; diff-based ping runs on every
   production Netlify deploy (see §8); key file live at
   `/f2da102fbb1f98cf309ec46aeefef39e.txt`
+- ✓ Google Analytics 4 (G-7F2PPZPXSK) baked into every prerendered
+  page's `<head>`; SPA route changes fire `page_view` via
+  `useGAPageView` (see §9); privacy policy discloses collection
+  and cookies
 
 ---
 
-## 13. When you should call this playbook out of date
+## 14. When you should call this playbook out of date
 
 - Method adds an X / Twitter / Bluesky / GitHub account → update `sameAs`
   arrays in `orgSchema()` (and `personGarySchema()` if it's Gary's).

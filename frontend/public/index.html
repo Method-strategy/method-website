@@ -46,6 +46,21 @@
             rel="stylesheet"
         />
         <title>Method — Clarifying how you show up in the market.</title>
+        <!-- Google Analytics 4 (gtag.js). Loaded async so it never blocks
+             render. `send_page_view: false` disables the default auto
+             page_view so our SPA-aware hook in src/hooks/useGAPageView.js
+             owns page_view for both the initial load AND every subsequent
+             client-side route change. This block is intentionally OUTSIDE
+             the method-seo-block sentinel so prerender-og.js never touches
+             it, and its patterns don't match anything strip-emergent.js
+             targets — it is preserved as-is in every prerendered route. -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-7F2PPZPXSK"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-7F2PPZPXSK', { send_page_view: false });
+        </script>
         <script>window.addEventListener("error",function(e){if(e.error instanceof DOMException&&e.error.name==="DataCloneError"&&e.message&&e.message.includes("PerformanceServerTiming")){e.stopImmediatePropagation();e.preventDefault()}},true);</script>
         <script src="https://assets.emergent.sh/scripts/emergent-main.js"></script>
     </head>
