@@ -56,7 +56,82 @@ export default function Work() {
                 </div>
             </section>
 
-            {/* ROW 2 — What we do — capabilities list */}
+            {/* ROW 2 — How an engagement begins */}
+            <section
+                data-testid="work-how-engagement-begins"
+                className="row-full-loose border-t border-navy/15 bg-cream"
+            >
+                <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-24">
+                    {/* Section opener */}
+                    <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-8 items-end mb-14 md:mb-20" stagger={0.14}>
+                        <RevealItem className="lg:col-span-7">
+                            <div className="eyebrow text-navy/60 mb-6">
+                                How an engagement begins
+                            </div>
+                            <h2 className="wordmark text-4xl md:text-5xl lg:text-[3.75rem] leading-[1.02] tracking-tight">
+                                No pitch deck.
+                                <br />
+                                No dog and pony.
+                                <br />
+                                <span className="serif italic font-normal text-steel">
+                                    A sequence that works.
+                                </span>
+                            </h2>
+                        </RevealItem>
+                        <RevealItem className="lg:col-span-4 lg:col-start-9">
+                            <p className="prose-method !mb-0">
+                                Every Method engagement starts the same way,
+                                because the way it starts is the method.
+                            </p>
+                        </RevealItem>
+                    </RevealStagger>
+
+                    {/* Stepped sequence */}
+                    <RevealStagger
+                        as="ol"
+                        className="divide-y divide-navy/15 border-t border-b border-navy/15"
+                        stagger={0.1}
+                        amount={0.05}
+                    >
+                        {engagementSteps.map((step) => (
+                            <RevealItem
+                                as="li"
+                                key={step.marker}
+                                className="grid grid-cols-12 gap-4 md:gap-8 py-9 md:py-12 items-start"
+                            >
+                                <span className="col-span-2 md:col-span-1 chapter-num text-steel serif italic">
+                                    {step.marker}
+                                </span>
+                                <div className="col-span-10 md:col-span-11">
+                                    <h3 className="wordmark text-2xl md:text-3xl leading-[1.15] tracking-tight mb-4 md:mb-5">
+                                        {step.title}
+                                    </h3>
+                                    <p className="prose-method max-w-3xl">
+                                        <span className="!m-0">{step.body}</span>
+                                    </p>
+                                </div>
+                            </RevealItem>
+                        ))}
+                    </RevealStagger>
+
+                    {/* Closing quotable — pull quote flourish */}
+                    <Reveal>
+                        <div className="grid grid-cols-12 gap-4 md:gap-8 mt-14 md:mt-20">
+                            <div className="col-span-12 md:col-span-11 md:col-start-2">
+                                <p
+                                    data-testid="engagement-pull-quote"
+                                    className="serif italic font-normal text-3xl md:text-4xl lg:text-5xl leading-[1.15] text-steel"
+                                >
+                                    &ldquo;That&rsquo;s the difference between
+                                    buying a plan and buying a pitch.&rdquo;
+                                </p>
+                            </div>
+                        </div>
+                    </Reveal>
+                </div>
+            </section>
+
+            {/* ROW 3 — What we do — capabilities list */}
             <section
                 data-testid="work-what-we-do"
                 className="row-full-loose border-t border-navy/15"
@@ -185,6 +260,29 @@ export default function Work() {
         </main>
     );
 }
+
+const engagementSteps = [
+    {
+        marker: "i",
+        title: "First, a short conversation.",
+        body: "Before we talk, we send five questions. Not a form, and not homework: they're the things no amount of outside research can tell us, and a few honest sentences on each is plenty. We do our own homework before the call. We don't show up cold. By the time we're talking, the conversation is about your business, not an introduction to it."
+    },
+    {
+        marker: "ii",
+        title: "Then, usually, the Market Presence Audit.",
+        body: "Most engagements begin with a fixed-fee audit of the gap between what your business is and how it shows up: your website's promise against its evidence, your brand's consistency across every public surface, how you appear in search and to the AI systems increasingly answering questions about you, who claims what ground among your competitors, and where your track record has gone undocumented. It takes about three weeks, and it's scoped in a brief conversation."
+    },
+    {
+        marker: "iii",
+        title: "The findings are the plan.",
+        body: "What you receive is a prioritized gap inventory: what we found, what each gap costs you, and what we'd fix first, second, and third. The audit stands alone. There's no obligation beyond it, and the findings are yours whether Method does the fixing or you do."
+    },
+    {
+        marker: "iv",
+        title: "If we go further, the engagement is already designed.",
+        body: "When the findings warrant a deeper relationship, nothing gets pitched. The prioritized list is the scope. The engagement is built from what the audit actually found, not from what a proposal imagined."
+    }
+];
 
 const capabilities = [
     {
