@@ -36,15 +36,50 @@
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link rel="preconnect" href="https://use.typekit.net" crossorigin />
-        <link rel="stylesheet" href="https://use.typekit.net/kiu8ndx.css" />
+        <link rel="preconnect" href="https://p.typekit.net" crossorigin />
+
+        <!-- LCP optimization: preload the two Scandia woff2 files the
+             homepage wordmark depends on. Preload starts the font download
+             in parallel with the Typekit stylesheet, so the font is
+             (usually) ready by the time the CSS finishes parsing — this
+             cuts multiple seconds off LCP for typography-first pages.
+             fvd=n7 = Scandia Web 700 normal (browser synthesizes 800 from
+             this for the wordmark H1). fvd=i7 = Scandia Web 700 italic
+             (used for the steel-blue accent phrases in H1/H2). -->
+        <link rel="preload" as="font" type="font/woff2" crossorigin
+              href="https://use.typekit.net/af/04b7f1/00000000000000007735dd24/31/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3" />
+        <link rel="preload" as="font" type="font/woff2" crossorigin
+              href="https://use.typekit.net/af/29e987/00000000000000007735f528/31/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=i7&v=3" />
+
+        <!-- Adobe Typekit — Scandia. The ?display=swap tells Typekit's
+             @font-face rules to use font-display: swap, so the browser
+             paints a fallback immediately and swaps to Scandia when it's
+             ready. This prevents the wordmark (the LCP element on most
+             pages) from waiting on the font download. -->
+        <link rel="stylesheet" href="https://use.typekit.net/kiu8ndx.css?display=swap" />
+
+        <!-- Google Fonts loaded via media="print" swap-to-all trick so they
+             do NOT block first paint. Cormorant Garamond (serif italic
+             accents) and Manrope (system fallback for wordmark) already
+             have &display=swap so their @font-face uses fallback text
+             immediately; deferring the STYLESHEET itself removes two
+             additional render-blocking requests from the critical path. -->
         <link
+            rel="preload"
+            as="style"
             href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&display=swap"
-            rel="stylesheet"
+            onload="this.onload=null;this.rel='stylesheet'"
         />
         <link
+            rel="preload"
+            as="style"
             href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap"
-            rel="stylesheet"
+            onload="this.onload=null;this.rel='stylesheet'"
         />
+        <noscript>
+            <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&display=swap" rel="stylesheet" />
+            <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+        </noscript>
         <title>Method — Clarifying how you show up in the market.</title>
         <!-- Google Analytics 4 (gtag.js). Loaded async so it never blocks
              render. `send_page_view: false` disables the default auto
