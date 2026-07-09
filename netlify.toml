@@ -6,7 +6,7 @@
   # sitemap.xml + writing/rss.xml. The SSG step is what makes the deploy
   # crawlable by non-JS clients (LinkedIn, Perplexity, Claude, Google AI
   # Overview) — see scripts/prerender-ssg.js.
-  command = "yarn install --frozen-lockfile && yarn build && node scripts/strip-emergent.js && node scripts/prerender-og.js && node scripts/prerender-ssg.js && node scripts/generate-sitemap.js && node scripts/generate-rss.js && node scripts/indexnow-ping.js"
+  command = "yarn install --frozen-lockfile && yarn build && node scripts/strip-emergent.js && node scripts/generate-og-cards.js && node scripts/prerender-og.js && node scripts/prerender-ssg.js && node scripts/generate-sitemap.js && node scripts/generate-rss.js && node scripts/indexnow-ping.js"
   publish = "build"
   # Always build on every push. Without this, Netlify auto-cancels deploys
   # when it sees no diff inside base=frontend (which happens when commits

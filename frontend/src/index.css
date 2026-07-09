@@ -107,7 +107,7 @@ body {
 
 /* Wordmark / Display — Scandia. Used for H1, H2, wordmark, section labels. */
 .wordmark {
-    font-family: "scandia-web", "scandia", "Manrope", "Helvetica Neue",
+    font-family: "scandia-web", "scandia", "Lexend Deca", "Helvetica Neue",
         sans-serif;
     font-weight: 800;
     letter-spacing: -0.048em;
@@ -123,7 +123,7 @@ h2.wordmark {
 
 /* Eyebrow — small tracked caps in Scandia. Signage moments only. */
 .eyebrow {
-    font-family: "scandia-web", "scandia", "Manrope", sans-serif;
+    font-family: "scandia-web", "scandia", "Lexend Deca", sans-serif;
     text-transform: uppercase;
     letter-spacing: 0.26em;
     font-size: 0.68rem;

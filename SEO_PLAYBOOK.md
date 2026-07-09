@@ -5,14 +5,14 @@ session should be able to read this and safely make SEO changes without
 breaking the build.
 
 Method's SEO is code, not a CMS. All SEO artifacts (titles, meta
-descriptions, canonicals, Open Graph, Twitter cards, JSON-LD structured
-data, sitemap, RSS, robots.txt, IndexNow key + diff-based ping, the GA4
-measurement tag, the Microsoft Clarity tag, and the font-preload
-critical-path pattern that keeps Core Web Vitals inside budget) are
-baked into the static HTML at build time and served by Netlify as flat
-files. Nothing depends on JavaScript execution at read time — Google,
-Bing, LinkedIn's unfurler, Claude, Perplexity, and any other crawler
-sees the finished HTML.
+descriptions, canonicals, Open Graph, Twitter cards, per-article
+sharing card PNGs, JSON-LD structured data, sitemap, RSS, robots.txt,
+IndexNow key + diff-based ping, the GA4 measurement tag, the Microsoft
+Clarity tag, and the font-preload critical-path pattern that keeps Core
+Web Vitals inside budget) are baked into the static HTML at build time
+and served by Netlify as flat files. Nothing depends on JavaScript
+execution at read time — Google, Bing, LinkedIn's unfurler, Claude,
+Perplexity, and any other crawler sees the finished HTML.
 
 ---
 
@@ -33,7 +33,8 @@ There is **no CMS**. Content and SEO metadata live in three places:
 | IndexNow ping script | `frontend/scripts/indexnow-ping.js` | Diff-based; last step in build chain; see §8 |
 | Google Analytics 4 tag | `frontend/public/index.html` head + `frontend/src/hooks/useGAPageView.js` | GA4 gtag.js snippet baked into every prerendered page; SPA route changes fire page_view; see §9 |
 | Microsoft Clarity tag | `frontend/public/index.html` head | Clarity snippet baked into every prerendered page; handles SPA route changes natively; see §10 |
-| Font-preload critical path | `frontend/public/index.html` head | Scandia woff2 preloads + Typekit `?display=swap` + non-blocking Google Fonts; the pattern that keeps Core Web Vitals in the "good" band; see §11 |
+| Font-preload critical path | `frontend/public/index.html` head | Scandia woff2 preloads + Typekit `?display=swap` + non-blocking Google Fonts (Cormorant Garamond + Lexend Deca fallback); the pattern that keeps Core Web Vitals in the "good" band; see §12 |
+| Per-article OG sharing cards | `frontend/scripts/generate-og-cards.js` + `og-default.jpg` for non-articles | Unique 1200×630 PNG per writing post / case study / Discernment essay, generated at build time; falls back to og-default.jpg on missing file; see §11 |
 
 ---
 
@@ -71,7 +72,7 @@ There is **no CMS**. Content and SEO metadata live in three places:
   source.
 - Do not exceed 60 chars for titles or 160 chars for descriptions
   **unless** the author-approved copy requires it (some Method titles
-  intentionally run long — see §7 for currently-flagged items).
+  intentionally run long — see §15 for currently-flagged items).
 - Do not use `datePublished` values on articles other than the shared
   `SITE_LAUNCH_DATE` unless you're adding a genuinely new post; every
   existing post was made public on 2026-07-07.
@@ -550,7 +551,156 @@ Edit these two lines:
 
 ---
 
-## 11. Performance Budget (Core Web Vitals)
+## 11. Social sharing cards (per-article OG images)
+
+### 11.1 What ships
+
+Every article on the site — the 11 posts in `/writing`, the two case
+studies in `/work`, and the `/about/discernment` essay — gets a
+**unique 1200×630 PNG social sharing card** with its own headline
+typeset in Scandia over Method's navy. Non-article pages (home,
+`/about`, `/work` index, `/writing` index, `/connect`, `/sitemap`,
+`/privacy-policy`) continue to share the sitewide branded
+`og-default.jpg` — uniform brand recognition there is a feature.
+
+Cards ship at:
+
+- `/og/writing/<slug>.png` — one per writing post
+- `/og/work/<slug>.png` — one per case study
+- `/og/about/discernment.png` — the essay
+
+Each article's `<meta property="og:image">` in the prerendered HTML
+points at its matching PNG. If the PNG is missing (e.g. a Puppeteer
+failure on Netlify or a new slug that hasn't rebuilt yet),
+`prerender-og.js` silently falls back to `og-default.jpg` so LinkedIn /
+Twitter / Discord / iMessage unfurls never break.
+
+### 11.2 The template
+
+Every card uses the same composition (deliberately, so the brand reads
+consistently in a social feed):
+
+- **Top-left**: "Method" wordmark, Scandia 800, cream
+- **Top-right**: section eyebrow in tracked small caps
+  - Writing posts with a `seriesLabel` → e.g. `GAP SERIES · NO. 3`
+  - Writing posts without → e.g. `GAP SERIES` (their `category` uppercased)
+  - Case studies → `CASE STUDY`
+  - Discernment → `ESSAY`
+- **Middle**: headline in Scandia 800, tight letter-spacing, cream, sized dynamically:
+  - ≤60 chars → 76px
+  - 60–90 → 62px
+  - 90–130 → 52px
+  - >130 → 44px
+- **Bottom-left**: `METHODMARKETINGGROUP.COM` in small caps
+- **Bottom-right**: 96×3px steel-blue rule
+
+Template lives inline as a function in `frontend/scripts/generate-og-cards.js`
+— easy to see the whole card at a glance, easy to iterate.
+
+### 11.3 How the cards are generated
+
+Runs as a build-chain step BEFORE `prerender-og.js` (see `netlify.toml`):
+
+1. `frontend/scripts/generate-og-cards.js` enumerates every article
+   from `writing.js` and `caseStudies.js` plus the hardcoded
+   Discernment entry.
+2. For each article, it renders the template with the headline +
+   eyebrow injected, waits for `document.fonts.ready` so Scandia has
+   fully loaded, and screenshots at exactly 1200×630 as PNG.
+3. Files land in `build/og/{writing|work|about}/<slug>.png`.
+4. `prerender-og.js` then bakes the correct per-slug URL into
+   each article's `og:image`, or falls back to `og-default.jpg` if
+   the file isn't there.
+
+**On Netlify** the Puppeteer-bundled Chromium runs fine and all
+cards are generated on every deploy. Total add to build time: ~15
+seconds for the current 14 cards.
+
+**On local dev** in restricted containers where Chromium can't
+launch, set `SKIP_OG_CARDS=1` — the script will exit cleanly and
+articles will use `og-default.jpg` until the next Netlify deploy.
+
+### 11.4 Adding a new article
+
+Adding a new writing post to `writing.js` or a new case study to
+`caseStudies.js` **automatically generates a new sharing card** on
+the next deploy. No manual step, no design file to touch. The
+headline in the data file becomes the headline on the card.
+
+### 11.5 Editing a card's design
+
+Change the inline template in `frontend/scripts/generate-og-cards.js`
+(the `buildHtml` function). It's plain HTML/CSS using the same
+Adobe Typekit CSS the site loads, so changes render identically to
+the live site typography.
+
+To preview a design change WITHOUT running Puppeteer locally:
+
+```bash
+# From the frontend/ directory
+node -e "
+const fs = require('fs');
+const path = require('path');
+// (inline the buildHtml function and write to build/og-preview/foo.html)
+fs.writeFileSync('build/og-preview/wrap-rage.html', buildHtml({
+    headline: 'Wrap rage has an official name. That should tell you something.',
+    eyebrow: 'GAP SERIES · NO. 3'
+}));
+"
+```
+
+Then open the HTML file in a browser at 1200×630 viewport, or use the
+Netlify preview environment: `https://method-positioning.preview.emergentagent.com/og-preview/wrap-rage.html`.
+
+### 11.6 Verifying a card is live
+
+**Level 1 — raw HTML:**
+
+```bash
+curl -sL https://methodmarketinggroup.com/writing/wrap-rage \
+  | grep -oE 'og:image" content="[^"]+"'
+# Expected: og:image" content="https://methodmarketinggroup.com/og/writing/wrap-rage.png"
+```
+
+**Level 2 — PNG is fetchable:**
+
+```bash
+curl -sI https://methodmarketinggroup.com/og/writing/wrap-rage.png \
+  | grep -E 'HTTP|Content-Type|Content-Length'
+# Expected: HTTP 200, image/png, ~40–90KB
+```
+
+**Level 3 — social unfurler:**
+
+- LinkedIn Post Inspector: `https://www.linkedin.com/post-inspector/`
+- Twitter Card Validator: `https://cards-dev.twitter.com/validator`
+- Meta Sharing Debugger: `https://developers.facebook.com/tools/debug/`
+
+Paste an article URL into any of these. The rendered preview should
+show the per-slug card with the article's headline in Scandia over
+navy. If a validator shows the old `og-default.jpg`, force a re-fetch
+(LinkedIn: "Inspect" button; Facebook: "Scrape Again" button — most
+platforms cache the OG image for weeks).
+
+### 11.7 Anti-patterns
+
+- **Do not** point `og:image` at an HTML page. OG unfurlers fetch the
+  URL as a binary image; they don't render HTML. Format must be JPG,
+  PNG, WebP, or GIF, with a matching `Content-Type` header.
+- **Do not** exceed ~5 MB per card. LinkedIn caps at 5 MB, Twitter at
+  5 MB, Facebook at 8 MB. Method's cards are pure-text and ship at
+  40–90 KB each — well under the ceiling.
+- **Do not** use a background image that dominates the card without
+  contrast against the headline. Method's navy solid is exactly this
+  reason: type is the hero, always.
+- **Do not** hardcode a specific slug's card by copying the PNG into
+  `frontend/public/`. That bypasses the generator and creates
+  drift the moment the headline changes. All cards are generated;
+  none are hand-edited.
+
+---
+
+## 12. Performance Budget (Core Web Vitals)
 
 ### 11.1 The budget
 
@@ -719,7 +869,7 @@ open a fix before shipping new content.
 
 ---
 
-## 12. Legacy WordPress redirects
+## 13. Legacy WordPress redirects
 
 All old WordPress URLs are 301'd to the closest equivalent new URL via
 `frontend/public/_redirects`. This file is served verbatim by Netlify.
@@ -734,7 +884,7 @@ it's what gives unknown paths a proper 404 status + our stylized 404 page.
 
 ---
 
-## 13. Acceptance test for any SEO change
+## 14. Acceptance test for any SEO change
 
 **The acceptance test — run against the live Netlify deploy, not local.**
 The change must appear in the raw HTML response with no JavaScript
@@ -786,7 +936,7 @@ canonical, OG, Twitter, JSON-LD) must be present in the raw HTML.
 
 ---
 
-## 14. Currently-flagged items (informational; do not rewrite without approval)
+## 15. Currently-flagged items (informational; do not rewrite without approval)
 
 These titles / descriptions exceed the conventional soft limits. They are
 **authored copy** and were not rewritten during the technical audit;
@@ -821,7 +971,7 @@ needs shortening later, get author sign-off first.
 
 ---
 
-## 15. Technical audit results (as of last SEO pass)
+## 16. Technical audit results (as of last SEO pass)
 
 - ✓ Exactly one H1 per page across all 22 routes
 - ✓ Heading hierarchy contains no skips (h1 → h2 → h3 …)
@@ -845,12 +995,17 @@ needs shortening later, get author sign-off first.
   page's `<head>`; native SPA session stitching (see §10); privacy
   policy discloses collection, cookies, and Microsoft data processing
 - ✓ Core Web Vitals — LCP < 2.5s / CLS < 0.1 / INP < 200ms at p75
-  against the live production URL (see §11 for the budget, the
+  against the live production URL (see §12 for the budget, the
   critical-path pattern, and the verification protocol)
+- ✓ Per-article social sharing cards — unique 1200×630 PNG for every
+  `/writing/*` post, every `/work/*` case study, and `/about/discernment`;
+  generated at build time from data files so adding a post
+  auto-generates its card; graceful fallback to `og-default.jpg` if
+  the per-slug PNG is missing (see §11)
 
 ---
 
-## 16. When you should call this playbook out of date
+## 17. When you should call this playbook out of date
 
 - Method adds an X / Twitter / Bluesky / GitHub account → update `sameAs`
   arrays in `orgSchema()` (and `personGarySchema()` if it's Gary's).

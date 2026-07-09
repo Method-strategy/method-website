@@ -62,7 +62,7 @@ module.exports = {
                 display: [
                     "scandia-web",
                     "scandia",
-                    "Manrope",
+                    "Lexend Deca",
                     "Helvetica Neue",
                     "sans-serif"
                 ],
