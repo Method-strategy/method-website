@@ -386,7 +386,11 @@ const checks = [
     { test: /og:title" content="The gap between/i, label: "per-route og:title" },
     { test: /og:type" content="article/i, label: "og:type article" },
     { test: /twitter:card" content="summary_large_image/i, label: "twitter:card" },
-    { test: /og:image" content="[^"]*og-default\.jpg/, label: "og:image" },
+    // og:image must be a real Method-hosted URL. Accepts BOTH the
+    // per-slug PNG (when generate-og-cards.js ran successfully, e.g. on
+    // Netlify) AND the og-default.jpg fallback (when SKIP_OG_CARDS=1 or
+    // Puppeteer couldn't launch locally). Either is a shippable state.
+    { test: /og:image" content="[^"]*(og-default\.jpg|\/og\/writing\/the-gap-series-introduction\.png)/, label: "og:image" },
     { test: /rel="canonical"/, label: "canonical link" },
     { test: /id="root"/, label: "div#root preserved" },
     { test: /static\/js\/main\./, label: "CRA main.js bundle preserved" },
