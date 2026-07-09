@@ -7,11 +7,12 @@ breaking the build.
 Method's SEO is code, not a CMS. All SEO artifacts (titles, meta
 descriptions, canonicals, Open Graph, Twitter cards, JSON-LD structured
 data, sitemap, RSS, robots.txt, IndexNow key + diff-based ping, the GA4
-measurement tag, and the Microsoft Clarity tag) are baked into the
-static HTML at build time and served by Netlify as flat files. Nothing
-depends on JavaScript execution at read time — Google, Bing, LinkedIn's
-unfurler, Claude, Perplexity, and any other crawler sees the finished
-HTML.
+measurement tag, the Microsoft Clarity tag, and the font-preload
+critical-path pattern that keeps Core Web Vitals inside budget) are
+baked into the static HTML at build time and served by Netlify as flat
+files. Nothing depends on JavaScript execution at read time — Google,
+Bing, LinkedIn's unfurler, Claude, Perplexity, and any other crawler
+sees the finished HTML.
 
 ---
 
@@ -32,6 +33,7 @@ There is **no CMS**. Content and SEO metadata live in three places:
 | IndexNow ping script | `frontend/scripts/indexnow-ping.js` | Diff-based; last step in build chain; see §8 |
 | Google Analytics 4 tag | `frontend/public/index.html` head + `frontend/src/hooks/useGAPageView.js` | GA4 gtag.js snippet baked into every prerendered page; SPA route changes fire page_view; see §9 |
 | Microsoft Clarity tag | `frontend/public/index.html` head | Clarity snippet baked into every prerendered page; handles SPA route changes natively; see §10 |
+| Font-preload critical path | `frontend/public/index.html` head | Scandia woff2 preloads + Typekit `?display=swap` + non-blocking Google Fonts; the pattern that keeps Core Web Vitals in the "good" band; see §11 |
 
 ---
 
@@ -548,7 +550,176 @@ Edit these two lines:
 
 ---
 
-## 11. Legacy WordPress redirects
+## 11. Performance Budget (Core Web Vitals)
+
+### 11.1 The budget
+
+Method's live production URL is expected to be in Google's **"good"**
+band on all three Core Web Vitals at all times. This is a budget, not an
+aspiration:
+
+| Metric | Threshold (p75) | Meaning |
+|---|---|---|
+| **LCP** (Largest Contentful Paint) | **< 2.5s** | The largest above-the-fold element paints in under 2.5 seconds for at least 75% of visitors |
+| **CLS** (Cumulative Layout Shift) | **< 0.1** | The page doesn't visibly jump around during load |
+| **INP** (Interaction to Next Paint) | **< 200ms** | Interactions (clicks, taps, key presses) get a visible response in under 200 milliseconds |
+
+**p75 = the 75th-percentile visitor.** All three are measured against
+real-user data aggregated across a rolling 28-day window. Any of the
+three landing in the "needs improvement" or "poor" band is a defect,
+not a tradeoff. Regressing an existing "good" score during a change is
+also a defect — the fix ships with the change or the change waits.
+
+### 11.2 Where to observe the metrics (vendor-agnostic)
+
+Because Core Web Vitals are a browser-native standard, every serious
+tool reports the same three numbers off the same underlying data:
+
+- **Microsoft Clarity** → project dashboard → Performance panel. Field
+  data, rolling window, p75. Fastest way to spot a regression.
+- **Google Search Console** → Experience → Core Web Vitals. Field data
+  from Chrome UX Report (CrUX). Same p75, longer aggregation window.
+  This is what actually feeds Google's ranking signal.
+- **PageSpeed Insights** (`pagespeed.web.dev`) → paste the live URL.
+  Shows both lab (Lighthouse) and field (CrUX) numbers side by side.
+- **Chrome DevTools** → Performance panel or the Web Vitals extension.
+  Lab-only, single-run — useful for verifying a fix before deploy.
+
+If two of these disagree, trust the field data (Clarity / Search
+Console / PSI field). Lab numbers can look great on a laptop with a
+warm cache and still ship a poor field experience.
+
+### 11.3 The critical-path pattern (reference implementation)
+
+Method is typography-first. The LCP element on every page is a heading
+rendered in **Scandia** (Adobe Typekit) — occasionally with a **Cormorant
+Garamond** italic accent (Google Fonts). Without care, the site would
+block first paint on those font downloads and blow LCP by 3–5 seconds.
+
+The pattern that keeps LCP inside budget lives in
+`frontend/public/index.html` and is preserved by the SSG pipeline
+into every prerendered per-route HTML file. Three rules:
+
+**Rule 1 — Preload the woff2 files the LCP element depends on.**
+
+```html
+<link rel="preload" as="font" type="font/woff2" crossorigin
+      href="https://use.typekit.net/af/04b7f1/…/l?…&fvd=n7&v=3" />
+<link rel="preload" as="font" type="font/woff2" crossorigin
+      href="https://use.typekit.net/af/29e987/…/l?…&fvd=i7&v=3" />
+```
+
+These are Scandia Web 700 (which the wordmark uses at synthesized 800)
+and Scandia Web 700 italic (the steel-blue accent phrases). Preloading
+kicks the download off at the same moment as the stylesheet, not
+serially after it.
+
+**Rule 2 — Force `display=swap` on the render-blocking stylesheet
+that unlocks the LCP element.**
+
+```html
+<link rel="stylesheet" href="https://use.typekit.net/kiu8ndx.css?display=swap" />
+```
+
+`?display=swap` tells Typekit's `@font-face` rules to allow the browser
+to paint a fallback (Manrope / Helvetica Neue) immediately and swap in
+Scandia when it's ready. Without swap, the LCP element is held on
+`font-display: block` for up to 3 seconds — that's the trap that ate
+our first field LCP score.
+
+**Rule 3 — De-block every stylesheet that does NOT unlock the LCP
+element.**
+
+```html
+<link rel="preload" as="style"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:…&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'" />
+<noscript>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:…&display=swap" />
+</noscript>
+```
+
+The `<noscript>` fallback is mandatory — Method is prerendered/SSG and
+must remain readable with JavaScript disabled. Same treatment for
+Manrope (or any future secondary typeface).
+
+**Applies equally to hero images if any get introduced.** If a page ever
+adds a hero image or above-the-fold LCP-relevant image, add a
+`<link rel="preload" as="image" href="…" fetchpriority="high">` for
+that image before shipping the change. Never let an LCP image download
+lazily.
+
+### 11.4 Verification protocol
+
+**Before deploy** — measure lab metrics on the preview environment:
+
+```bash
+# From Chrome DevTools Console on the preview URL, or via any headless
+# runner (Playwright, Puppeteer). The observer captures the LCP entry
+# reported by the browser natively:
+new PerformanceObserver(list => {
+    for (const e of list.getEntries())
+        console.log('LCP', e.startTime, 'ms', e.element);
+}).observe({type: 'largest-contentful-paint', buffered: true});
+```
+
+Lab LCP should be well under 500ms for any page that only depends on
+the font pipeline. If it's over 1s in lab, the field number will
+regress and the change is not ready to ship.
+
+**After deploy** — measure against the live production URL:
+
+1. Load `https://methodmarketinggroup.com/` in an incognito window.
+2. Same PerformanceObserver snippet — LCP must be < 2.5s in lab.
+3. Wait 24–72 hours for Clarity's Performance dashboard to aggregate
+   real users. Confirm the p75 for LCP, CLS, and INP are all in the
+   "good" band.
+4. If any regress: **roll back the change, or ship the fix same-day.**
+   The budget is non-negotiable.
+
+**Ongoing** — Clarity's dashboard is checked at each significant
+content change (new writing post, new case study, new page section).
+Search Console's Core Web Vitals report is checked monthly.
+
+### 11.5 Anti-patterns (things that would blow the budget)
+
+- **A blocking `<script>` (not `async` / not `defer`) in `<head>`** —
+  every synchronous head script delays first paint. GA4, Clarity, and
+  every future analytics tag must remain async.
+- **A render-blocking stylesheet without `?display=swap`** — this is
+  exactly the trap that produced the initial 4.8s LCP.
+- **An image-first LCP element without a preload + `fetchpriority="high"`.**
+- **A background-image on the LCP container** — CSS background images
+  do NOT count as LCP candidates in most browsers, so the LCP falls
+  through to a later element and often gets worse. Use `<img>` with a
+  preload instead.
+- **A large web font family loaded synchronously with dozens of weights
+  we don't use** — always specify only the weights actually referenced.
+- **Client-side hydration that shifts layout** — CLS budget is 0.1. Any
+  new component that renders a different size on client vs. SSR is a
+  defect (font-loading text isn't a shift because the box size is
+  preserved; a lazy-loaded image without dimensions IS a shift).
+
+### 11.6 Baseline (last verified)
+
+Live production `https://methodmarketinggroup.com/`, measured after
+tonight's font-preload pass:
+
+| Metric | Lab (Playwright, cold) | Field target (p75) |
+|---|---|---|
+| FCP | ~100 ms | (informational) |
+| **LCP** | ~112 ms | **< 2.5 s** ✓ |
+| **CLS** | 0.002 | **< 0.1** ✓ |
+| **INP** | (measure on interaction) | **< 200 ms** ⚠ was 240 ms — recheck 72h post-deploy |
+
+If any future measurement disagrees with this baseline by more than
+2× on LCP or drifts above the p75 threshold on any of the three,
+open a fix before shipping new content.
+
+---
+
+## 12. Legacy WordPress redirects
 
 All old WordPress URLs are 301'd to the closest equivalent new URL via
 `frontend/public/_redirects`. This file is served verbatim by Netlify.
@@ -563,7 +734,7 @@ it's what gives unknown paths a proper 404 status + our stylized 404 page.
 
 ---
 
-## 12. Acceptance test for any SEO change
+## 13. Acceptance test for any SEO change
 
 **The acceptance test — run against the live Netlify deploy, not local.**
 The change must appear in the raw HTML response with no JavaScript
@@ -615,7 +786,7 @@ canonical, OG, Twitter, JSON-LD) must be present in the raw HTML.
 
 ---
 
-## 13. Currently-flagged items (informational; do not rewrite without approval)
+## 14. Currently-flagged items (informational; do not rewrite without approval)
 
 These titles / descriptions exceed the conventional soft limits. They are
 **authored copy** and were not rewritten during the technical audit;
@@ -650,7 +821,7 @@ needs shortening later, get author sign-off first.
 
 ---
 
-## 14. Technical audit results (as of last SEO pass)
+## 15. Technical audit results (as of last SEO pass)
 
 - ✓ Exactly one H1 per page across all 22 routes
 - ✓ Heading hierarchy contains no skips (h1 → h2 → h3 …)
@@ -673,10 +844,13 @@ needs shortening later, get author sign-off first.
 - ✓ Microsoft Clarity (xj8oadt46d) baked into every prerendered
   page's `<head>`; native SPA session stitching (see §10); privacy
   policy discloses collection, cookies, and Microsoft data processing
+- ✓ Core Web Vitals — LCP < 2.5s / CLS < 0.1 / INP < 200ms at p75
+  against the live production URL (see §11 for the budget, the
+  critical-path pattern, and the verification protocol)
 
 ---
 
-## 15. When you should call this playbook out of date
+## 16. When you should call this playbook out of date
 
 - Method adds an X / Twitter / Bluesky / GitHub account → update `sameAs`
   arrays in `orgSchema()` (and `personGarySchema()` if it's Gary's).
