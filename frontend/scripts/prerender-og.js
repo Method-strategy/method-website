@@ -304,11 +304,21 @@ function professionalServiceSchema() {
 
 function articleSchema(route) {
     const url = `${SITE}${route.path === "/" ? "" : route.path}`;
+    // Use the per-slug OG card when available (same logic as buildMetaBlock):
+    // Article schema `image` should match og:image so crawlers (LinkedIn,
+    // Google news/AI answer engines) show the per-article card, not the
+    // generic default. Fall back to og-default.jpg when the per-slug PNG
+    // is missing so the schema is never invalid.
+    let image = OG_IMAGE;
+    if (route.ogImage) {
+        const abs = path.join(BUILD_DIR, route.ogImage.replace(/^\//, ""));
+        if (fs.existsSync(abs)) image = `${SITE}${route.ogImage}`;
+    }
     return {
         "@type": "Article",
         headline: route.articleHeadline,
         description: route.desc,
-        image: OG_IMAGE,
+        image,
         datePublished: SITE_LAUNCH_DATE,
         author: { "@id": PERSON_GARY_ID },
         publisher: { "@id": ORG_ID },
