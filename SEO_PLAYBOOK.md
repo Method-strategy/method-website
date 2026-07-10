@@ -702,7 +702,7 @@ platforms cache the OG image for weeks).
 
 ## 12. Performance Budget (Core Web Vitals)
 
-### 11.1 The budget
+### 12.1 The budget
 
 Method's live production URL is expected to be in Google's **"good"**
 band on all three Core Web Vitals at all times. This is a budget, not an
@@ -720,7 +720,7 @@ three landing in the "needs improvement" or "poor" band is a defect,
 not a tradeoff. Regressing an existing "good" score during a change is
 also a defect — the fix ships with the change or the change waits.
 
-### 11.2 Where to observe the metrics (vendor-agnostic)
+### 12.2 Where to observe the metrics (vendor-agnostic)
 
 Because Core Web Vitals are a browser-native standard, every serious
 tool reports the same three numbers off the same underlying data:
@@ -739,7 +739,7 @@ If two of these disagree, trust the field data (Clarity / Search
 Console / PSI field). Lab numbers can look great on a laptop with a
 warm cache and still ship a poor field experience.
 
-### 11.3 The critical-path pattern (reference implementation)
+### 12.3 The critical-path pattern (reference implementation)
 
 Method is typography-first. The LCP element on every page is a heading
 rendered in **Scandia** (Adobe Typekit) — occasionally with a **Cormorant
@@ -800,7 +800,47 @@ adds a hero image or above-the-fold LCP-relevant image, add a
 that image before shipping the change. Never let an LCP image download
 lazily.
 
-### 11.4 Verification protocol
+**Rule 4 — Never gate above-the-fold visibility behind JavaScript.**
+
+This was the second field-LCP trap (found July 2026, after the font
+pass): the hero of every page was animated in with framer-motion
+(`initial={{ opacity: 0 }}`), which bakes `style="opacity:0"` into the
+prerendered HTML. Real visitors saw a blank hero until the entire JS
+bundle downloaded, parsed, hydrated React, and ran the animation —
+~4s field LCP on median mobile, even though lab numbers on a warm
+desktop looked perfect.
+
+The fix: above-the-fold ("hero") content uses a **CSS-only** entrance
+animation that runs on first paint with zero JS dependency.
+
+- `frontend/src/components/Reveal.jsx` — `Reveal`, `RevealStagger`,
+  and `RevealItem` all accept a `hero` prop. With `hero`, they render
+  plain elements with the `.hero-stagger` / `.hero-reveal` classes
+  instead of motion components, so the SSR HTML carries **no**
+  `opacity:0` inline style.
+- `frontend/src/index.css` — `.hero-reveal` replicates the framer
+  entrance exactly (y 24px → 0, 900ms, `cubic-bezier(0.16,1,0.3,1)`);
+  `.hero-stagger > .hero-reveal:nth-child(n)` replicates the 140ms
+  sibling stagger; a `prefers-reduced-motion` media query disables it.
+- Every page's first (above-the-fold) section uses `hero`. Sections
+  below the fold keep the scroll-triggered framer-motion reveals —
+  the JS bundle is fully loaded by the time anyone scrolls to them.
+
+When adding a new page or a new hero section: the first viewport of
+content MUST use `hero` reveals (or no reveal at all). Verify with:
+
+```bash
+# The first ~3000 chars of <main> in the prerendered HTML must not
+# contain a baked opacity:0 inline style:
+python3 - <<'EOF'
+h = open('build/index.html').read()
+m = h[h.find('<main'):h.find('</main>')][:3000]
+assert 'opacity:0' not in m, 'LCP element is JS-gated — fix before deploy'
+print('hero OK')
+EOF
+```
+
+### 12.4 Verification protocol
 
 **Before deploy** — measure lab metrics on the preview environment:
 
@@ -832,7 +872,7 @@ regress and the change is not ready to ship.
 content change (new writing post, new case study, new page section).
 Search Console's Core Web Vitals report is checked monthly.
 
-### 11.5 Anti-patterns (things that would blow the budget)
+### 12.5 Anti-patterns (things that would blow the budget)
 
 - **A blocking `<script>` (not `async` / not `defer`) in `<head>`** —
   every synchronous head script delays first paint. GA4, Clarity, and
@@ -850,18 +890,25 @@ Search Console's Core Web Vitals report is checked monthly.
   new component that renders a different size on client vs. SSR is a
   defect (font-loading text isn't a shift because the box size is
   preserved; a lazy-loaded image without dimensions IS a shift).
+- **JS-gated visibility on above-the-fold content** — any element in
+  the first viewport rendered with `opacity: 0` inline (framer-motion
+  `initial`, GSAP `autoAlpha`, etc.) holds LCP hostage to the full JS
+  bundle. Heroes use the CSS-only `hero` reveal (Rule 4 in §12.3).
+  Lab tests on fast connections hide this failure — it only shows up
+  in field data.
 
-### 11.6 Baseline (last verified)
+### 12.6 Baseline (last verified)
 
 Live production `https://methodmarketinggroup.com/`, measured after
-tonight's font-preload pass:
+the July 2026 CSS-hero-reveal pass (which followed the font-preload
+pass):
 
 | Metric | Lab (Playwright, cold) | Field target (p75) |
 |---|---|---|
 | FCP | ~100 ms | (informational) |
-| **LCP** | ~112 ms | **< 2.5 s** ✓ |
+| **LCP** | ~112 ms (no longer JS-gated for real users) | **< 2.5 s** — field was 4.2s pre-fix; expect drift down over 3–7 days post-deploy |
 | **CLS** | 0.002 | **< 0.1** ✓ |
-| **INP** | (measure on interaction) | **< 200 ms** ⚠ was 240 ms — recheck 72h post-deploy |
+| **INP** | (measure on interaction) | **< 200 ms** ⚠ was 270 ms — hero de-motioning reduces main-thread animation work; recheck 72h post-deploy |
 
 If any future measurement disagrees with this baseline by more than
 2× on LCP or drifts above the p75 threshold on any of the three,

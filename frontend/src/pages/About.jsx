@@ -7,8 +7,8 @@ export default function About() {
             {/* ROW 1 — Opener */}
             <section className="row-full bg-cream">
                 <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 pt-32 md:pt-0 pb-16 md:pb-0">
-                    <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-14 gap-x-8 items-end" stagger={0.14}>
-                        <RevealItem className="lg:col-span-8">
+                    <RevealStagger hero className="grid grid-cols-1 lg:grid-cols-12 gap-y-14 gap-x-8 items-end" stagger={0.14}>
+                        <RevealItem hero className="lg:col-span-8">
                             <div className="eyebrow text-navy/60 mb-8">
                                 About Method
                             </div>
@@ -21,7 +21,7 @@ export default function About() {
                                 to this.
                             </h1>
                         </RevealItem>
-                        <RevealItem className="lg:col-span-4 lg:pl-6">
+                        <RevealItem hero className="lg:col-span-4 lg:pl-6">
                             <p className="emphasis-line">
                                 A deliberate point of view about what a
                                 marketing practice should be.

@@ -46,8 +46,8 @@ export default function Sitemap() {
         <main data-testid="sitemap-page" className="bg-cream text-navy">
             <section className="row-full bg-cream">
                 <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 pt-32 md:pt-40 pb-20 md:pb-28">
-                    <RevealStagger stagger={0.12}>
-                        <RevealItem>
+                    <RevealStagger hero stagger={0.12}>
+                        <RevealItem hero>
                             <div className="eyebrow text-navy/60 mb-8">
                                 Sitemap
                             </div>
@@ -59,7 +59,7 @@ export default function Sitemap() {
                                 </span>
                             </h1>
                         </RevealItem>
-                        <RevealItem>
+                        <RevealItem hero>
                             <div className="grid grid-cols-1 md:grid-cols-12 gap-y-14 gap-x-8">
                                 <div className="md:col-span-3">
                                     <SectionList title="Pages" items={pages} />

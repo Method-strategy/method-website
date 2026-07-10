@@ -8,8 +8,8 @@ export default function Work() {
             {/* ROW 1 — Page opener */}
             <section className="row-full-loose bg-cream">
                 <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 pt-32 md:pt-24 pb-16 md:pb-16">
-                    <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-12 gap-x-8 items-start" stagger={0.14}>
-                        <RevealItem className="lg:col-span-6">
+                    <RevealStagger hero className="grid grid-cols-1 lg:grid-cols-12 gap-y-12 gap-x-8 items-start" stagger={0.14}>
+                        <RevealItem hero className="lg:col-span-6">
                             <div className="eyebrow text-navy/60 mb-6">
                                 How We Engage
                             </div>
@@ -23,7 +23,7 @@ export default function Work() {
                                 follows.
                             </h1>
                         </RevealItem>
-                        <RevealItem className="lg:col-span-6 lg:pl-6">
+                        <RevealItem hero className="lg:col-span-6 lg:pl-6">
                             <div className="prose-method">
                                 <p>
                                     Most marketing problems aren't marketing

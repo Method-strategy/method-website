@@ -37,8 +37,8 @@ export default function Discernment() {
                     <SaveAsPdfLink variant="cream" testid="discernment-save-pdf" />
                 </div>
 
-                <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-8" stagger={0.14}>
-                    <RevealItem className="lg:col-span-2">
+                <RevealStagger hero className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-8" stagger={0.14}>
+                    <RevealItem hero className="lg:col-span-2">
                         <div className="eyebrow text-navy/60">
                             An essay
                         </div>
@@ -46,7 +46,7 @@ export default function Discernment() {
                             Personal
                         </div>
                     </RevealItem>
-                    <RevealItem className="lg:col-span-9 lg:col-start-4">
+                    <RevealItem hero className="lg:col-span-9 lg:col-start-4">
                         <h1
                             data-testid="discernment-title"
                             className="wordmark text-5xl md:text-6xl lg:text-[5rem] leading-[0.95] tracking-tight"

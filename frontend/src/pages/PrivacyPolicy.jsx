@@ -63,8 +63,8 @@ export default function PrivacyPolicy() {
         <main data-testid="privacy-policy-page" className="bg-cream text-navy">
             <section className="row-full bg-cream">
                 <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 pt-32 md:pt-40 pb-20 md:pb-28">
-                    <RevealStagger stagger={0.12}>
-                        <RevealItem>
+                    <RevealStagger hero stagger={0.12}>
+                        <RevealItem hero>
                             <div className="eyebrow text-navy/60 mb-8">Legal</div>
                             <h1 className="wordmark text-5xl md:text-6xl lg:text-[5rem] leading-[0.95] tracking-tight">
                                 Privacy

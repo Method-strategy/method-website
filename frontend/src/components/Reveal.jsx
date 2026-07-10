@@ -11,6 +11,10 @@ import { motion, useReducedMotion } from "framer-motion";
  *  - duration: seconds (default 0.9)
  *  - amount: how much must be in view to trigger (0..1, default 0.2)
  *  - once: only trigger the first time (default true)
+ *  - hero: CSS-only entrance for above-the-fold content. Renders a plain
+ *    element with the .hero-reveal class instead of a motion component, so
+ *    the SSR HTML carries no opacity:0 inline style and the LCP element
+ *    paints on first frame without waiting for the JS bundle.
  */
 export function Reveal({
     children,
@@ -20,11 +24,20 @@ export function Reveal({
     duration = 0.9,
     amount = 0.2,
     once = true,
+    hero = false,
     className = "",
     ...rest
 }) {
     const reduce = useReducedMotion();
     const MotionTag = motion[Tag] || motion.div;
+
+    if (hero) {
+        return (
+            <Tag className={`hero-reveal ${className}`} {...rest}>
+                {children}
+            </Tag>
+        );
+    }
 
     if (reduce) {
         return (
@@ -63,9 +76,17 @@ export function RevealStagger({
     initialDelay = 0,
     amount = 0.2,
     once = true,
+    hero = false,
     ...rest
 }) {
     const reduce = useReducedMotion();
+    if (hero) {
+        return (
+            <div className={`hero-stagger ${className}`} {...rest}>
+                {children}
+            </div>
+        );
+    }
     if (reduce) return <div className={className} {...rest}>{children}</div>;
 
     return (
@@ -95,11 +116,20 @@ export function RevealItem({
     as: Tag = "div",
     y = 24,
     duration = 0.9,
+    hero = false,
     className = "",
     ...rest
 }) {
     const reduce = useReducedMotion();
     const MotionTag = motion[Tag] || motion.div;
+
+    if (hero) {
+        return (
+            <Tag className={`hero-reveal ${className}`} {...rest}>
+                {children}
+            </Tag>
+        );
+    }
 
     if (reduce) return <Tag className={className} {...rest}>{children}</Tag>;
 

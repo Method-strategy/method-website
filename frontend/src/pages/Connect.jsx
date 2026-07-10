@@ -9,14 +9,14 @@ export default function Connect() {
 
             <section className="flex-1 flex items-center">
                 <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-32">
-                    <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-16 gap-x-8" stagger={0.14}>
-                        <RevealItem className="lg:col-span-12">
+                    <RevealStagger hero className="grid grid-cols-1 lg:grid-cols-12 gap-y-16 gap-x-8" stagger={0.14}>
+                        <RevealItem hero className="lg:col-span-12">
                             <div className="eyebrow text-cream/60 mb-8">
                                 Connect
                             </div>
                         </RevealItem>
 
-                        <RevealItem className="lg:col-span-8">
+                        <RevealItem hero className="lg:col-span-8">
                             <h1
                                 className="wordmark text-5xl md:text-7xl lg:text-[6rem] leading-[0.92] tracking-tight text-cream"
                                 data-testid="connect-headline"
@@ -31,7 +31,7 @@ export default function Connect() {
                             </h1>
                         </RevealItem>
 
-                        <RevealItem className="lg:col-span-4 lg:pl-6 prose-method">
+                        <RevealItem hero className="lg:col-span-4 lg:pl-6 prose-method">
                             <p>
                                 Method takes on a small number of engagements.
                                 We're selective, not because we're precious

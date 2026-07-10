@@ -32,8 +32,8 @@ export default function WritingDetail() {
                     </Link>
                     <SaveAsPdfLink variant="cream" testid="writing-detail-save-pdf" />
                 </div>
-                <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-8 gap-x-8" stagger={0.1}>
-                    <RevealItem className="lg:col-span-2">
+                <RevealStagger hero className="grid grid-cols-1 lg:grid-cols-12 gap-y-8 gap-x-8" stagger={0.1}>
+                    <RevealItem hero className="lg:col-span-2">
                         <div className="eyebrow text-navy/60">
                             {post.seriesLabel || post.category}
                         </div>
@@ -45,7 +45,7 @@ export default function WritingDetail() {
                             </div>
                         )}
                     </RevealItem>
-                    <RevealItem className="lg:col-span-9 lg:col-start-4">
+                    <RevealItem hero className="lg:col-span-9 lg:col-start-4">
                         <h1
                             data-testid="writing-detail-title"
                             className="serif italic font-normal text-4xl md:text-6xl lg:text-[4rem] leading-[1.05] text-navy"
