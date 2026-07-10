@@ -133,3 +133,9 @@ Marketing website for Method, a strategic marketing practice (fractional CMO-lev
 - SEO_PLAYBOOK.md: added Rule 4 ("Never gate above-the-fold visibility behind JavaScript") + verification snippet to §12.3, new anti-pattern in §12.5, updated baseline §12.6, corrected §12 subsection numbering (was mislabeled 11.x).
 - Expected side benefit: INP (270ms) should improve — less framer main-thread work on load/navigation.
 - NOTE: Clarity field numbers are a rolling window; expect drift down over 3–7 days post-deploy. User must push to Netlify (Save to GitHub) to ship.
+
+## July 2026 — Analytics trailing-slash split fix
+- User reported Clarity counting `/writing/the-gap-series-introduction` and `.../introduction/` (and `/work` vs `/work/`) as separate pages. Root cause: Netlify 301s bare paths to trailing-slash for directory-index sites, so hard navigations record `/foo/` while SPA navigations record `/foo`.
+- Fix: inline URL-normalizer script in public/index.html `<head>`, placed ABOVE the GA4 + Clarity tags — strips trailing slash via history.replaceState before analytics capture the URL. Unifies all pageviews on the canonical non-slash form (matches canonical/sitemap/og:url).
+- Verified: script present in all 22 prerendered routes post-build (survives strip-emergent); e2e confirmed `/work/` and article slash URLs normalize before load and render fully.
+- Documented as SEO_PLAYBOOK.md §9.0 (with ordering rule: normalizer must stay above analytics tags). Historic split data remains; new sessions unify. Needs Netlify deploy to take effect.

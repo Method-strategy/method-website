@@ -342,6 +342,38 @@ reject every subsequent submission until the file is restored.
 **Privacy disclosure:** See `/privacy-policy` §1 (Information automatically
 collected) and §4 (Cookies and tracking technologies)
 
+### 9.0 URL normalization (applies to GA4 AND Clarity)
+
+Netlify serves each prerendered route from `folder/index.html` and
+**301-redirects the bare path to the trailing-slash form**
+(`/work` → `/work/`). So hard navigations (search results, shared
+links, refreshes) land the browser on `/work/`, while SPA navigations
+via React Router record `/work` — splitting every page into **two
+separate analytics counters** (this is exactly what showed up in
+Clarity as `/writing/the-gap-series-introduction` and
+`/writing/the-gap-series-introduction/` tallied independently).
+
+The fix is a tiny inline script in `frontend/public/index.html`,
+placed **above** the GA4 and Clarity tags, that strips trailing
+slashes via `history.replaceState` before any analytics script
+captures the URL:
+
+```html
+<script>
+    (function(){var p=location.pathname;if(p.length>1&&/\/+$/.test(p)){history.replaceState(null,"",p.replace(/\/+$/,"")+location.search+location.hash)}})();
+</script>
+```
+
+All pageviews now unify on the canonical non-slash form — the same
+form used by `<link rel="canonical">`, sitemap.xml, and og:url.
+
+**Ordering rule: this script must stay above both analytics tags.**
+If it ever moves below them, the split counters come back.
+
+Note: historic data from before this fix keeps the split; only new
+sessions unify. Netlify's 301 itself is untouched (it's harmless and
+can't be disabled for directory-index sites).
+
 ### 9.1 Where the tag lives
 
 The gtag.js snippet is baked directly into `frontend/public/index.html`

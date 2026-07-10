@@ -83,6 +83,17 @@
             <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
         </noscript>
         <title>Method — Clarifying how you show up in the market.</title>
+        <!-- URL normalizer — MUST stay above the GA4 and Clarity tags.
+             Netlify serves each prerendered route from folder/index.html and
+             301s bare paths to the trailing-slash form (/work -> /work/), so
+             hard navigations land on "/work/" while SPA navigations record
+             "/work" — splitting every page into two analytics counters.
+             This strips the trailing slash before any analytics script
+             captures the URL, so all pageviews unify on the canonical
+             non-slash form (matching canonical/sitemap/og:url). -->
+        <script>
+            (function(){var p=location.pathname;if(p.length>1&&/\/+$/.test(p)){history.replaceState(null,"",p.replace(/\/+$/,"")+location.search+location.hash)}})();
+        </script>
         <!-- Google Analytics 4 (gtag.js). Loaded async so it never blocks
              render. `send_page_view: false` disables the default auto
              page_view so our SPA-aware hook in src/hooks/useGAPageView.js
