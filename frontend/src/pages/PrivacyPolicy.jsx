@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { RevealStagger, RevealItem } from "../components/Reveal";
 
 const EMAIL = "connect@methodmarketinggroup.com";
@@ -59,6 +60,32 @@ const InShort = ({ children }) => (
 );
 
 export default function PrivacyPolicy() {
+    // Scroll-spy: highlight the TOC entry for the section currently in
+    // view. The active section is the last one whose top has passed the
+    // sticky-nav offset (matches the sections' scroll-mt-28 ≈ 112px).
+    const [activeId, setActiveId] = useState(null);
+    useEffect(() => {
+        let ticking = false;
+        const update = () => {
+            ticking = false;
+            let current = null;
+            for (const t of toc) {
+                const el = document.getElementById(t.id);
+                if (el && el.getBoundingClientRect().top <= 130) current = t.id;
+            }
+            setActiveId(current);
+        };
+        const onScroll = () => {
+            if (!ticking) {
+                ticking = true;
+                requestAnimationFrame(update);
+            }
+        };
+        update();
+        window.addEventListener("scroll", onScroll, { passive: true });
+        return () => window.removeEventListener("scroll", onScroll);
+    }, []);
+
     return (
         <main data-testid="privacy-policy-page" className="bg-cream text-navy">
             <section className="row-full bg-cream">
@@ -91,13 +118,24 @@ export default function PrivacyPolicy() {
                             <ol className="space-y-2.5">
                                 {toc.map((t, i) => (
                                     <li key={t.id} className="flex gap-2.5 items-baseline">
-                                        <span className="text-xs text-navy/40 tabular-nums shrink-0">
+                                        <span
+                                            className={`text-xs tabular-nums shrink-0 transition-colors duration-300 ${
+                                                activeId === t.id
+                                                    ? "text-steel"
+                                                    : "text-navy/40"
+                                            }`}
+                                        >
                                             {String(i + 1).padStart(2, "0")}
                                         </span>
                                         <a
                                             href={`#${t.id}`}
                                             data-testid={`privacy-toc-${t.id}`}
-                                            className="nav-link text-sm leading-snug text-navy/75 hover:text-navy"
+                                            aria-current={activeId === t.id ? "true" : undefined}
+                                            className={`nav-link text-sm leading-snug transition-colors duration-300 ${
+                                                activeId === t.id
+                                                    ? "text-navy font-medium"
+                                                    : "text-navy/75 hover:text-navy"
+                                            }`}
                                         >
                                             {t.label}
                                         </a>

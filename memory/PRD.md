@@ -169,3 +169,8 @@ Marketing website for Method, a strategic marketing practice (fractional CMO-lev
 - Acceptance PASSED: preview = 0 analytics requests across load + SPA navs + mailto click; LIVE production = GA + Clarity firing, live email_click captured with dl=/writing/wrap-rage + article title (completes earlier live mailto verification).
 - Playbook §9.8 added: guard spec, maintenance rules (dual copies of hostname check), testing implication (analytics verifiable only on live URL / GA4 DebugView), historical preview rows note (filter by hostname).
 - PENDING: user deploys guard via Save to GitHub (production behavior unchanged — hostname matches); GA4 key-event registration for email_click + linkedin_click still on user.
+
+## July 2026 — Privacy Policy TOC scroll-spy (P2 backlog item DONE)
+- PrivacyPolicy.jsx: rAF-throttled scroll listener tracks the last section whose top passed the 130px sticky-nav offset; active TOC entry gets steel number + text-navy font-medium label (transition-colors), aria-current="true", clears above section 1. SSR-safe (useEffect).
+- Verified via playwright: TOC click → correct highlight, scroll to later section → highlight follows, scroll to top → no highlight.
+- Needs Save to GitHub to reach live (bundled with pending analytics hostname guard deploy).
