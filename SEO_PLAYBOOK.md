@@ -511,6 +511,64 @@ Edit these two lines:
 The hook (`useGAPageView.js`) is measurement-ID-agnostic and does not
 need to change.
 
+### 9.7 `email_click` event (key event / conversion)
+
+**What:** a custom GA4 event named `email_click`, fired on every click
+of any `mailto:` link, sitewide.
+
+**Where it fires:** one delegated capture-phase click listener on
+`document`, installed by `frontend/src/hooks/useMailtoTracking.js`
+(called once from `AppShell` in `App.js`). No per-component wiring —
+it automatically covers the Connect page CTA, the footer email link,
+the Home closing CTA, the Discernment closing line, the three
+privacy-policy links, ShareRow's "share via email" action, and any
+mailto link added in the future.
+
+**Parameters:**
+
+| Param | Value | How it lands in GA4 |
+|---|---|---|
+| `page_path` | `window.location.pathname` | Reserved gtag field — folds into the hit's page fields (`dl`), surfacing as the standard **Page path** dimension on the event. This is what attributes an inquiry to the article/page that preceded the click, in standard reports, with no custom-dimension registration. |
+| `page_title` | `document.title` | Reserved field → `dt` → standard **Page title** dimension |
+| `link_url` | mailto href, query stripped (e.g. `mailto:connect@methodmarketinggroup.com`) | Custom param `ep.link_url` — distinguishes contact clicks from ShareRow shares (`mailto:` with no address) |
+| `link_text` | link's visible text, trimmed, max 100 chars | Custom param `ep.link_text` — which CTA wording was clicked |
+
+(Verified against the wire format: the `/g/collect` hit for a footer
+click on an article page carried `en=email_click`,
+`dl=…/writing/wrap-rage`, `dt=Wrap rage has an official name…`,
+`ep.link_url`, `ep.link_text`. To make `link_url`/`link_text` usable
+as report dimensions, optionally register them under Admin → Custom
+definitions → Create custom dimension, scope Event.)
+
+**Registering as a key event (one-time, GA4 UI — cannot be done in
+code):**
+
+1. Click a mailto link on the live site once so GA4 has seen the event
+   (it appears in *Realtime* immediately; in *Admin → Events* within
+   ~24h).
+2. GA4 → **Admin** (gear, bottom-left) → under *Data display* →
+   **Key events** → **New key event** → enter exactly `email_click`
+   → Save. (This works even before the event shows in the Events list.)
+3. From then on `email_click` surfaces as a conversion in standard
+   reports and can be broken down by `page_path` / `page_title`.
+
+**Privacy policy:** unchanged, deliberately. The event records a
+standard interaction (a click) with page context only — no email
+content, no address typed by the visitor, no new data category. It is
+covered by the existing GA4 disclosure in `/privacy-policy` §1 and §4.
+If the event ever starts carrying user-entered data, the policy must
+be updated first.
+
+**Known limitation (for the record):** a mailto click measures
+*intent* — the visitor's mail client opening — not that an email was
+composed or sent.
+
+**Verifying:** click any email link on the live site with DevTools →
+Network filtered to `collect`. The request to
+`google-analytics.com/g/collect` carries `en=email_click` plus
+`ep.page_path`, `ep.page_title`, `ep.link_url`, `ep.link_text`. The
+event also appears in GA4 → Reports → Realtime within seconds.
+
 ---
 
 ## 10. Microsoft Clarity
