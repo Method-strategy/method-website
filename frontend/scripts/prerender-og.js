@@ -2,8 +2,16 @@
 /**
  * prerender-og.js
  *
- * Post-build step: writes a static build/{route}/index.html for every known
+ * Post-build step: writes a static build/{route}.html for every known
  * route, each with its own OG / Twitter / canonical meta baked into the head.
+ *
+ * FLAT-FILE LAYOUT (canonical URL policy — see SEO_PLAYBOOK.md §9.0):
+ * routes are written as build/work.html, build/writing/{slug}.html, etc.
+ * (NOT build/work/index.html). On Netlify, file-based content makes the
+ * non-trailing-slash URL canonical at the HTTP layer: /work serves 200
+ * and /work/ gets a 301 → /work. The directory-index layout does the
+ * opposite (301s /work → /work/), which split analytics pageviews and
+ * contradicted the non-slash canonical/sitemap/og:url. Do not switch back.
  *
  * Why: LinkedIn, Twitter, iMessage, WhatsApp and most other unfurlers do NOT
  * execute JavaScript. Client-side meta (react-helmet) is invisible to them.
@@ -368,13 +376,14 @@ for (const route of routes) {
     let outFile;
     if (route.outFile) {
         outFile = path.join(BUILD_DIR, route.outFile);
+    } else if (route.path === "/") {
+        outFile = INDEX_PATH;
     } else {
-        const dir =
-            route.path === "/"
-                ? BUILD_DIR
-                : path.join(BUILD_DIR, ...route.path.split("/").filter(Boolean));
+        // Flat file: /writing/wrap-rage -> build/writing/wrap-rage.html
+        const parts = route.path.split("/").filter(Boolean);
+        const dir = path.join(BUILD_DIR, ...parts.slice(0, -1));
         fs.mkdirSync(dir, { recursive: true });
-        outFile = path.join(dir, "index.html");
+        outFile = path.join(dir, `${parts[parts.length - 1]}.html`);
     }
     fs.writeFileSync(outFile, renderRoute(baseHtml, route), "utf8");
     written.push(path.relative(BUILD_DIR, outFile));
@@ -383,12 +392,7 @@ for (const route of routes) {
 
 // ---------- Sanity check ----------
 const sample = fs.readFileSync(
-    path.join(
-        BUILD_DIR,
-        "writing",
-        "the-gap-series-introduction",
-        "index.html"
-    ),
+    path.join(BUILD_DIR, "writing", "the-gap-series-introduction.html"),
     "utf8"
 );
 const checks = [
@@ -418,13 +422,13 @@ if (failed.length) {
     process.exit(1);
 }
 
-console.log(`[prerender-og] Wrote ${count} per-route index.html files:`);
+console.log(`[prerender-og] Wrote ${count} per-route flat HTML files:`);
 for (const w of written) console.log(`  - ${w}`);
 
 // Additional sanity check: homepage must carry ProfessionalService schema,
 // and a non-article route (e.g. /work) must NOT carry Article schema.
 const homeSample = fs.readFileSync(path.join(BUILD_DIR, "index.html"), "utf8");
-const workSample = fs.readFileSync(path.join(BUILD_DIR, "work", "index.html"), "utf8");
+const workSample = fs.readFileSync(path.join(BUILD_DIR, "work.html"), "utf8");
 const extraChecks = [
     { file: "home", ok: /"@type":"ProfessionalService"/.test(homeSample), label: "ProfessionalService on /" },
     { file: "home", ok: !/"@type":"Article"/.test(homeSample), label: "no Article schema on /" },

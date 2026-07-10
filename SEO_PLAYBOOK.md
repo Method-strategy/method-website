@@ -342,37 +342,62 @@ reject every subsequent submission until the file is restored.
 **Privacy disclosure:** See `/privacy-policy` §1 (Information automatically
 collected) and §4 (Cookies and tracking technologies)
 
-### 9.0 URL normalization (applies to GA4 AND Clarity)
+### 9.0 Canonical URL policy: no trailing slashes (applies to GA4 AND Clarity)
 
-Netlify serves each prerendered route from `folder/index.html` and
-**301-redirects the bare path to the trailing-slash form**
-(`/work` → `/work/`). So hard navigations (search results, shared
-links, refreshes) land the browser on `/work/`, while SPA navigations
-via React Router record `/work` — splitting every page into **two
-separate analytics counters** (this is exactly what showed up in
-Clarity as `/writing/the-gap-series-introduction` and
-`/writing/the-gap-series-introduction/` tallied independently).
+**The canonical form of every URL on this site is WITHOUT a trailing
+slash** (`/work`, `/writing/wrap-rage`) — matching `<link rel="canonical">`,
+sitemap.xml, og:url, RSS item links, JSON-LD `mainEntityOfPage`, and
+every internal link. The homepage `/` is the only exception.
 
-The fix is a tiny inline script in `frontend/public/index.html`,
-placed **above** the GA4 and Clarity tags, that strips trailing
-slashes via `history.replaceState` before any analytics script
-captures the URL:
+**Why this is enforced at the HTTP layer.** The site originally emitted
+each route as `folder/index.html`. On Netlify, directory-index content
+makes the *trailing-slash* form canonical at the edge: `/work` got a
+301 → `/work/`. So hard navigations (search results, shared links,
+refreshes) recorded `/work/` in analytics while SPA navigations
+recorded `/work` — splitting every page into **two pageview counters**
+(exactly what Clarity showed for `/writing/the-gap-series-introduction`
+vs the same URL with a slash), and contradicting all our non-slash
+canonical signals.
 
-```html
-<script>
-    (function(){var p=location.pathname;if(p.length>1&&/\/+$/.test(p)){history.replaceState(null,"",p.replace(/\/+$/,"")+location.search+location.hash)}})();
-</script>
+**The mechanism: flat-file SSG output.** Netlify's edge normalization
+is driven purely by file layout and *cannot be overridden with
+`_redirects` rules* (normalization runs before redirect processing):
+
+| Layout | `/foo` | `/foo/` |
+|---|---|---|
+| `foo/index.html` (old) | 301 → `/foo/` ✗ | 200 |
+| `foo.html` (current) | **200** ✓ | **301 → `/foo`** ✓ |
+
+`prerender-og.js` and `prerender-ssg.js` therefore write every route as
+a flat file: `build/work.html`, `build/writing/{slug}.html`,
+`build/about/discernment.html`. Only the homepage stays as
+`build/index.html`, and the 404 page as `build/404.html`. The local
+preview server (`scripts/build-and-serve.js`) mirrors the same rules
+(clean-URL serving, slash → 301, real 404s) so the behaviour is
+curl-testable before deploy.
+
+**Do not solve URL duplication with client-side JavaScript** (e.g., a
+`history.replaceState` normalizer). It hides the split from analytics
+but leaves the wrong 301 visible to curl, crawlers, and unfurlers.
+
+**Acceptance test (run against LIVE production after any change to the
+build pipeline or file layout):**
+
+```bash
+for p in /work /writing/the-gap-series-introduction /about; do
+  echo "== $p/";  curl -sI "https://methodmarketinggroup.com$p/" | grep -i "^HTTP\|^location"
+  echo "== $p";   curl -sI "https://methodmarketinggroup.com$p"  | grep -i "^HTTP"
+done
+# Expected: every trailing-slash form → 301 with location: {non-slash};
+#           every non-slash form → 200.
+curl -sI "https://methodmarketinggroup.com/nope" | grep "^HTTP"      # 404
+curl -sI "https://methodmarketinggroup.com/how-we-work/x" | grep -i "^HTTP\|^location"  # legacy 301 → /work
+curl -s "https://methodmarketinggroup.com/f2da102fbb1f98cf309ec46aeefef39e.txt" | head -c 40  # IndexNow key intact
 ```
 
-All pageviews now unify on the canonical non-slash form — the same
-form used by `<link rel="canonical">`, sitemap.xml, and og:url.
-
-**Ordering rule: this script must stay above both analytics tags.**
-If it ever moves below them, the split counters come back.
-
-Note: historic data from before this fix keeps the split; only new
-sessions unify. Netlify's 301 itself is untouched (it's harmless and
-can't be disabled for directory-index sites).
+Note: analytics data recorded before this fix keeps the split
+(`/foo` + `/foo/` as separate rows); only sessions from deploy day
+forward unify. That's expected — Clarity/GA4 don't merge retroactively.
 
 ### 9.1 Where the tag lives
 

@@ -104,10 +104,13 @@ function shellPathForRoute(route) {
     if (route === "/") return path.join(BUILD_DIR, "index.html");
     // Netlify serves build/404.html for unknown paths (see public/_redirects).
     if (route === "/404") return path.join(BUILD_DIR, "404.html");
+    // Flat file layout (canonical non-slash URLs — SEO_PLAYBOOK.md §9.0):
+    // /writing/wrap-rage -> build/writing/wrap-rage.html
+    const parts = route.split("/").filter(Boolean);
     return path.join(
         BUILD_DIR,
-        ...route.split("/").filter(Boolean),
-        "index.html"
+        ...parts.slice(0, -1),
+        `${parts[parts.length - 1]}.html`
     );
 }
 

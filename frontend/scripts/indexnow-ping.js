@@ -88,7 +88,7 @@ if (ctx && ctx !== "production") {
  * Convert a filesystem path inside build/ to a canonical public URL.
  *
  *   build/index.html                          -> https://.../
- *   build/writing/wrap-rage/index.html        -> https://.../writing/wrap-rage
+ *   build/writing/wrap-rage.html              -> https://.../writing/wrap-rage
  *   build/404.html                            -> (skipped, noindex)
  */
 function filePathToUrl(fsPath) {
@@ -98,9 +98,8 @@ function filePathToUrl(fsPath) {
         .join("/");
     if (rel === "index.html") return `${SITE}/`;
     if (rel === "404.html") return null; // noindex — never submit
-    if (rel.endsWith("/index.html")) {
-        const p = rel.slice(0, -"/index.html".length);
-        return `${SITE}/${p}`;
+    if (rel.endsWith(".html")) {
+        return `${SITE}/${rel.slice(0, -".html".length)}`;
     }
     return null;
 }

@@ -42,10 +42,13 @@ run("node", ["scripts/prerender-ssg.js"], "prerender-ssg");
 run("node", ["scripts/generate-sitemap.js"], "generate-sitemap");
 run("node", ["scripts/generate-rss.js"], "generate-rss");
 
-// 3. Serve build/ statically with Netlify-parity routing rules:
+// 3. Serve build/ statically with Netlify-parity routing rules
+//    (file-based / flat-file layout — see SEO_PLAYBOOK.md §9.0):
 //    - exact file → serve it
-//    - path with matching {path}/index.html → serve that
-//    - otherwise → serve build/index.html (SPA fallback)
+//    - /foo with build/foo.html → serve foo.html (200, clean URL)
+//    - /foo/ with build/foo.html → 301 → /foo (Netlify's slash normalization)
+//    - / → build/index.html
+//    - anything else → build/404.html with a real 404 status
 const http = require("http");
 const fs = require("fs");
 
@@ -108,12 +111,26 @@ const server = http.createServer((req, res) => {
         return send(res, abs);
     }
 
-    // 2) Directory index (pretty URLs — /writing/wrap-rage → wrap-rage/index.html)
-    const indexPath = path.join(abs, "index.html");
-    if (fs.existsSync(indexPath)) return send(res, indexPath);
+    // 2) Clean URL — /writing/wrap-rage → build/writing/wrap-rage.html
+    if (!urlPath.endsWith("/") && fs.existsSync(`${abs}.html`)) {
+        return send(res, `${abs}.html`);
+    }
 
-    // 3) SPA fallback
-    return send(res, path.join(BUILD, "index.html"), 200);
+    // 3) Trailing slash → 301 to canonical non-slash form (Netlify parity)
+    if (urlPath.length > 1 && urlPath.endsWith("/")) {
+        const stripped = urlPath.replace(/\/+$/, "");
+        const strippedAbs = safeJoin(BUILD, stripped);
+        if (strippedAbs && fs.existsSync(`${strippedAbs}.html`)) {
+            res.writeHead(301, { Location: stripped });
+            return res.end();
+        }
+    }
+
+    // 4) Root
+    if (urlPath === "/") return send(res, path.join(BUILD, "index.html"));
+
+    // 5) Unknown path → 404 page with real 404 status (Netlify parity)
+    return send(res, path.join(BUILD, "404.html"), 404);
 });
 
 server.listen(Number(PORT), HOST, () => {
