@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { isAnalyticsHost } from "./analyticsHost";
 
 /**
  * Fires a GA4 `page_view` on the initial load and on every subsequent
@@ -25,8 +26,8 @@ export function useGAPageView() {
     const { pathname, search } = useLocation();
 
     useEffect(() => {
-        if (typeof window === "undefined" || typeof window.gtag !== "function")
-            return;
+        if (!isAnalyticsHost()) return;
+        if (typeof window.gtag !== "function") return;
         window.gtag("event", "page_view", {
             page_location: window.location.href,
             page_path: pathname + search,

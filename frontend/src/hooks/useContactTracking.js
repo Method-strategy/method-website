@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { isAnalyticsHost } from "./analyticsHost";
 
 /**
  * Fires GA4 contact-intent events on outbound clicks, sitewide:
@@ -24,6 +25,7 @@ import { useEffect } from "react";
 export function useContactTracking() {
     useEffect(() => {
         const onClick = (e) => {
+            if (!isAnalyticsHost()) return;
             const link = e.target.closest && e.target.closest("a[href]");
             if (!link || typeof window.gtag !== "function") return;
             const href = link.getAttribute("href") || "";

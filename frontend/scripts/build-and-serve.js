@@ -84,6 +84,9 @@ function send(res, filePath, status = 200) {
     const type = MIME[ext] || "application/octet-stream";
     res.writeHead(status, {
         "Content-Type": type,
+        // Preview-only server (Netlify never runs this file): make sure
+        // preview copies of the site can never enter search indexes.
+        "X-Robots-Tag": "noindex, nofollow",
         "Cache-Control":
             ext === ".html" || ext === ".xml"
                 ? "no-cache"

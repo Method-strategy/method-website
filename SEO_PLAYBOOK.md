@@ -578,6 +578,61 @@ DevTools → Network filtered to `collect`. The request to
 plus `dl`/`dt` page fields and `ep.link_url`, `ep.link_text`. The
 events also appear in GA4 → Reports → Realtime within seconds.
 
+### 9.8 Hostname guard — analytics only run on production (GA4 AND Clarity)
+
+Because the GA4 and Clarity tags are baked into the prerendered HTML,
+they used to fire on **every** host serving the build — including the
+Emergent preview domains — polluting both properties with non-visitor
+traffic.
+
+**The guard.** The head snippet in `frontend/public/index.html` wraps
+BOTH tags in a single hostname check:
+
+```js
+var h = window.location.hostname;
+if (h !== "methodmarketinggroup.com" && h !== "www.methodmarketinggroup.com") return;
+```
+
+On any other hostname (Emergent previews, localhost, Netlify deploy
+permalinks) neither loader is injected and **zero** network requests
+fire to `googletagmanager.com`, `google-analytics.com`, or
+`clarity.ms`. The same check lives in
+`frontend/src/hooks/analyticsHost.js` (`isAnalyticsHost()`) and gates
+the SPA-side code — `useGAPageView` (route page_views) and
+`useContactTracking` (email_click / linkedin_click) — so client-side
+navigation on previews stays silent too.
+
+**Maintenance rules:**
+
+- Any future analytics tag (or gtag call anywhere in the app) MUST sit
+  behind the same guard — inline copy in the head snippet, or
+  `isAnalyticsHost()` in React code.
+- If the production hostname ever changes, update BOTH copies of the
+  check (head snippet + analyticsHost.js).
+
+**Testing implication:** analytics changes can no longer be verified on
+the preview URL — the guard silences it by design. Verify on the live
+production URL after deploy (DevTools → Network → `collect`, or GA4
+Realtime). Alternatively, for pre-deploy debugging only, temporarily
+loosen the hostname check locally and use GA4 DebugView — but never
+commit that change.
+
+**Preview noindex (related hygiene):** the Emergent preview ingress
+already injects `X-Robots-Tag: noindex, nofollow` AND a
+`<meta name="robots" content="noindex, nofollow">` into preview
+responses, and the local preview server
+(`scripts/build-and-serve.js`) now sends its own
+`X-Robots-Tag: noindex, nofollow` on every response as belt-and-braces.
+None of this exists in the build artifact itself — production serves no
+robots restrictions (verified: live `/work` has neither the header nor
+the meta).
+
+**Historical note:** preview rows recorded before this guard (hostnames
+`method-positioning.preview.emergentagent.com` etc.) remain in GA4 and
+Clarity — they don't retro-delete. When analyzing launch-week data,
+filter/segment by hostname `methodmarketinggroup.com` to exclude the
+preview noise.
+
 ---
 
 ## 10. Microsoft Clarity

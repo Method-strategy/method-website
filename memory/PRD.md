@@ -161,3 +161,11 @@ Marketing website for Method, a strategic marketing practice (fractional CMO-lev
 - Wire-verified both events on preview from /writing/wrap-rage: linkedin_click carried link_url=company page, dl=article URL, dt=article title; email_click regression passed.
 - Playbook §9.7 retitled "Contact-intent events" covering both; key-event registration steps now include linkedin_click.
 - PENDING: user deploys (Save to GitHub), clicks both link types on live, registers BOTH as key events in GA4 UI. LCP/INP recheck at 72h.
+
+## July 2026 — Analytics hostname guard (previews silent) + preview noindex
+- GA4 + Clarity snippets in public/index.html rewritten as ONE guarded IIFE: only initialize when hostname is methodmarketinggroup.com or www. On previews/localhost/permalinks: no loaders injected, gtag & clarity undefined, zero requests to googletagmanager/google-analytics/clarity.ms.
+- Shared guard `src/hooks/analyticsHost.js` (isAnalyticsHost) added to useGAPageView and useContactTracking so SPA navigation/events on previews stay silent.
+- Preview noindex: Emergent ingress already injects X-Robots-Tag + robots meta on preview responses (verified NOT in build artifact; live /work has neither). build-and-serve.js now also sends X-Robots-Tag: noindex, nofollow on every response (preview-only server, can't leak — Netlify never runs it).
+- Acceptance PASSED: preview = 0 analytics requests across load + SPA navs + mailto click; LIVE production = GA + Clarity firing, live email_click captured with dl=/writing/wrap-rage + article title (completes earlier live mailto verification).
+- Playbook §9.8 added: guard spec, maintenance rules (dual copies of hostname check), testing implication (analytics verifiable only on live URL / GA4 DebugView), historical preview rows note (filter by hostname).
+- PENDING: user deploys guard via Save to GitHub (production behavior unchanged — hostname matches); GA4 key-event registration for email_click + linkedin_click still on user.

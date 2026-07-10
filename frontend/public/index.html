@@ -83,32 +83,37 @@
             <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
         </noscript>
         <title>Method — Clarifying how you show up in the market.</title>
-        <!-- Google Analytics 4 (gtag.js). Loaded async so it never blocks
-             render. `send_page_view: false` disables the default auto
-             page_view so our SPA-aware hook in src/hooks/useGAPageView.js
-             owns page_view for both the initial load AND every subsequent
-             client-side route change. This block is intentionally OUTSIDE
-             the method-seo-block sentinel so prerender-og.js never touches
-             it, and its patterns don't match anything strip-emergent.js
-             targets — it is preserved as-is in every prerendered route. -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-7F2PPZPXSK"></script>
+        <!-- Analytics hostname guard — GA4 + Microsoft Clarity only
+             initialize on the production hostnames. On any other host
+             (Emergent previews, localhost, Netlify deploy permalinks)
+             neither tag loads and ZERO requests fire to
+             googletagmanager.com / google-analytics.com / clarity.ms,
+             keeping preview traffic out of both properties. The SPA
+             hooks (useGAPageView, useContactTracking) carry the same
+             guard via src/hooks/analyticsHost.js. See SEO_PLAYBOOK.md
+             §9.8. GA4 config keeps send_page_view:false — page_view is
+             owned by src/hooks/useGAPageView.js. -->
         <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-7F2PPZPXSK', { send_page_view: false });
-        </script>
-        <!-- Microsoft Clarity (session replay, heatmaps, click/scroll
-             analytics). Same pattern as GA4: async, baked into the
-             prerender base template so every per-route HTML file inherits
-             the tag. Clarity handles SPA route changes natively — no
-             companion hook needed. Project ID: xj8oadt46d. -->
-        <script type="text/javascript">
-            (function(c,l,a,r,i,t,y){
-                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-            })(window, document, "clarity", "script", "xj8oadt46d");
+            (function () {
+                var h = window.location.hostname;
+                if (h !== "methodmarketinggroup.com" && h !== "www.methodmarketinggroup.com") return;
+                /* Google Analytics 4 (gtag.js), async loader */
+                var s = document.createElement("script");
+                s.async = true;
+                s.src = "https://www.googletagmanager.com/gtag/js?id=G-7F2PPZPXSK";
+                document.head.appendChild(s);
+                window.dataLayer = window.dataLayer || [];
+                window.gtag = function () { window.dataLayer.push(arguments); };
+                window.gtag("js", new Date());
+                window.gtag("config", "G-7F2PPZPXSK", { send_page_view: false });
+                /* Microsoft Clarity (session replay, heatmaps). Project ID: xj8oadt46d.
+                   Handles SPA route changes natively — no companion hook needed. */
+                (function(c,l,a,r,i,t,y){
+                    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+                })(window, document, "clarity", "script", "xj8oadt46d");
+            })();
         </script>
         <script>window.addEventListener("error",function(e){if(e.error instanceof DOMException&&e.error.name==="DataCloneError"&&e.message&&e.message.includes("PerformanceServerTiming")){e.stopImmediatePropagation();e.preventDefault()}},true);</script>
         <script src="https://assets.emergent.sh/scripts/emergent-main.js"></script>
