@@ -16,7 +16,7 @@ import Sitemap from "@/pages/Sitemap";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { useGAPageView } from "@/hooks/useGAPageView";
-import { useMailtoTracking } from "@/hooks/useMailtoTracking";
+import { useContactTracking } from "@/hooks/useContactTracking";
 
 // Exported so the SSG build (scripts/ssr-entry.jsx) can render each route
 // to static HTML at build time without pulling in BrowserRouter.
@@ -24,7 +24,7 @@ export function AppShell() {
     const { pathname } = useLocation();
     useDocumentTitle();
     useGAPageView();
-    useMailtoTracking();
+    useContactTracking();
     // Pages whose FIRST band is navy — nav needs a light color from the start.
     const navyStart = pathname === "/" || pathname === "/connect";
 

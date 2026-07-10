@@ -511,20 +511,27 @@ Edit these two lines:
 The hook (`useGAPageView.js`) is measurement-ID-agnostic and does not
 need to change.
 
-### 9.7 `email_click` event (key event / conversion)
+### 9.7 Contact-intent events: `email_click` + `linkedin_click` (key events / conversions)
 
-**What:** a custom GA4 event named `email_click`, fired on every click
-of any `mailto:` link, sitewide.
+**What:** two custom GA4 events, fired sitewide:
 
-**Where it fires:** one delegated capture-phase click listener on
-`document`, installed by `frontend/src/hooks/useMailtoTracking.js`
+- `email_click` — every click on any `mailto:` link
+- `linkedin_click` — every click on any `linkedin.com` link
+
+**Where they fire:** one delegated capture-phase click listener on
+`document`, installed by `frontend/src/hooks/useContactTracking.js`
 (called once from `AppShell` in `App.js`). No per-component wiring —
-it automatically covers the Connect page CTA, the footer email link,
-the Home closing CTA, the Discernment closing line, the three
-privacy-policy links, ShareRow's "share via email" action, and any
-mailto link added in the future.
+it automatically covers:
 
-**Parameters:**
+- *email:* the Connect page CTA, the footer email link, the Home
+  closing CTA, the Discernment closing line, the three privacy-policy
+  links, ShareRow's "share via email"
+- *LinkedIn:* the footer "Connect on LinkedIn", the Connect page
+  "Connect on LinkedIn →", Gary's profile link on About, ShareRow's
+  LinkedIn share
+- …and any mailto/LinkedIn link added in the future.
+
+**Parameters (identical for both events):**
 
 | Param | Value | How it lands in GA4 |
 |---|---|---|
@@ -540,34 +547,36 @@ click on an article page carried `en=email_click`,
 as report dimensions, optionally register them under Admin → Custom
 definitions → Create custom dimension, scope Event.)
 
-**Registering as a key event (one-time, GA4 UI — cannot be done in
+**Registering as key events (one-time, GA4 UI — cannot be done in
 code):**
 
-1. Click a mailto link on the live site once so GA4 has seen the event
-   (it appears in *Realtime* immediately; in *Admin → Events* within
-   ~24h).
+1. Click a mailto and a LinkedIn link on the live site once so GA4 has
+   seen the events (they appear in *Realtime* immediately; in
+   *Admin → Events* within ~24h).
 2. GA4 → **Admin** (gear, bottom-left) → under *Data display* →
    **Key events** → **New key event** → enter exactly `email_click`
-   → Save. (This works even before the event shows in the Events list.)
-3. From then on `email_click` surfaces as a conversion in standard
-   reports and can be broken down by `page_path` / `page_title`.
+   → Save. Repeat for `linkedin_click`. (This works even before the
+   events show in the Events list.)
+3. From then on both surface as conversions in standard reports and
+   can be broken down by `page_path` / `page_title`.
 
-**Privacy policy:** unchanged, deliberately. The event records a
+**Privacy policy:** unchanged, deliberately. Both events record a
 standard interaction (a click) with page context only — no email
-content, no address typed by the visitor, no new data category. It is
-covered by the existing GA4 disclosure in `/privacy-policy` §1 and §4.
-If the event ever starts carrying user-entered data, the policy must
-be updated first.
+content, no address typed by the visitor, no new data category. They
+are covered by the existing GA4 disclosure in `/privacy-policy` §1 and
+§4. If either event ever starts carrying user-entered data, the policy
+must be updated first.
 
-**Known limitation (for the record):** a mailto click measures
-*intent* — the visitor's mail client opening — not that an email was
-composed or sent.
+**Known limitation (for the record):** these clicks measure *intent* —
+the mail client opening, or the LinkedIn tab opening — not that an
+email was sent or a LinkedIn connection made.
 
-**Verifying:** click any email link on the live site with DevTools →
-Network filtered to `collect`. The request to
-`google-analytics.com/g/collect` carries `en=email_click` plus
-`ep.page_path`, `ep.page_title`, `ep.link_url`, `ep.link_text`. The
-event also appears in GA4 → Reports → Realtime within seconds.
+**Verifying:** click any email or LinkedIn link on the live site with
+DevTools → Network filtered to `collect`. The request to
+`google-analytics.com/g/collect` carries `en=email_click` or
+`en=linkedin_click` (check the POST body — GA4 batches events there)
+plus `dl`/`dt` page fields and `ep.link_url`, `ep.link_text`. The
+events also appear in GA4 → Reports → Realtime within seconds.
 
 ---
 

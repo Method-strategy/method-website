@@ -155,3 +155,9 @@ Marketing website for Method, a strategic marketing practice (fractional CMO-lev
 - Privacy policy deliberately unchanged: standard interaction event, no new data category, covered by existing GA4 disclosure (documented in playbook).
 - SEO_PLAYBOOK.md §9.7 added: event spec, param table with reserved-field mapping, GA4 UI click-path for Key event registration (Admin → Data display → Key events → New key event → `email_click`), verification method, mailto-measures-intent limitation.
 - PENDING: mailto code needs the NEXT Save to GitHub deploy to reach live; then user registers key event in GA4 UI and confirms in Realtime. LCP/INP recheck at 72h mark.
+
+## July 2026 — linkedin_click event added
+- Generalized the mailto hook into `src/hooks/useContactTracking.js` (useMailtoTracking.js deleted): one delegated listener fires `email_click` (mailto:) and `linkedin_click` (linkedin.com links — footer/Connect "Connect on LinkedIn", Gary's About profile, ShareRow LinkedIn share). Same params: page_path/page_title (→ dl/dt standard dimensions) + ep.link_url/ep.link_text.
+- Wire-verified both events on preview from /writing/wrap-rage: linkedin_click carried link_url=company page, dl=article URL, dt=article title; email_click regression passed.
+- Playbook §9.7 retitled "Contact-intent events" covering both; key-event registration steps now include linkedin_click.
+- PENDING: user deploys (Save to GitHub), clicks both link types on live, registers BOTH as key events in GA4 UI. LCP/INP recheck at 72h.
