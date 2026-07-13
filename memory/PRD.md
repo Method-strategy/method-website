@@ -190,3 +190,10 @@ Marketing website for Method, a strategic marketing practice (fractional CMO-lev
 - Playbook: Rule 1 expanded (Cormorant preload + re-derive cmd), Rule 2 rewritten (ZERO render-blocking; inline mechanism; empty-audit tripwire), §12.6 baseline updated.
 - Diagnostic tooling notes: local lighthouse via /pw-browsers/.../headless_shell --remote-debugging-port=9222 + npx lighthouse@12 --port=9222; PSI API anonymous quota limited.
 - PENDING: user deploys → re-run LH/PSI against live production to confirm (expect ~90 mobile; live has analytics contention that preview can't show).
+
+## July 2026 — PSI hit 90; support-person suggestions triaged
+- PSI live: 90 perf, FCP=LCP=2.9s (structural anchor held). CrUX still "No Data" (young domain).
+- Suggestion 1 (preconnects use.typekit.net + p.typekit.net, Cormorant woff2 preload): ALREADY SHIPPED in the 90 build — verified lines 36-39 + 63 of head. No changes made.
+- Suggestion 2 (headline visible instantly): implemented on HOMEPAGE — H1 wordmark is now a plain div (no entrance animation); subhead keeps hero-reveal fade (nth-child(2) delay intact). Verified opacity=1 immediately post-load. Documented as addendum to playbook Rule 4a. NOTE (told user): aesthetic change only — LCP element is the subhead and everything already registered at first paint; the 2.9s is TTFB+connection+HTML floor of the slow-4G emulation.
+- Remaining optional lever (NOT implemented): per-route critical-CSS extraction (est. −0.2–0.4s lab FCP, adds build complexity/risk).
+- PENDING: user deploys headline change; Clarity field recheck at 72h.

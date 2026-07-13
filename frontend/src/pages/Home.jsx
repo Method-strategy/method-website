@@ -11,7 +11,10 @@ export default function Home() {
             >
                 <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-0">
                     <RevealStagger hero className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-0 items-center" stagger={0.14}>
-                        <RevealItem hero className="lg:col-span-8 flex items-center">
+                        {/* Headline intentionally has NO entrance animation —
+                            visible on the very first painted frame (user
+                            request; see SEO_PLAYBOOK.md §12.3 Rule 4a). */}
+                        <div className="lg:col-span-8 flex items-center">
                             <h1
                                 data-testid="home-hero-wordmark"
                                 className="wordmark text-5xl md:text-6xl lg:text-[5.25rem] xl:text-[6rem] leading-[0.98] tracking-tight text-cream"
@@ -23,7 +26,7 @@ export default function Home() {
                                 </span>
                                 <span className="block sm:whitespace-nowrap">in the market.</span>
                             </h1>
-                        </RevealItem>
+                        </div>
                         <RevealItem hero className="lg:col-span-4 flex items-center lg:pl-12 lg:border-l lg:border-cream/20 lg:min-h-[24rem]">
                             <p
                                 data-testid="home-hero-subhead"

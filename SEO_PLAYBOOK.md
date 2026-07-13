@@ -1067,6 +1067,15 @@ makes the hero a valid LCP candidate on its first painted frame,
 anchoring LCP to FCP. Measured effect (slow-4G lab): LCP 3.8s → 2.8s
 with FCP at 2.6s. Never "clean up" the 0.01 back to 0.
 
+Addendum (July 2026, user request): the HOMEPAGE headline
+(`home-hero-wordmark`) has **no entrance animation at all** — it's a
+plain `<div>` inside the hero stagger and is fully visible on the very
+first painted frame. The subhead keeps its fade (and its nth-child
+stagger delay still applies — it remains the 2nd child). Note for the
+record: this is an aesthetic choice, not a metric one — LCP was
+already anchored to first paint via the 0.01 rule, and the LCP element
+is the subhead.
+
 ### 12.4 Verification protocol
 
 **Before deploy** — measure lab metrics on the preview environment:
