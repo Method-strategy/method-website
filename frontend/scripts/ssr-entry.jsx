@@ -7,15 +7,8 @@
 import React from "react";
 import { renderToString } from "react-dom/server";
 import { StaticRouter } from "react-router";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MotionConfig } from "framer-motion";
 import { AppShell } from "@/App";
-
-const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: { staleTime: 60_000, refetchOnWindowFocus: false },
-    },
-});
 
 export function render(pathname) {
     // MotionConfig `reducedMotion="user"` makes framer-motion evaluate the
@@ -24,16 +17,12 @@ export function render(pathname) {
     // trips hydration warnings for users with prefers-reduced-motion.
     return renderToString(
         React.createElement(
-            QueryClientProvider,
-            { client: queryClient },
+            MotionConfig,
+            { reducedMotion: "user" },
             React.createElement(
-                MotionConfig,
-                { reducedMotion: "user" },
-                React.createElement(
-                    StaticRouter,
-                    { location: pathname },
-                    React.createElement(AppShell)
-                )
+                StaticRouter,
+                { location: pathname },
+                React.createElement(AppShell)
             )
         )
     );

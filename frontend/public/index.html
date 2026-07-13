@@ -51,12 +51,25 @@
         <link rel="preload" as="font" type="font/woff2" crossorigin
               href="https://use.typekit.net/af/29e987/00000000000000007735f528/31/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=i7&v=3" />
 
-        <!-- Adobe Typekit — Scandia. The ?display=swap tells Typekit's
-             @font-face rules to use font-display: swap, so the browser
-             paints a fallback immediately and swaps to Scandia when it's
-             ready. This prevents the wordmark (the LCP element on most
-             pages) from waiting on the font download. -->
-        <link rel="stylesheet" href="https://use.typekit.net/kiu8ndx.css?display=swap" />
+        <!-- Adobe Typekit — Scandia. Loaded async (same preload/onload
+             pattern as Google Fonts below) so NO cross-origin stylesheet
+             blocks first paint — kiu8ndx.css also chains a second
+             render-blocking @import to p.typekit.net when loaded
+             synchronously, which double-charged slow connections. The two
+             woff2 preloads above still start the font downloads at HTML
+             parse time, so once this CSS applies, Scandia is ready and
+             the swap from the Lexend Deca fallback is near-instant.
+             ?display=swap keeps font-display:swap in Typekit's @font-face
+             rules — text is never invisible while fonts load. -->
+        <link
+            rel="preload"
+            as="style"
+            href="https://use.typekit.net/kiu8ndx.css?display=swap"
+            onload="this.onload=null;this.rel='stylesheet'"
+        />
+        <noscript>
+            <link rel="stylesheet" href="https://use.typekit.net/kiu8ndx.css?display=swap" />
+        </noscript>
 
         <!-- Google Fonts loaded via media="print" swap-to-all trick so they
              do NOT block first paint. Cormorant Garamond (serif italic

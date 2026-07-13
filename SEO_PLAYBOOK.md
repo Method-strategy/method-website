@@ -943,18 +943,29 @@ and Scandia Web 700 italic (the steel-blue accent phrases). Preloading
 kicks the download off at the same moment as the stylesheet, not
 serially after it.
 
-**Rule 2 — Force `display=swap` on the render-blocking stylesheet
-that unlocks the LCP element.**
+**Rule 2 — No render-blocking cross-origin stylesheets. Ever.**
+
+The Typekit CSS is loaded async with the same preload/onload pattern as
+Google Fonts (with a `<noscript>` fallback):
 
 ```html
-<link rel="stylesheet" href="https://use.typekit.net/kiu8ndx.css?display=swap" />
+<link rel="preload" as="style"
+      href="https://use.typekit.net/kiu8ndx.css?display=swap"
+      onload="this.onload=null;this.rel='stylesheet'" />
 ```
 
-`?display=swap` tells Typekit's `@font-face` rules to allow the browser
-to paint a fallback (Manrope / Helvetica Neue) immediately and swap in
-Scandia when it's ready. Without swap, the LCP element is held on
-`font-display: block` for up to 3 seconds — that's the trap that ate
-our first field LCP score.
+It was originally a synchronous `<link rel="stylesheet">`, which cost
+slow connections TWO sequential cross-origin chains before first paint:
+`use.typekit.net/kiu8ndx.css` itself, plus a hidden render-blocking
+`@import` it chains to `p.typekit.net/p.css`. De-blocking it cut lab
+FCP from 4.1s → 2.8s (slow-4G emulation). The ONLY render-blocking
+stylesheet allowed is the same-origin CRA `main.css`.
+
+`?display=swap` stays on the URL — Typekit's `@font-face` rules keep
+`font-display: swap`, so text is never invisible while Scandia loads;
+the Lexend Deca fallback (chosen for its matching double-story 'a')
+paints first and the swap is near-seamless because the woff2 preloads
+(Rule 1) started downloading at HTML parse time.
 
 **Rule 3 — De-block every stylesheet that does NOT unlock the LCP
 element.**
@@ -1019,6 +1030,17 @@ print('hero OK')
 EOF
 ```
 
+**Rule 4a — the hero fade starts at `opacity: 0.01`, not `0`.**
+
+Chrome excludes opacity-0 paints from LCP candidacy. With the hero
+starting at exactly 0, the huge hero H1/subhead never registered at
+first paint, so LCP fell through to later repaints of smaller elements
+(the nav wordmark's font-swap), reporting LCP seconds after FCP.
+Starting the animation at 0.01 — visually indistinguishable from 0 —
+makes the hero a valid LCP candidate on its first painted frame,
+anchoring LCP to FCP. Measured effect (slow-4G lab): LCP 3.8s → 2.8s
+with FCP at 2.6s. Never "clean up" the 0.01 back to 0.
+
 ### 12.4 Verification protocol
 
 **Before deploy** — measure lab metrics on the preview environment:
@@ -1078,16 +1100,22 @@ Search Console's Core Web Vitals report is checked monthly.
 
 ### 12.6 Baseline (last verified)
 
-Live production `https://methodmarketinggroup.com/`, measured after
-the July 2026 CSS-hero-reveal pass (which followed the font-preload
-pass):
+Lab baseline, Lighthouse 12 mobile emulation (Moto G Power-class,
+slow-4G simulated throttling), July 2026 pass (async Typekit CSS +
+hero opacity 0.01 + @tanstack/react-query removed from the bundle —
+it was a provider with zero queries; data lives in local JS modules):
 
-| Metric | Lab (Playwright, cold) | Field target (p75) |
+| Metric | Lab before → after | Field target (p75) |
 |---|---|---|
-| FCP | ~100 ms | (informational) |
-| **LCP** | ~112 ms (no longer JS-gated for real users) | **< 2.5 s** — field was 4.2s pre-fix; expect drift down over 3–7 days post-deploy |
+| Performance score | 67 → **91** | — |
+| FCP | 4.1 s → **2.6 s** | (informational) |
+| **LCP** | 6.4 s → **2.8 s** (anchored to FCP; was font-swap-bound) | **< 2.5 s** |
+| **TBT** | 90–830 ms → **70 ms** | proxies **INP < 200 ms** |
 | **CLS** | 0.002 | **< 0.1** ✓ |
-| **INP** | (measure on interaction) | **< 200 ms** ⚠ was 270 ms — hero de-motioning reduces main-thread animation work; recheck 72h post-deploy |
+
+Render-blocking resources: exactly ONE — the same-origin `main.css`
+(~12 KB). If a second entry ever appears in Lighthouse's
+render-blocking audit, a regression slipped in (see Rule 2).
 
 If any future measurement disagrees with this baseline by more than
 2× on LCP or drifts above the p75 threshold on any of the three,

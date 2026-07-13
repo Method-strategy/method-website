@@ -174,3 +174,11 @@ Marketing website for Method, a strategic marketing practice (fractional CMO-lev
 - PrivacyPolicy.jsx: rAF-throttled scroll listener tracks the last section whose top passed the 130px sticky-nav offset; active TOC entry gets steel number + text-navy font-medium label (transition-colors), aria-current="true", clears above section 1. SSR-safe (useEffect).
 - Verified via playwright: TOC click → correct highlight, scroll to later section → highlight follows, scroll to top → no highlight.
 - Needs Save to GitHub to reach live (bundled with pending analytics hostname guard deploy).
+
+## July 2026 — PageSpeed mobile pass: 67 → 91 lab (user reported PSI 59)
+- Diagnosed via local Lighthouse (PSI API quota exhausted; system Chrome crashes in container — use /pw-browsers/chromium_headless_shell-1208/.../headless_shell with --remote-debugging-port=9222 + npx lighthouse@12 --port=9222).
+- Root causes: (1) render-blocking use.typekit.net/kiu8ndx.css PLUS hidden @import chain to p.typekit.net/p.css; (2) LCP bound to Scandia font-swap repaint of the NAV wordmark because the hero (opacity:0 CSS animation) was excluded from LCP candidacy; (3) dead @tanstack/react-query in bundle (provider, zero queries).
+- Fixes: Typekit CSS now async (preload/onload + noscript) — only render-blocking resource left is same-origin main.css; hero-reveal starts at opacity 0.01 (imperceptible, makes hero a first-paint LCP candidate); react-query removed from index.js, scripts/ssr-entry.jsx, package.json (bundle 164→156KB gz).
+- Results (identical slow-4G lab conditions): score 67→91, FCP 4.1→2.6s, LCP 6.4→2.8s (now hero subhead at FCP+0.2s), TBT→70ms. Hero visuals verified unchanged; hydration clean.
+- Playbook updated: §12.3 Rule 2 rewritten (no render-blocking cross-origin CSS ever), new Rule 4a (0.01 opacity rationale — never revert to 0), §12.6 baseline replaced with before/after table + one-render-blocking-file tripwire.
+- PENDING: user deploys; re-run PSI on live after deploy (expect high-80s/90s mobile). PSI anonymous API quota was exhausted today — retry tomorrow or via UI.

@@ -223,7 +223,10 @@ h2.wordmark {
    Mirrors the framer-motion Reveal exactly: y 24px, 900ms,
    cubic-bezier(0.16,1,0.3,1), 140ms stagger between siblings. */
 .hero-reveal {
-    opacity: 0;
+    opacity: 0.01; /* not 0: Chrome excludes opacity-0 paints from LCP, which
+                      pushed LCP to later font-swap repaints of smaller
+                      elements. 0.01 is imperceptible but counts at first
+                      paint, anchoring LCP to FCP. See SEO_PLAYBOOK.md §12.3. */
     transform: translateY(24px);
     animation: hero-fade-up 900ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -235,7 +238,7 @@ h2.wordmark {
 
 @keyframes hero-fade-up {
     from {
-        opacity: 0;
+        opacity: 0.01;
         transform: translateY(24px);
     }
     to {
