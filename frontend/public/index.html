@@ -50,6 +50,18 @@
               href="https://use.typekit.net/af/04b7f1/00000000000000007735dd24/31/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3" />
         <link rel="preload" as="font" type="font/woff2" crossorigin
               href="https://use.typekit.net/af/29e987/00000000000000007735f528/31/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=i7&v=3" />
+        <!-- Cormorant Garamond italic — a VARIABLE font: one woff2 covers
+             every italic weight (300–500). It renders the hero subhead and
+             the serif accents, i.e. frequently the LCP element. Without a
+             preload it's only discovered after the async Google Fonts CSS
+             loads and then competes with the JS bundle on slow links —
+             the late swap repaint re-registered LCP seconds after FCP.
+             If Google bumps the font version (v21 → v22) this URL keeps
+             working but stops matching what the stylesheet requests —
+             re-derive it via:
+             curl -sA "Mozilla/5.0 ... Chrome/120" "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400&display=swap" -->
+        <link rel="preload" as="font" type="font/woff2" crossorigin
+              href="https://fonts.gstatic.com/s/cormorantgaramond/v21/co3ZmX5slCNuHLi8bLeY9MK7whWMhyjYrEtImSo.woff2" />
 
         <!-- Adobe Typekit — Scandia. Loaded async (same preload/onload
              pattern as Google Fonts below) so NO cross-origin stylesheet
@@ -113,6 +125,7 @@
                 /* Google Analytics 4 (gtag.js), async loader */
                 var s = document.createElement("script");
                 s.async = true;
+                s.fetchPriority = "low";
                 s.src = "https://www.googletagmanager.com/gtag/js?id=G-7F2PPZPXSK";
                 document.head.appendChild(s);
                 window.dataLayer = window.dataLayer || [];

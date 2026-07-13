@@ -936,14 +936,32 @@ into every prerendered per-route HTML file. Three rules:
       href="https://use.typekit.net/af/04b7f1/…/l?…&fvd=n7&v=3" />
 <link rel="preload" as="font" type="font/woff2" crossorigin
       href="https://use.typekit.net/af/29e987/…/l?…&fvd=i7&v=3" />
+<link rel="preload" as="font" type="font/woff2" crossorigin
+      href="https://fonts.gstatic.com/s/cormorantgaramond/v21/co3ZmX5slCNuHLi8bLeY9MK7whWMhyjYrEtImSo.woff2" />
 ```
 
-These are Scandia Web 700 (which the wordmark uses at synthesized 800)
-and Scandia Web 700 italic (the steel-blue accent phrases). Preloading
-kicks the download off at the same moment as the stylesheet, not
-serially after it.
+The first two are Scandia Web 700 (which the wordmark uses at
+synthesized 800) and Scandia Web 700 italic (the steel-blue accent
+phrases). The third is **Cormorant Garamond italic — a variable font:
+one woff2 covers every italic weight (300–500)** and renders the hero
+subhead (`p.pull`), which is frequently the LCP element. Without its
+preload the file was only discovered after the async Google Fonts CSS
+loaded, then competed with the JS bundle on slow links; the late swap
+repaint re-registered LCP ~2–3s after FCP (this exact failure produced
+the PSI-59 report). If Google bumps the font version (v21 → v22) the
+old URL keeps serving but stops matching what the stylesheet requests —
+re-derive it with a Chrome UA:
 
-**Rule 2 — No render-blocking cross-origin stylesheets. Ever.**
+```bash
+curl -sA "Mozilla/5.0 ... Chrome/120" \
+  "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400&display=swap"
+```
+
+Preloading kicks the downloads off at HTML parse time, at High
+priority — ahead of the JS bundle.
+
+**Rule 2 — ZERO render-blocking requests. The page CSS is inlined at
+build time.**
 
 The Typekit CSS is loaded async with the same preload/onload pattern as
 Google Fonts (with a `<noscript>` fallback):
@@ -957,11 +975,19 @@ Google Fonts (with a `<noscript>` fallback):
 It was originally a synchronous `<link rel="stylesheet">`, which cost
 slow connections TWO sequential cross-origin chains before first paint:
 `use.typekit.net/kiu8ndx.css` itself, plus a hidden render-blocking
-`@import` it chains to `p.typekit.net/p.css`. De-blocking it cut lab
-FCP from 4.1s → 2.8s (slow-4G emulation). The ONLY render-blocking
-stylesheet allowed is the same-origin CRA `main.css`.
+`@import` it chains to `p.typekit.net/p.css`.
 
-`?display=swap` stays on the URL — Typekit's `@font-face` rules keep
+**The CRA `main.css` bundle is inlined into the HTML of every route**
+by `prerender-og.js` (it swaps the `<link href="/static/css/main.….css"
+rel="stylesheet">` for a `<style>` block — safe because the file has
+zero `url()` references; the step warns loudly if CRA's link format
+ever changes). Combined with the async Typekit/Google Fonts CSS, the
+page has **zero render-blocking requests**: first paint waits on
+nothing but the HTML itself (~18 KB gzipped with the CSS folded in).
+Lighthouse's render-blocking audit must show an **empty list** — a
+single entry means a regression slipped in.
+
+`?display=swap` stays on the Typekit URL — its `@font-face` rules keep
 `font-display: swap`, so text is never invisible while Scandia loads;
 the Lexend Deca fallback (chosen for its matching double-story 'a')
 paints first and the swap is near-seamless because the woff2 preloads
@@ -1100,22 +1126,25 @@ Search Console's Core Web Vitals report is checked monthly.
 
 ### 12.6 Baseline (last verified)
 
-Lab baseline, Lighthouse 12 mobile emulation (Moto G Power-class,
-slow-4G simulated throttling), July 2026 pass (async Typekit CSS +
-hero opacity 0.01 + @tanstack/react-query removed from the bundle —
-it was a provider with zero queries; data lives in local JS modules):
+Lab, Lighthouse 12 mobile emulation (Moto G Power-class, slow-4G
+simulated throttling), July 2026 second pass — after: async Typekit
+CSS, hero opacity 0.01, react-query removal, **Cormorant italic woff2
+preload, and build-time CSS inlining (zero render-blocking requests)**:
 
-| Metric | Lab before → after | Field target (p75) |
+| Metric | Before → after | Field target (p75) |
 |---|---|---|
-| Performance score | 67 → **91** | — |
-| FCP | 4.1 s → **2.6 s** | (informational) |
-| **LCP** | 6.4 s → **2.8 s** (anchored to FCP; was font-swap-bound) | **< 2.5 s** |
-| **TBT** | 90–830 ms → **70 ms** | proxies **INP < 200 ms** |
+| Performance score | 62 (live) → **87–90** | — |
+| FCP | 4.2 s → **2.9 s** | (informational) |
+| **LCP** | 6.7 s → **2.9 s — equal to FCP** (no font-swap re-registration) | **< 2.5 s** |
+| **TBT** | 240 ms → **20–180 ms** | proxies **INP < 200 ms** |
 | **CLS** | 0.002 | **< 0.1** ✓ |
 
-Render-blocking resources: exactly ONE — the same-origin `main.css`
-(~12 KB). If a second entry ever appears in Lighthouse's
-render-blocking audit, a regression slipped in (see Rule 2).
+The structural win: **LCP == FCP == HTML delivery time.** Nothing
+render-blocks, the hero registers at first paint, and every font the
+above-the-fold content needs is preloaded at High priority.
+Lighthouse's render-blocking audit must show an **empty list** —
+any entry is a regression (see Rule 2). Remaining FCP is TTFB + one
+~18 KB gzipped HTML transfer — the floor for this stack on slow 4G.
 
 If any future measurement disagrees with this baseline by more than
 2× on LCP or drifts above the p75 threshold on any of the three,

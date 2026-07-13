@@ -182,3 +182,11 @@ Marketing website for Method, a strategic marketing practice (fractional CMO-lev
 - Results (identical slow-4G lab conditions): score 67→91, FCP 4.1→2.6s, LCP 6.4→2.8s (now hero subhead at FCP+0.2s), TBT→70ms. Hero visuals verified unchanged; hydration clean.
 - Playbook updated: §12.3 Rule 2 rewritten (no render-blocking cross-origin CSS ever), new Rule 4a (0.01 opacity rationale — never revert to 0), §12.6 baseline replaced with before/after table + one-render-blocking-file tripwire.
 - PENDING: user deploys; re-run PSI on live after deploy (expect high-80s/90s mobile). PSI anonymous API quota was exhausted today — retry tomorrow or via UI.
+
+## July 2026 — Deep perf pass #2 (user PSI re-report 69, live LH reproduced 62)
+- Reproduced on LIVE: FCP 4.2/LCP 6.7. Root causes found: (1) LCP element = hero subhead p.pull in Cormorant Garamond italic — woff2 discovered late (after async GF CSS), competed with 550KB main.js on slow 4G, late swap repaint re-registered LCP at ~6.7s; (2) even the single render-blocking main.css cost an RTT under bandwidth contention with analytics (live-only; preview has hostname guard so scored 91 while live scored 62 — ALWAYS test live for perf).
+- Fixes: (a) preload Cormorant italic VARIABLE woff2 (one file covers italic 300–500; re-derive URL on GF version bump via curl w/ Chrome UA — documented); (b) prerender-og.js now INLINES main.css into every route's HTML (<style> swap; css has zero url() refs; warns if CRA link format changes) → ZERO render-blocking requests; (c) gtag loader fetchPriority=low; (d) build-and-serve.js now gzips text responses (Netlify parity — uncompressed 86KB HTML was skewing preview measurements).
+- Result (preview, 2 runs): score 87–90, FCP 2.9 = LCP 2.9 (LCP anchored to first paint, no swap re-registration), TBT 20–180ms. Visual integrity verified on home + article.
+- Playbook: Rule 1 expanded (Cormorant preload + re-derive cmd), Rule 2 rewritten (ZERO render-blocking; inline mechanism; empty-audit tripwire), §12.6 baseline updated.
+- Diagnostic tooling notes: local lighthouse via /pw-browsers/.../headless_shell --remote-debugging-port=9222 + npx lighthouse@12 --port=9222; PSI API anonymous quota limited.
+- PENDING: user deploys → re-run LH/PSI against live production to confirm (expect ~90 mobile; live has analytics contention that preview can't show).

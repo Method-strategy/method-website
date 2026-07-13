@@ -207,6 +207,25 @@ const baseHtml = (() => {
         /<div id="root">[\s\S]*?<\/div>(?=\s*(<script|<\/body))/i,
         '<div id="root"></div>'
     );
+    // Inline the CRA CSS bundle so the page has ZERO render-blocking
+    // requests (SEO_PLAYBOOK.md §12.3 Rule 2). main.css has no url()
+    // refs, so inlining is safe. The file keeps being served (nothing
+    // references it, harmless). Idempotent: if the link tag is absent
+    // (already inlined), nothing changes.
+    const cssLinkRe = /<link href="(\/static\/css\/main\.[a-f0-9]+\.css)" rel="stylesheet">/;
+    const cssMatch = html.match(cssLinkRe);
+    if (cssMatch) {
+        const cssPath = path.join(BUILD_DIR, cssMatch[1].replace(/^\//, ""));
+        const css = fs.readFileSync(cssPath, "utf8");
+        html = html.replace(cssLinkRe, `<style>${css}</style>`);
+        console.log(
+            `[prerender-og] Inlined ${cssMatch[1]} (${css.length} bytes) — zero render-blocking requests`
+        );
+    } else {
+        console.warn(
+            "[prerender-og] WARNING: CRA css link not found — is main.css already inlined, or did CRA's output format change?"
+        );
+    }
     return html;
 })();
 

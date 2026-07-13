@@ -51,6 +51,7 @@ run("node", ["scripts/generate-rss.js"], "generate-rss");
 //    - anything else → build/404.html with a real 404 status
 const http = require("http");
 const fs = require("fs");
+const zlib = require("zlib");
 
 const BUILD = path.join(cwd, "build");
 const MIME = {
@@ -79,10 +80,10 @@ function safeJoin(base, target) {
     return resolved;
 }
 
-function send(res, filePath, status = 200) {
+function send(res, filePath, status = 200, req = null) {
     const ext = path.extname(filePath).toLowerCase();
     const type = MIME[ext] || "application/octet-stream";
-    res.writeHead(status, {
+    const headers = {
         "Content-Type": type,
         // Preview-only server (Netlify never runs this file): make sure
         // preview copies of the site can never enter search indexes.
@@ -91,7 +92,17 @@ function send(res, filePath, status = 200) {
             ext === ".html" || ext === ".xml"
                 ? "no-cache"
                 : "public, max-age=3600",
-    });
+    };
+    // Gzip text responses (Netlify parity — it serves brotli/gzip).
+    const compressible = [".html", ".css", ".js", ".xml", ".json", ".txt", ".svg", ".map"];
+    const acceptsGzip = req && /\bgzip\b/.test(req.headers["accept-encoding"] || "");
+    if (acceptsGzip && compressible.includes(ext)) {
+        headers["Content-Encoding"] = "gzip";
+        res.writeHead(status, headers);
+        fs.createReadStream(filePath).pipe(zlib.createGzip()).pipe(res);
+        return;
+    }
+    res.writeHead(status, headers);
     fs.createReadStream(filePath).pipe(res);
 }
 
@@ -111,12 +122,12 @@ const server = http.createServer((req, res) => {
 
     // 1) Exact file
     if (fs.existsSync(abs) && fs.statSync(abs).isFile()) {
-        return send(res, abs);
+        return send(res, abs, 200, req);
     }
 
     // 2) Clean URL — /writing/wrap-rage → build/writing/wrap-rage.html
     if (!urlPath.endsWith("/") && fs.existsSync(`${abs}.html`)) {
-        return send(res, `${abs}.html`);
+        return send(res, `${abs}.html`, 200, req);
     }
 
     // 3) Trailing slash → 301 to canonical non-slash form (Netlify parity)
@@ -130,10 +141,10 @@ const server = http.createServer((req, res) => {
     }
 
     // 4) Root
-    if (urlPath === "/") return send(res, path.join(BUILD, "index.html"));
+    if (urlPath === "/") return send(res, path.join(BUILD, "index.html"), 200, req);
 
     // 5) Unknown path → 404 page with real 404 status (Netlify parity)
-    return send(res, path.join(BUILD, "404.html"), 404);
+    return send(res, path.join(BUILD, "404.html"), 404, req);
 });
 
 server.listen(Number(PORT), HOST, () => {
