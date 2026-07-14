@@ -208,3 +208,8 @@ Marketing website for Method, a strategic marketing practice (fractional CMO-lev
 
 ## July 2026 — FINAL PSI RESULTS after deploy: Mobile 96 (FCP 1.9s, LCP 2.5s, TBT 80ms), Desktop 100 (LCP 0.6s)
 - Font-activation inlining + idle analytics confirmed on live. Perf work COMPLETE. Code splitting decision (option c) moot — user did not request further action.
+
+## July 2026 — Variance tightening (user saw one 84 run; live band measured 90-92)
+- User's uploaded PSI docx analyzed: remaining LCP = 1.39s render delay on subhead = Cormorant download only; TTFB 30ms; zero render-blocking. Noise items (unused JS, clarity cache TTL, phantom 5s gtag long-task) explained and ignored.
+- Fixes: (1) removed dead fonts.googleapis.com preconnect (no requests to that origin since css2 inlining); (2) inline-google-fonts.js now rewrites LEXEND DECA blocks to font-display:optional (it's only Scandia's fallback; its 40KB download competed with the Cormorant file LCP waits on). Cormorant stays swap. Verified per-block in output (18 lexend=optional, all cormorant=swap; note: naive segment grep false-alarmed on trailing HTML).
+- Preview: 91/93, fonts render correctly. PENDING: deploy + note to user that lab runs have inherent ±5pt variance; field CrUX is the real metric.

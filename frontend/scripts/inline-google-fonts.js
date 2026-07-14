@@ -54,9 +54,22 @@ const NOSCRIPT_RE =
         if (!css.includes("@font-face") || !css.includes("woff2")) {
             throw new Error("css2 response did not contain woff2 @font-face rules");
         }
+        // Lexend Deca is only the FALLBACK for Scandia (the wordmark).
+        // With display:swap the browser downloads its 40 KB just to paint
+        // text it replaces moments later — bandwidth that competes with the
+        // Cormorant file LCP actually waits on. `optional` = use it if
+        // instantly available (cache), otherwise skip straight to Helvetica.
+        const tuned = css
+            .split("@font-face")
+            .map((block) =>
+                block.includes("Lexend Deca")
+                    ? block.replace(/font-display:\s*swap/g, "font-display: optional")
+                    : block
+            )
+            .join("@font-face");
         let first = true;
         html = html.replace(LINK_RE, () => {
-            const out = first ? `<style>${css}</style>` : "";
+            const out = first ? `<style>${tuned}</style>` : "";
             first = false;
             return out;
         });
