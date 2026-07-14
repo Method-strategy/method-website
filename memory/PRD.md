@@ -197,3 +197,11 @@ Marketing website for Method, a strategic marketing practice (fractional CMO-lev
 - Suggestion 2 (headline visible instantly): implemented on HOMEPAGE — H1 wordmark is now a plain div (no entrance animation); subhead keeps hero-reveal fade (nth-child(2) delay intact). Verified opacity=1 immediately post-load. Documented as addendum to playbook Rule 4a. NOTE (told user): aesthetic change only — LCP element is the subhead and everything already registered at first paint; the 2.9s is TTFB+connection+HTML floor of the slow-4G emulation.
 - Remaining optional lever (NOT implemented): per-route critical-CSS extraction (est. −0.2–0.4s lab FCP, adds build complexity/risk).
 - PENDING: user deploys headline change; Clarity field recheck at 72h.
+
+## July 2026 — PSI flapping (90↔67) root-caused: preloaded font ≠ applied font
+- 3 live LH runs showed LCP flapping 2.9/3.8/6.6s (subhead). Root cause: Cormorant woff2 was preloaded but its @font-face rule lived in the ASYNC Google Fonts css2 stylesheet — when that css lost the bandwidth race to the JS bundle, the font applied late → swap repaint re-registered LCP. Run-to-run timing = score flapping.
+- Fixes: (1) NEW build step scripts/inline-google-fonts.js (after strip-emergent, added to netlify.toml + build-and-serve.js chains) fetches css2 with Chrome UA and inlines all @font-face rules into the HTML; graceful fallback to async links if offline. NOTE: CRA minifies public/index.html — regexes must accept single-quoted onload + collapsed whitespace. (2) Analytics vendor scripts now injected at window load → requestIdleCallback (stubs queue events immediately, nothing lost) — playbook Rule 5.
+- DECLINED (with reasoning, told user): React.lazy route splitting — TBT is 10-110ms (not the bottleneck) and Suspense + SSG hydration risks wiping prerendered content.
+- Preview results ×3: 90/96/93, FCP 2.0-2.5s, LCP 2.5-3.3s (gap now bounded by the 40KB font download alone). Fonts verified loading (document.fonts.check), rendering pixel-identical.
+- Playbook: build chain updated, Rule 2 extended (GF inlining), NEW Rule 5 (idle analytics + testing note: live analytics requests appear seconds after load), §12.6 baseline refreshed.
+- PENDING: deploy → verify live ×3 LH + analytics wire test (email_click must still queue/flush post-idle).

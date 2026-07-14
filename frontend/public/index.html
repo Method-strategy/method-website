@@ -122,23 +122,40 @@
             (function () {
                 var h = window.location.hostname;
                 if (h !== "methodmarketinggroup.com" && h !== "www.methodmarketinggroup.com") return;
-                /* Google Analytics 4 (gtag.js), async loader */
-                var s = document.createElement("script");
-                s.async = true;
-                s.fetchPriority = "low";
-                s.src = "https://www.googletagmanager.com/gtag/js?id=G-7F2PPZPXSK";
-                document.head.appendChild(s);
+                /* Stubs are live IMMEDIATELY — page_views and email/linkedin
+                   click events fired before the vendor scripts load are
+                   queued (dataLayer / clarity.q) and flushed on load, so
+                   nothing is lost. */
                 window.dataLayer = window.dataLayer || [];
                 window.gtag = function () { window.dataLayer.push(arguments); };
                 window.gtag("js", new Date());
                 window.gtag("config", "G-7F2PPZPXSK", { send_page_view: false });
-                /* Microsoft Clarity (session replay, heatmaps). Project ID: xj8oadt46d.
-                   Handles SPA route changes natively — no companion hook needed. */
-                (function(c,l,a,r,i,t,y){
-                    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-                    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-                    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-                })(window, document, "clarity", "script", "xj8oadt46d");
+                window.clarity = window.clarity || function () {
+                    (window.clarity.q = window.clarity.q || []).push(arguments);
+                };
+                /* Vendor script injection is deferred to post-load idle time
+                   (SEO_PLAYBOOK.md §12.3 Rule 5): gtag.js (~130 KB) and
+                   clarity.js were competing with fonts and the app bundle
+                   for bandwidth inside the LCP window on slow connections. */
+                function inject() {
+                    var s = document.createElement("script");
+                    s.async = true;
+                    s.src = "https://www.googletagmanager.com/gtag/js?id=G-7F2PPZPXSK";
+                    document.head.appendChild(s);
+                    var c = document.createElement("script");
+                    c.async = true;
+                    c.src = "https://www.clarity.ms/tag/xj8oadt46d";
+                    document.head.appendChild(c);
+                }
+                function onIdle() {
+                    if ("requestIdleCallback" in window) {
+                        requestIdleCallback(inject, { timeout: 4000 });
+                    } else {
+                        setTimeout(inject, 1500);
+                    }
+                }
+                if (document.readyState === "complete") onIdle();
+                else window.addEventListener("load", onIdle);
             })();
         </script>
         <script>window.addEventListener("error",function(e){if(e.error instanceof DOMException&&e.error.name==="DataCloneError"&&e.message&&e.message.includes("PerformanceServerTiming")){e.stopImmediatePropagation();e.preventDefault()}},true);</script>

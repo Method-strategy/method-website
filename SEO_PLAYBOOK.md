@@ -140,6 +140,7 @@ cd /app/frontend
 SKIP_INDEXNOW=1 \
 yarn build \
   && node scripts/strip-emergent.js \
+  && node scripts/inline-google-fonts.js \
   && node scripts/prerender-og.js \
   && node scripts/prerender-ssg.js \
   && node scripts/generate-sitemap.js \
@@ -1142,10 +1143,10 @@ preload, and build-time CSS inlining (zero render-blocking requests)**:
 
 | Metric | Before → after | Field target (p75) |
 |---|---|---|
-| Performance score | 62 (live) → **87–90** | — |
-| FCP | 4.2 s → **2.9 s** | (informational) |
-| **LCP** | 6.7 s → **2.9 s — equal to FCP** (no font-swap re-registration) | **< 2.5 s** |
-| **TBT** | 240 ms → **20–180 ms** | proxies **INP < 200 ms** |
+| Performance score | 62 (live) → **90–96** | — |
+| FCP | 4.2 s → **2.0–2.5 s** | (informational) |
+| **LCP** | 6.7 s (flapping) → **2.5–3.3 s**, gap bounded by the Cormorant woff2 download alone | **< 2.5 s** |
+| **TBT** | 240 ms → **10–110 ms** | proxies **INP < 200 ms** |
 | **CLS** | 0.002 | **< 0.1** ✓ |
 
 The structural win: **LCP == FCP == HTML delivery time.** Nothing
@@ -1286,6 +1287,33 @@ needs shortening later, get author sign-off first.
 - ✓ Microsoft Clarity (xj8oadt46d) baked into every prerendered
   page's `<head>`; native SPA session stitching (see §10); privacy
   policy discloses collection, cookies, and Microsoft data processing
+- ✓ Core Web Vitals — LCP < 2.5s / CLS < 0.1 / INP < 200ms at p75
+  against the live production URL (see §12 for the budget, the
+  critical-path pattern, and the verification protocol)
+- ✓ Per-article social sharing cards — unique 1200×630 PNG for every
+  `/writing/*` post, every `/work/*` case study, and `/about/discernment`;
+  generated at build time from data files so adding a post
+  auto-generates its card; graceful fallback to `og-default.jpg` if
+  the per-slug PNG is missing (see §11)
+
+---
+
+## 17. When you should call this playbook out of date
+
+- Method adds an X / Twitter / Bluesky / GitHub account → update `sameAs`
+  arrays in `orgSchema()` (and `personGarySchema()` if it's Gary's).
+- Method registers an office address → add `PostalAddress` to
+  `orgSchema()` and to `professionalServiceSchema()`.
+- Method's `serviceType` broadens beyond fractional CMO / strategic
+  marketing → edit `professionalServiceSchema()`.
+- The site launches a second author → duplicate the Person pattern and
+  wire per-post authorship into `writing.js` (add `authorId` field per
+  post).
+- A per-post publish date model is added to `writing.js` → replace the
+  single `SITE_LAUNCH_DATE` with `post.datePublished` in `articleSchema()`.
+
+Ping the SEO team before making any of these changes if you're unsure.
+ cookies, and Microsoft data processing
 - ✓ Core Web Vitals — LCP < 2.5s / CLS < 0.1 / INP < 200ms at p75
   against the live production URL (see §12 for the budget, the
   critical-path pattern, and the verification protocol)

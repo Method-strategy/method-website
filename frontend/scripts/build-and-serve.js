@@ -37,6 +37,7 @@ run("yarn", ["build"], "yarn build");
 
 // 2. Post-build chain (mirrors netlify.toml)
 run("node", ["scripts/strip-emergent.js"], "strip-emergent");
+run("node", ["scripts/inline-google-fonts.js"], "inline-google-fonts");
 run("node", ["scripts/prerender-og.js"], "prerender-og");
 run("node", ["scripts/prerender-ssg.js"], "prerender-ssg");
 run("node", ["scripts/generate-sitemap.js"], "generate-sitemap");
