@@ -205,3 +205,6 @@ Marketing website for Method, a strategic marketing practice (fractional CMO-lev
 - Preview results ×3: 90/96/93, FCP 2.0-2.5s, LCP 2.5-3.3s (gap now bounded by the 40KB font download alone). Fonts verified loading (document.fonts.check), rendering pixel-identical.
 - Playbook: build chain updated, Rule 2 extended (GF inlining), NEW Rule 5 (idle analytics + testing note: live analytics requests appear seconds after load), §12.6 baseline refreshed.
 - PENDING: deploy → verify live ×3 LH + analytics wire test (email_click must still queue/flush post-idle).
+
+## July 2026 — FINAL PSI RESULTS after deploy: Mobile 96 (FCP 1.9s, LCP 2.5s, TBT 80ms), Desktop 100 (LCP 0.6s)
+- Font-activation inlining + idle analytics confirmed on live. Perf work COMPLETE. Code splitting decision (option c) moot — user did not request further action.
