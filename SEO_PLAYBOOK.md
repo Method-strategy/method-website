@@ -634,6 +634,64 @@ Clarity — they don't retro-delete. When analyzing launch-week data,
 filter/segment by hostname `methodmarketinggroup.com` to exclude the
 preview noise.
 
+### 9.9 404 tracking: `not_found` event
+
+**What:** a custom GA4 event fired every time the styled 404 page renders,
+alongside the standard `page_view`. Makes 404 analysis first-class rather
+than reverse-derived from a page_view filter on title.
+
+**Where it fires:** `frontend/src/pages/NotFound.jsx` — a `useEffect` in
+the component fires the event on mount. This covers both entry paths to
+the 404 page:
+
+- Hard navigations to an unknown path → Netlify serves the prerendered
+  `build/404.html` (per `frontend/public/_redirects` last rule) → SPA
+  hydrates → `NotFound` mounts → event fires.
+- SPA route changes to an unknown path → React Router's `path="*"` route
+  renders `NotFound` → event fires.
+
+Same hostname guard as everything else (`isAnalyticsHost()`), so the
+event never fires on previews / localhost / deploy permalinks.
+
+**Parameters:**
+
+| Param | Value | GA4 landing |
+|---|---|---|
+| `page_path` | `window.location.pathname + window.location.search` | Reserved gtag field — surfaces as **Page path + query string** on the event |
+| `page_location` | `window.location.href` | Reserved field — full URL |
+| `page_title` | `document.title` (always `Page not found — Method`) | Reserved field — **Page title** dimension |
+| `page_referrer` | `document.referrer` or `"(direct)"` | Reserved field — surfaces as **Page referrer**; answers whether the 404 came from an inbound link, a bookmark, or organic |
+
+**Analysing:**
+
+- GA4 → **Reports → Engagement → Events** → filter `Event name = not_found`
+- Add secondary dimension **Page path + query string** to see the exact
+  missed URLs; **Page referrer** to see where they came from.
+- Realtime → filter Event name = `not_found` for live verification after
+  hitting any unknown URL on prod.
+
+**Optional (recommended if 404s become a signal you act on regularly):**
+register `not_found` as a **Key event** the same way `email_click` /
+`linkedin_click` were registered (§9.7 step 2). Key-event status is not
+required to see the data — only if you want it counted as a conversion
+or trend-charted on dashboards.
+
+**When to add another 301:** if the same path shows up in Reports →
+Events (`not_found`) with a non-trivial count and the path is clearly a
+legacy WordPress URL (e.g. new WP convention Method didn't audit), add
+a 301 to `frontend/public/_redirects` and redeploy. See §13.1 for the
+second wave of redirects added on this basis.
+
+**What it does NOT capture:**
+
+- Requests to non-HTML assets (e.g. `/wp-content/uploads/2020/img.jpg`,
+  `/wp-admin/`, `/xmlrpc.php`). Those still 404 at the HTTP layer but
+  Netlify serves `build/404.html` for them too — however browsers and
+  bots that request an image URL don't execute the HTML's JavaScript,
+  so GA never fires. To see those, use Netlify's Analytics addon
+  (server-side counts) — not GA4.
+- Bot / crawler probes that don't execute JS.
+
 ---
 
 ## 10. Microsoft Clarity
@@ -1203,6 +1261,34 @@ Format:
 
 Do not touch the wildcard `/*  /404.html  404` fallback at the bottom —
 it's what gives unknown paths a proper 404 status + our stylized 404 page.
+
+### 13.1 Second wave (surfaced from GA4 404 data, July 2026)
+
+The initial migration audited the old WordPress sitemap and redirected
+every URL it listed. During the first week after launch (July 7-13),
+GA4's `not_found` event (§9.9) surfaced additional paths that the old
+sitemap missed but that WordPress conventions expose by default. All
+were adding 404s from real humans (email signatures, bookmarks, cached
+search results) — bot probes for `/wp-admin` etc. don't run JS and
+never showed up.
+
+| Legacy path | Destination | Rule | Rationale |
+|---|---|---|---|
+| `/services`, `/services/*` | `/work` | 301 | Old top-nav "Services" item |
+| `/contact`, `/contact/*` | `/connect` | 301 | Old "Contact Us" — the top bookmark path |
+| `/home`, `/home/*` | `/` | 301 | WordPress's default `/home/` alias for the homepage |
+| `/feed`, `/feed/*` | `/writing/rss.xml` | 301 | Old WP RSS subscribers still polling — preserve their subscription by redirecting to the new feed |
+| `/category/*` | `/writing` | 301 | Old WP taxonomy archive pages that Google may still surface |
+| `/sitemap_index.xml` | `/sitemap.xml` | **200 (rewrite)** | Yoast SEO's sitemap URL. **200, not 301**: crawlers should parse the sitemap from the same request rather than skip it on redirect |
+
+**When to add more:** re-run the query below monthly for the first six
+months and quarterly after. Any path with ≥3 pageviews AND a clearly
+mappable destination should get a 301.
+
+```
+GA4 → Reports → Engagement → Events → filter Event name = not_found
+     → secondary dimension: Page path + query string
+```
 
 ---
 

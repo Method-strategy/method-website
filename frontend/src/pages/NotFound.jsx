@@ -1,5 +1,7 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { RevealStagger, RevealItem } from "../components/Reveal";
+import { isAnalyticsHost } from "@/hooks/analyticsHost";
 
 const destinations = [
     { label: "Work", to: "/work" },
@@ -8,7 +10,31 @@ const destinations = [
     { label: "Connect", to: "/connect" },
 ];
 
+/**
+ * Fire a dedicated GA4 `not_found` event whenever the 404 page renders,
+ * alongside the standard `page_view` that useGAPageView already fires.
+ * The event carries the URL that missed and the referring page so 404s
+ * can be analysed as first-class data rather than reverse-derived by
+ * filtering page_views on title. See SEO_PLAYBOOK.md §9.9.
+ *
+ * SSR-safe: the effect never runs under react-dom/server (prerender-ssg.js
+ * renders this tree at build time — `window` and `gtag` do not exist there).
+ */
+function useNotFoundEvent() {
+    useEffect(() => {
+        if (!isAnalyticsHost()) return;
+        if (typeof window.gtag !== "function") return;
+        window.gtag("event", "not_found", {
+            page_path: window.location.pathname + window.location.search,
+            page_location: window.location.href,
+            page_title: document.title,
+            page_referrer: document.referrer || "(direct)",
+        });
+    }, []);
+}
+
 export default function NotFound() {
+    useNotFoundEvent();
     return (
         <main data-testid="not-found-page" className="bg-cream text-navy">
             <section className="row-full bg-cream">

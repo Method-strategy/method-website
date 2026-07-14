@@ -16,6 +16,26 @@
 /blog/actionable-marketing-insights-come-from-customer-journey-mapping/*  /writing/cx-became-a-religion  301
 /blog/*                            /writing   301
 
+# Second wave of legacy WordPress paths — surfaced from GA4 404 reports in
+# the first week after launch (July 7-13, 2026). These weren't in the old
+# sitemap Method audited pre-migration but are top-nav / footer paths
+# WordPress conventions expose by default, so real humans (email signatures,
+# bookmarks, cached search results) were still hitting them and landing on
+# the styled 404. See SEO_PLAYBOOK.md §13.1.
+/services/*                        /work           301
+/services                          /work           301
+/contact/*                         /connect        301
+/contact                           /connect        301
+/home/*                            /               301
+/home                              /               301
+/feed/*                            /writing/rss.xml 301
+/feed                              /writing/rss.xml 301
+/category/*                        /writing        301
+# Yoast SEO's sitemap index URL — Google + Bing still poll it. Rewrite (200)
+# instead of 301 so crawlers actually parse the sitemap from the same
+# request rather than following a redirect and skipping the file.
+/sitemap_index.xml                 /sitemap.xml    200
+
 # Everything else unknown -> styled 404 page with a real 404 status.
 # Netlify serves exact prerendered files first, so real routes never hit this.
 /*    /404.html    404
