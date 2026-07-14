@@ -213,3 +213,10 @@ Marketing website for Method, a strategic marketing practice (fractional CMO-lev
 - User's uploaded PSI docx analyzed: remaining LCP = 1.39s render delay on subhead = Cormorant download only; TTFB 30ms; zero render-blocking. Noise items (unused JS, clarity cache TTL, phantom 5s gtag long-task) explained and ignored.
 - Fixes: (1) removed dead fonts.googleapis.com preconnect (no requests to that origin since css2 inlining); (2) inline-google-fonts.js now rewrites LEXEND DECA blocks to font-display:optional (it's only Scandia's fallback; its 40KB download competed with the Cormorant file LCP waits on). Cormorant stays swap. Verified per-block in output (18 lexend=optional, all cormorant=swap; note: naive segment grep false-alarmed on trailing HTML).
 - Preview: 91/93, fonts render correctly. PENDING: deploy + note to user that lab runs have inherent ±5pt variance; field CrUX is the real metric.
+
+## July 2026 — Clarity Performance Overview blank → analytics idle-deferral REVERTED (user chose option c)
+- Root cause: clarity.js loaded at post-load idle can't observe the load window → sessions/heatmaps record but web vitals blank (3 days of no Performance Overview data).
+- User chose (c): BOTH gtag.js and clarity.js back to immediate async injection (inside hostname guard, queueing stubs first). requestIdleCallback removed from index.html.
+- Playbook: restored lost §12.3 prose (GF @font-face inlining + Lexend optional) AND rewrote Rule 5 as "Analytics scripts load immediately; do NOT defer" with the incident documented. NOTE FOR FUTURE: an earlier playbook edit was silently lost to an overlapping replace — verify playbook edits landed with grep after editing.
+- Expect: PSI mobile may give back ~2-4 pts (gtag contention returns); Clarity Performance Overview resumes populating within ~24h of deploy. Verified build: no idle callback, stubs precede injection, guard intact.
+- PENDING: user deploys via Save to GitHub.

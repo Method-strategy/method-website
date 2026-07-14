@@ -132,29 +132,21 @@
                 window.clarity = window.clarity || function () {
                     (window.clarity.q = window.clarity.q || []).push(arguments);
                 };
-                /* Vendor script injection is deferred to post-load idle time
-                   (SEO_PLAYBOOK.md §12.3 Rule 5): gtag.js (~130 KB) and
-                   clarity.js were competing with fonts and the app bundle
-                   for bandwidth inside the LCP window on slow connections. */
-                function inject() {
-                    var s = document.createElement("script");
-                    s.async = true;
-                    s.src = "https://www.googletagmanager.com/gtag/js?id=G-7F2PPZPXSK";
-                    document.head.appendChild(s);
-                    var c = document.createElement("script");
-                    c.async = true;
-                    c.src = "https://www.clarity.ms/tag/xj8oadt46d";
-                    document.head.appendChild(c);
-                }
-                function onIdle() {
-                    if ("requestIdleCallback" in window) {
-                        requestIdleCallback(inject, { timeout: 4000 });
-                    } else {
-                        setTimeout(inject, 1500);
-                    }
-                }
-                if (document.readyState === "complete") onIdle();
-                else window.addEventListener("load", onIdle);
+                /* Both vendor scripts load IMMEDIATELY (async). They were
+                   briefly deferred to post-load idle for lab scores, but
+                   Clarity must observe the page load window to capture its
+                   performance metrics (LCP/INP/CLS) — deferral left the
+                   Clarity Performance Overview blank. Field data fidelity
+                   wins over a few lab points (user decision, July 2026).
+                   See SEO_PLAYBOOK.md §12.3 Rule 5. */
+                var s = document.createElement("script");
+                s.async = true;
+                s.src = "https://www.googletagmanager.com/gtag/js?id=G-7F2PPZPXSK";
+                document.head.appendChild(s);
+                var c = document.createElement("script");
+                c.async = true;
+                c.src = "https://www.clarity.ms/tag/xj8oadt46d";
+                document.head.appendChild(c);
             })();
         </script>
         <script>window.addEventListener("error",function(e){if(e.error instanceof DOMException&&e.error.name==="DataCloneError"&&e.message&&e.message.includes("PerformanceServerTiming")){e.stopImmediatePropagation();e.preventDefault()}},true);</script>

@@ -988,11 +988,40 @@ nothing but the HTML itself (~18 KB gzipped with the CSS folded in).
 Lighthouse's render-blocking audit must show an **empty list** — a
 single entry means a regression slipped in.
 
+**The Google Fonts `@font-face` rules are inlined at build time too**
+(`scripts/inline-google-fonts.js`, runs right after strip-emergent): a
+preloaded woff2 sits UNUSED until the `@font-face` rule referencing it
+arrives, and with the css2 stylesheet loading async its arrival raced
+the JS bundle — when it lost, the font applied seconds late and the
+swap repaint re-registered LCP (observed live: LCP flapping 2.9s ↔
+6.6s run-to-run, i.e. PSI flapping 90 ↔ 67). With the rules inline,
+fonts apply the moment the preloaded files land. The step fetches the
+css2 URLs with a Chrome UA, rewrites the **Lexend Deca** blocks to
+`font-display: optional` (it's only Scandia's fallback — with `swap`
+its 40 KB download competed with the Cormorant file LCP actually waits
+on), and degrades gracefully (keeps the async links) if the build
+environment is offline. Cormorant keeps `swap`.
+
 `?display=swap` stays on the Typekit URL — its `@font-face` rules keep
 `font-display: swap`, so text is never invisible while Scandia loads;
 the Lexend Deca fallback (chosen for its matching double-story 'a')
 paints first and the swap is near-seamless because the woff2 preloads
 (Rule 1) started downloading at HTML parse time.
+
+**Rule 5 — Analytics scripts load immediately; do NOT defer them.**
+
+gtag.js and clarity.js were briefly deferred to post-load idle time to
+squeeze lab scores. **This broke Clarity's Performance Overview**: the
+Clarity script must be present during the page-load window to capture
+its performance metrics (LCP / INP / CLS) — loaded at idle it records
+sessions and heatmaps but no web vitals, leaving the Performance
+dashboard blank (observed live: blank for 3 days, July 2026). Reverted
+by explicit user decision: field-data fidelity beats a few points of
+lab score. Both scripts load as immediate `async` injections inside
+the hostname guard (§9.8), with queueing stubs set up first so
+page_views and click events fired before the vendors load are queued
+and flushed. If lab scores ever need squeezing again, do NOT touch
+these tags — the remaining levers are font-related, not analytics.
 
 **Rule 3 — De-block every stylesheet that does NOT unlock the LCP
 element.**
