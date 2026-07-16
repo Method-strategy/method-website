@@ -209,7 +209,7 @@ export default function Home() {
                     <RevealStagger className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-8 items-end" stagger={0.15}>
                         <RevealItem className="lg:col-span-8">
                             <p
-                                className="serif italic text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-[1.1] text-cream"
+                                className="serif italic text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-[1.1] text-cream [text-wrap:balance]"
                                 style={{ letterSpacing: "-0.005em" }}
                             >
                                 If you're not showing up in the market the
