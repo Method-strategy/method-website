@@ -1,8 +1,8 @@
 {
   "base_url": "https://methodmarketinggroup.com",
-  "started_utc": "2026-07-16 12:15:35 UTC",
-  "finished_utc": "2026-07-16 12:16:51 UTC",
-  "duration_seconds": 76,
+  "started_utc": "2026-07-16 12:30:19 UTC",
+  "finished_utc": "2026-07-16 12:31:34 UTC",
+  "duration_seconds": 75,
   "totals": {
     "passed": 31,
     "failed": 1,
@@ -49,7 +49,7 @@
       "name": "2.1 Decline is written to the visitor's browser",
       "plain_english": "When the visitor clicks Decline, the site records that decision so they are not asked again.",
       "passed": true,
-      "evidence": "Stored record: {\"v\":1,\"ga\":false,\"clarity\":false,\"ts\":1784204142883,\"origin\":\"methodmarketinggroup.com\"}"
+      "evidence": "Stored record: {\"v\":1,\"ga\":false,\"clarity\":false,\"ts\":1784205026281,\"origin\":\"methodmarketinggroup.com\"}"
     },
     {
       "section": "2. Visitor declines",
@@ -187,7 +187,7 @@
     {
       "section": "6. Visitor withdraws consent",
       "name": "6.2 Google's session cookie is cleared on withdrawal",
-      "plain_english": "The Google session identifier (_ga_G-7F2PPZPXSK) is removed on withdrawal.",
+      "plain_english": "The Google Analytics per-property session cookie (_ga_7F2PPZPXSK) is removed on withdrawal.",
       "passed": false,
       "evidence": "_ga_* cookies remaining: ['_ga_7F2PPZPXSK']"
     },

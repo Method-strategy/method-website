@@ -182,6 +182,38 @@
                    nothing loads and the React banner (once hydrated)
                    handles the ask. */
                 var c = readConsent();
+                /* Self-healing cookie sweep on every boot: if a provider
+                   is currently OFF but we still see its cookies (server
+                   set them via Set-Cookie between our clearFirstParty
+                   call and window.location.reload, a documented browser
+                   race), clear them now. This runs BEFORE the loader
+                   check below, so a subsequent page load after a
+                   withdrawal always ends with a clean cookie jar. See
+                   SEO_PLAYBOOK.md §14.4. */
+                function sweep(prefixes) {
+                    var host = window.location.hostname;
+                    var domains = ["", host, "." + host];
+                    var parts = document.cookie.split(";");
+                    for (var i = 0; i < parts.length; i++) {
+                        var name = parts[i].split("=")[0].trim();
+                        if (!name) continue;
+                        var match = false;
+                        for (var p = 0; p < prefixes.length; p++) {
+                            if (name === prefixes[p] || name.indexOf(prefixes[p] + "_") === 0) {
+                                match = true;
+                                break;
+                            }
+                        }
+                        if (!match) continue;
+                        for (var d = 0; d < domains.length; d++) {
+                            document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/" + (domains[d] ? "; domain=" + domains[d] : "");
+                        }
+                    }
+                }
+                var GA_PREFIXES = ["_ga", "_gid", "_gat"];
+                var CL_PREFIXES = ["_clck", "_clsk", "_cltk"];
+                if (!c || c.ga !== true) sweep(GA_PREFIXES);
+                if (!c || c.clarity !== true) sweep(CL_PREFIXES);
                 if (c) {
                     if (c.ga === true) loadGA();
                     if (c.clarity === true) loadClarity();

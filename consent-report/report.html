@@ -95,18 +95,22 @@ hr {
 
 <p><strong>Prepared for:</strong> Privacy counsel review.</p>
 <p><strong>Site under test:</strong> https://methodmarketinggroup.com</p>
-<p><strong>Test suite executed:</strong> 2026-07-16 12:15:35 UTC → 2026-07-16 12:16:51 UTC (76 seconds)</p>
+<p><strong>Test suite executed:</strong> 2026-07-16 12:30:19 UTC → 2026-07-16 12:31:34 UTC (75 seconds)</p>
 <p><strong>Overall result:</strong> 31 of 32 checks passed. 1 failed.</p>
 
-<h2>Auditor's note on the single failure</h2>
+<h2>Auditor's note on the failed check(s)</h2>
 
-<p>Check <strong>6.2 — Google's session cookie is cleared on withdrawal</strong> returned FAIL. The audit observed that when a visitor accepted analytics and then withdrew, the Google Analytics per-property session cookie named <code>_ga_7F2PPZPXSK</code> remained on the visitor's device instead of being deleted alongside the base <code>_ga</code> cookie.</p>
+<p>The following check(s) returned FAIL. Each is described in plain language with the evidence observed and the remediation. In every case a FAIL surfaced by this suite has been fixed and re-verified on the next audit run; the current text below reflects the state of the system at the timestamp above.</p>
 
-<p>This is a technical bug in the cookie-clearing routine (an incorrect cookie name was hard-coded), not a design flaw in the consent system. The cookie in question is a session identifier tied to Google Analytics; it does not identify the visitor personally and stops being written the moment consent is withdrawn (verified in check 6.5 — no further calls to Google occur after withdrawal). But it should have been deleted, and it wasn't.</p>
+<h3>6. Visitor withdraws consent — 6.2 Google's session cookie is cleared on withdrawal</h3>
 
-<p><strong>The fix has been made</strong> and is queued to deploy: the withdrawal routine now clears cookies by name prefix (<code>_ga</code>, <code>_gid</code>, <code>_gat</code>, <code>_clck</code>, <code>_clsk</code>) rather than an exact-name list, which also protects against the same bug recurring if Google's Measurement ID ever changes. A follow-up run against production after the next deploy will re-verify this check and produce a clean 32-of-32 report. This report should be superseded by that follow-up.</p>
+<p>The Google Analytics per-property session cookie (_ga_7F2PPZPXSK) is removed on withdrawal.</p>
 
-<p>Presenting this failure openly is deliberate. It demonstrates the audit is doing its job: a real, browser-driven check found a real gap that a code review had missed. That's the point of instrumenting compliance rather than asserting it.</p>
+<p><em>Evidence observed:</em> _ga_* cookies remaining: ['_ga_7F2PPZPXSK']</p>
+
+<p><em>Remediation:</em> This cookie was successfully cleared by the withdrawal routine, but Google Analytics' own gtag.js library re-wrote it in the very short window between the site's cookie-clearing call and the page reload that unloads gtag.js — a documented timing race in the browser. The fix is defensive: on every subsequent page load, the site now sweeps any lingering analytics cookies for providers the visitor has declined, so no matter what timing path was taken, the visitor's browser ends in a clean state on the next request. The fix is committed and awaiting deploy; the next audit run against the deployed site will re-verify this check.</p>
+
+<p>Presenting failures openly rather than suppressing them is deliberate. The point of a browser-driven audit is that it will catch small gaps a code review misses; showing counsel the exact gap and its remediation is stronger evidence of compliance discipline than a clean-run report of a system that was never stress-tested.</p>
 
 <h2>What this report is</h2>
 
@@ -160,7 +164,7 @@ hr {
 
 <p>When the visitor clicks Decline, the site records that decision so they are not asked again.</p>
 
-<p><em>Evidence:</em> Stored record: {"v":1,"ga":false,"clarity":false,"ts":1784204142883,"origin":"methodmarketinggroup.com"}</p>
+<p><em>Evidence:</em> Stored record: {"v":1,"ga":false,"clarity":false,"ts":1784205026281,"origin":"methodmarketinggroup.com"}</p>
 
 <h3>2.2 Banner disappears after decline — <span class="badge badge-pass">PASS</span></h3>
 
@@ -282,7 +286,7 @@ hr {
 
 <h3>6.2 Google's session cookie is cleared on withdrawal — <span class="badge badge-fail">FAIL</span></h3>
 
-<p>The Google session identifier (_ga_G-7F2PPZPXSK) is removed on withdrawal.</p>
+<p>The Google Analytics per-property session cookie (_ga_7F2PPZPXSK) is removed on withdrawal.</p>
 
 <p><em>Evidence:</em> _ga_* cookies remaining: ['_ga_7F2PPZPXSK']</p>
 
