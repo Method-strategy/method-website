@@ -1,0 +1,237 @@
+{
+  "base_url": "https://methodmarketinggroup.com",
+  "started_utc": "2026-07-16 12:15:35 UTC",
+  "finished_utc": "2026-07-16 12:16:51 UTC",
+  "duration_seconds": 76,
+  "totals": {
+    "passed": 31,
+    "failed": 1,
+    "total": 32
+  },
+  "results": [
+    {
+      "section": "1. Fresh visit (no choice made)",
+      "name": "1.1 Cookie banner appears on first visit",
+      "plain_english": "A visitor who has never been to the site sees the cookie banner before any tracking begins.",
+      "passed": true,
+      "evidence": "Banner element present in the DOM."
+    },
+    {
+      "section": "1. Fresh visit (no choice made)",
+      "name": "1.2 Zero requests to Google before consent",
+      "plain_english": "The browser does not contact Google Analytics or Google Tag Manager until the visitor has said yes.",
+      "passed": true,
+      "evidence": "Observed 0 Google requests."
+    },
+    {
+      "section": "1. Fresh visit (no choice made)",
+      "name": "1.3 Zero requests to Microsoft before consent",
+      "plain_english": "The browser does not contact Microsoft Clarity until the visitor has said yes.",
+      "passed": true,
+      "evidence": "Observed 0 Clarity requests."
+    },
+    {
+      "section": "1. Fresh visit (no choice made)",
+      "name": "1.4 Zero requests to bing.com before consent",
+      "plain_english": "The Microsoft advertising ID sync (bing.com) does not fire until consent is granted.",
+      "passed": true,
+      "evidence": "Observed 0 bing.com requests."
+    },
+    {
+      "section": "1. Fresh visit (no choice made)",
+      "name": "1.5 Zero analytics cookies set before consent",
+      "plain_english": "No Google or Microsoft tracking cookies are dropped on the visitor's device before they choose.",
+      "passed": true,
+      "evidence": "No analytics cookies present."
+    },
+    {
+      "section": "2. Visitor declines",
+      "name": "2.1 Decline is written to the visitor's browser",
+      "plain_english": "When the visitor clicks Decline, the site records that decision so they are not asked again.",
+      "passed": true,
+      "evidence": "Stored record: {\"v\":1,\"ga\":false,\"clarity\":false,\"ts\":1784204142883,\"origin\":\"methodmarketinggroup.com\"}"
+    },
+    {
+      "section": "2. Visitor declines",
+      "name": "2.2 Banner disappears after decline",
+      "plain_english": "The banner does not linger or nag after the visitor has answered.",
+      "passed": true,
+      "evidence": ""
+    },
+    {
+      "section": "2. Visitor declines",
+      "name": "2.3 Silence persists across navigation",
+      "plain_english": "Moving to another page on the site does not restart tracking after a decline.",
+      "passed": true,
+      "evidence": "After navigation: Google=0, Clarity=0, bing=0"
+    },
+    {
+      "section": "2. Visitor declines",
+      "name": "2.4 Silence persists across reloads",
+      "plain_english": "Refreshing the page does not restart tracking after a decline. The decision survives.",
+      "passed": true,
+      "evidence": "After reload: Google=0, Clarity=0, bing=0"
+    },
+    {
+      "section": "2. Visitor declines",
+      "name": "2.5 Banner does not re-appear on reload",
+      "plain_english": "The visitor is not re-prompted on every visit. Their decline is honoured.",
+      "passed": true,
+      "evidence": ""
+    },
+    {
+      "section": "3. Visitor accepts everything",
+      "name": "3.1 Google Analytics loads after consent",
+      "plain_english": "Google Analytics begins working exactly when the visitor agrees, not before.",
+      "passed": true,
+      "evidence": "Observed 2 Google request(s) after Accept."
+    },
+    {
+      "section": "3. Visitor accepts everything",
+      "name": "3.2 Microsoft Clarity loads after consent",
+      "plain_english": "Microsoft Clarity begins working exactly when the visitor agrees, not before.",
+      "passed": true,
+      "evidence": "Observed 7 Clarity request(s) after Accept."
+    },
+    {
+      "section": "3. Visitor accepts everything",
+      "name": "3.3 Google's identifying cookie is set (_ga)",
+      "plain_english": "Once accepted, Google's standard analytics cookie is placed on the visitor's device.",
+      "passed": true,
+      "evidence": "Cookies now include: ANONCHK, CLID, MR, MUID, SM, SRM_B, _clck, _clsk, _ga, _ga_7F2PPZPXSK"
+    },
+    {
+      "section": "3. Visitor accepts everything",
+      "name": "3.4 Microsoft's identifying cookies are set (_clck, _clsk)",
+      "plain_english": "Once accepted, Microsoft Clarity's standard cookies are placed on the visitor's device.",
+      "passed": true,
+      "evidence": "Clarity cookies present: ['_clck', '_clsk']"
+    },
+    {
+      "section": "3. Visitor accepts everything",
+      "name": "3.5 Consent persists across reload",
+      "plain_english": "The visitor is not asked again. Their acceptance survives reloads and repeat visits.",
+      "passed": true,
+      "evidence": "After reload: Google added 2 more request(s), Clarity added 4."
+    },
+    {
+      "section": "4. Visitor accepts Google Analytics only",
+      "name": "4.1 Google Analytics loads when only it is accepted",
+      "plain_english": "Turning on only Google Analytics activates Google Analytics.",
+      "passed": true,
+      "evidence": "Google requests observed: 2"
+    },
+    {
+      "section": "4. Visitor accepts Google Analytics only",
+      "name": "4.2 Microsoft Clarity stays off when only Google is accepted",
+      "plain_english": "Microsoft Clarity remains completely silent when the visitor did not accept it.",
+      "passed": true,
+      "evidence": "Clarity requests observed: 0"
+    },
+    {
+      "section": "4. Visitor accepts Google Analytics only",
+      "name": "4.3 bing.com stays untouched when only Google is accepted",
+      "plain_english": "Microsoft's advertising ID sync (bing.com) does not fire when Clarity is declined.",
+      "passed": true,
+      "evidence": "bing.com requests observed: 0"
+    },
+    {
+      "section": "4. Visitor accepts Google Analytics only",
+      "name": "4.4 No Clarity cookies are set when only Google is accepted",
+      "plain_english": "The visitor's device receives no Microsoft Clarity cookies (_clck, _clsk) if they said no to Clarity.",
+      "passed": true,
+      "evidence": "Clarity cookies present: []"
+    },
+    {
+      "section": "4. Visitor accepts Google Analytics only",
+      "name": "4.5 No MUID cookie is set when only Google is accepted",
+      "plain_english": "Microsoft's cross-site advertising identifier (MUID) is not set when Clarity is declined.",
+      "passed": true,
+      "evidence": "MUID present: False"
+    },
+    {
+      "section": "5. Visitor accepts Microsoft Clarity only",
+      "name": "5.1 Microsoft Clarity loads when only it is accepted",
+      "plain_english": "Turning on only Microsoft Clarity activates Microsoft Clarity.",
+      "passed": true,
+      "evidence": "Clarity requests observed: 7"
+    },
+    {
+      "section": "5. Visitor accepts Microsoft Clarity only",
+      "name": "5.2 Google Analytics stays off when only Clarity is accepted",
+      "plain_english": "Google Analytics remains completely silent when the visitor did not accept it.",
+      "passed": true,
+      "evidence": "Google requests observed: 0"
+    },
+    {
+      "section": "5. Visitor accepts Microsoft Clarity only",
+      "name": "5.3 No _ga cookie is set when only Clarity is accepted",
+      "plain_english": "Google's standard analytics cookie is not placed on the visitor's device when they declined Google.",
+      "passed": true,
+      "evidence": "Google cookies present: []"
+    },
+    {
+      "section": "6. Visitor withdraws consent",
+      "name": "6.0 (setup) Analytics cookies were successfully set after accept",
+      "plain_english": "Confirming the accept step actually placed the cookies we are about to withdraw.",
+      "passed": true,
+      "evidence": "Before withdrawal: ['ANONCHK', 'MUID', 'MUID', 'SM', '_clck', '_clsk', '_ga', '_ga_7F2PPZPXSK']"
+    },
+    {
+      "section": "6. Visitor withdraws consent",
+      "name": "6.1 Google's _ga cookie is cleared on withdrawal",
+      "plain_english": "When the visitor changes their mind, the primary Google Analytics cookie is removed from their device.",
+      "passed": true,
+      "evidence": "Cookies after withdrawal: ['ANONCHK', 'CLID', 'MR', 'MUID', 'SM', 'SRM_B', '_ga_7F2PPZPXSK']"
+    },
+    {
+      "section": "6. Visitor withdraws consent",
+      "name": "6.2 Google's session cookie is cleared on withdrawal",
+      "plain_english": "The Google session identifier (_ga_G-7F2PPZPXSK) is removed on withdrawal.",
+      "passed": false,
+      "evidence": "_ga_* cookies remaining: ['_ga_7F2PPZPXSK']"
+    },
+    {
+      "section": "6. Visitor withdraws consent",
+      "name": "6.3 Microsoft Clarity's _clck cookie is cleared on withdrawal",
+      "plain_english": "Microsoft Clarity's identifying cookie is removed from the visitor's device on withdrawal.",
+      "passed": true,
+      "evidence": "_clck present: False"
+    },
+    {
+      "section": "6. Visitor withdraws consent",
+      "name": "6.4 Microsoft Clarity's _clsk cookie is cleared on withdrawal",
+      "plain_english": "Microsoft Clarity's session cookie is removed from the visitor's device on withdrawal.",
+      "passed": true,
+      "evidence": "_clsk present: False"
+    },
+    {
+      "section": "6. Visitor withdraws consent",
+      "name": "6.5 Analytics providers stop firing after withdrawal",
+      "plain_english": "After withdrawal (which reloads the page), no further calls to Google or Microsoft occur.",
+      "passed": true,
+      "evidence": "Post-reload activity: Google=0, Clarity=0"
+    },
+    {
+      "section": "7. Custom events stay silent before consent",
+      "name": "7.1 The 404 tracking event does not fire before consent",
+      "plain_english": "When a visitor lands on a broken URL before choosing, no 'page not found' event is sent to Google.",
+      "passed": true,
+      "evidence": "Google requests: 0 | dataLayer contains 'not_found': False"
+    },
+    {
+      "section": "7. Custom events stay silent before consent",
+      "name": "7.2 The 'email intent' event does not fire before consent",
+      "plain_english": "When a visitor clicks the email address in the Connect footer without first accepting, no email-click event is sent to Google.",
+      "passed": true,
+      "evidence": "Google requests: 0 | dataLayer contains 'email_click': False"
+    },
+    {
+      "section": "7. Custom events stay silent before consent",
+      "name": "7.3 The 'LinkedIn intent' event does not fire before consent",
+      "plain_english": "When a visitor clicks a LinkedIn link without first accepting, no LinkedIn-click event is sent to Google.",
+      "passed": true,
+      "evidence": "Google requests: 0 | dataLayer contains 'linkedin_click': False"
+    }
+  ]
+}

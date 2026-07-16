@@ -148,8 +148,8 @@ export function writeConsent(next) {
     // Running gtag.js / clarity.js cannot be uninstalled at runtime;
     // reload is the only way to actually stop them. Standard CMP
     // behavior. Grants don't reload.
-    if (gaWithdrawn) clearFirstPartyCookies(GA_COOKIES);
-    if (clarityWithdrawn) clearFirstPartyCookies(CLARITY_FIRST_PARTY_COOKIES);
+    if (gaWithdrawn) clearFirstPartyCookies(GA_COOKIE_PREFIXES);
+    if (clarityWithdrawn) clearFirstPartyCookies(CLARITY_COOKIE_PREFIXES);
     if (gaWithdrawn || clarityWithdrawn) {
         window.location.reload();
     }
@@ -158,11 +158,27 @@ export function writeConsent(next) {
 // First-party cookies each provider drops on our domain. Third-party
 // (MUID on .bing.com, etc.) can't be cleared by us and expire on their
 // own schedule. Called out in the privacy policy.
-const GA_COOKIES = ["_ga", "_ga_G-7F2PPZPXSK", "_gid", "_gat"];
-const CLARITY_FIRST_PARTY_COOKIES = ["_clck", "_clsk"];
+//
+// GA cookies are cleared by PREFIX (`_ga`, `_gid`, `_gat`) so we catch
+// both the base `_ga` cookie and the measurement-ID-suffixed variant
+// (`_ga_7F2PPZPXSK` today, whatever the ID becomes tomorrow). This is
+// safer than an exact-name list; the earlier exact-name list had a
+// subtle bug (Measurement ID `G-7F2PPZPXSK` is called `G-...` in GA4
+// but gtag writes the cookie as `_ga_7F2PPZPXSK` without the `G-`).
+const GA_COOKIE_PREFIXES = ["_ga", "_gid", "_gat"];
+const CLARITY_COOKIE_PREFIXES = ["_clck", "_clsk", "_cltk"];
 
-function clearFirstPartyCookies(names) {
+function findCookiesByPrefix(prefixes) {
+    if (typeof document === "undefined") return [];
+    return document.cookie
+        .split(";")
+        .map((c) => c.split("=")[0].trim())
+        .filter((n) => n && prefixes.some((p) => n === p || n.startsWith(p + "_")));
+}
+
+function clearFirstPartyCookies(prefixes) {
     if (typeof document === "undefined") return;
+    const names = findCookiesByPrefix(prefixes);
     const host = window.location.hostname;
     // Clear both bare-host and dotted-domain variants because gtag
     // sets one or the other depending on setup, and the browser
