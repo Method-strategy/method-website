@@ -101,7 +101,7 @@ export default function PrivacyPolicy() {
                                 </span>
                             </h1>
                             <p className="text-sm text-navy/60 mt-6 tracking-wide uppercase">
-                                Last updated July 8, 2026
+                                Last updated July 16, 2026
                             </p>
                         </RevealItem>
                     </RevealStagger>
@@ -424,6 +424,33 @@ export default function PrivacyPolicy() {
                                     Analytics disclosure below. We do not use
                                     online tracking for advertising, retargeting,
                                     profiling, or any form of ad personalization.
+                                </p>
+                                <p>
+                                    <strong>Your consent choice.</strong> We
+                                    show a cookie banner on your first visit,
+                                    and we don't set any analytics cookies
+                                    until you've chosen. Google Analytics and
+                                    Microsoft Clarity are separately
+                                    toggleable: you can accept one, both, or
+                                    neither, and neither runs until you say
+                                    so. Your choice lives in your browser's
+                                    localStorage under the key{" "}
+                                    <code>method_consent_v1</code>. It stays
+                                    on your device, isn't shared with any
+                                    server, and identifies no one. You can
+                                    change or withdraw your consent at any
+                                    time via the "Cookie preferences" link in
+                                    the site footer. When you withdraw
+                                    consent for a provider, we stop future
+                                    tracking and clear that provider's
+                                    first-party cookies on this site.
+                                    Microsoft Clarity also uses a cookie
+                                    called <code>MUID</code> on bing.com;
+                                    because it isn't set on our domain, we
+                                    can't clear it directly. It expires on
+                                    Microsoft's schedule, and if you want it
+                                    gone sooner you can clear it in your
+                                    browser's cookie settings for bing.com.
                                 </p>
                                 <p>
                                     To the extent these online tracking technologies are
