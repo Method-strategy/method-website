@@ -427,30 +427,24 @@ export default function PrivacyPolicy() {
                                 </p>
                                 <p>
                                     <strong>Your consent choice.</strong> We
-                                    show a cookie banner on your first visit,
-                                    and we don't set any analytics cookies
-                                    until you've chosen. Google Analytics and
-                                    Microsoft Clarity are separately
-                                    toggleable: you can accept one, both, or
-                                    neither, and neither runs until you say
-                                    so. Your choice lives in your browser's
-                                    localStorage under the key{" "}
-                                    <code>method_consent_v1</code>. It stays
-                                    on your device, isn't shared with any
-                                    server, and identifies no one. You can
-                                    change or withdraw your consent at any
-                                    time via the "Cookie preferences" link in
-                                    the site footer. When you withdraw
-                                    consent for a provider, we stop future
-                                    tracking and clear that provider's
-                                    first-party cookies on this site.
-                                    Microsoft Clarity also uses a cookie
-                                    called <code>MUID</code> on bing.com;
-                                    because it isn't set on our domain, we
-                                    can't clear it directly. It expires on
-                                    Microsoft's schedule, and if you want it
-                                    gone sooner you can clear it in your
-                                    browser's cookie settings for bing.com.
+                                    ask before we measure. On your first
+                                    visit, a banner appears and nothing
+                                    analytical runs until you make a choice.
+                                    You can accept or decline, and you can
+                                    treat Google Analytics and Microsoft
+                                    Clarity as separate decisions: accept
+                                    one, decline the other, or decline both.
+                                    Your choice is remembered in your
+                                    browser's own storage, not sent to us or
+                                    anyone else, and you can change it
+                                    anytime through the "Cookie preferences"
+                                    link in the footer. If you withdraw
+                                    consent, we stop the relevant tracking
+                                    and clear that provider's cookies from
+                                    your browser. One exception we can't
+                                    control: Microsoft's MUID cookie, set on
+                                    bing.com, can only be removed through
+                                    your browser's own settings.
                                 </p>
                                 <p>
                                     To the extent these online tracking technologies are
@@ -556,6 +550,11 @@ export default function PrivacyPolicy() {
                                         Clarity privacy FAQ
                                     </a>
                                     .
+                                </p>
+                                <p>
+                                    The consent choice itself is stored under
+                                    the key <code>method_consent_v1</code> in
+                                    your browser's localStorage.
                                 </p>
                             </Section>
 
