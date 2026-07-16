@@ -31,7 +31,7 @@ const categories = [
     ["I. Professional or employment-related information", "Business contact details in order to provide you our Services at a business level or job title, work history, and professional qualifications if you apply for a job with us"],
     ["J. Education information", "Student records and directory information"],
     ["K. Inferences drawn from collected personal information", "Inferences drawn from any of the collected personal information listed above to create a profile or summary about, for example, an individual's preferences and characteristics"],
-    ["L. Sensitive personal information", "—"],
+    ["L. Sensitive personal information", "Not applicable"],
 ];
 
 const Email = () => (
@@ -315,9 +315,9 @@ export default function PrivacyPolicy() {
                                     Information automatically collected
                                 </h3>
                                 <InShort>
-                                    Some information — such as your Internet Protocol
+                                    Some information, such as your Internet Protocol
                                     (IP) address, browser and device characteristics,
-                                    and how you navigate the site — is collected
+                                    and how you navigate the site, is collected
                                     automatically when you visit our Services.
                                 </InShort>
                                 <p>
@@ -336,7 +336,7 @@ export default function PrivacyPolicy() {
                                     our internal analytics and reporting purposes. Our
                                     analytics providers are Google Analytics 4 (traffic
                                     measurement) and Microsoft Clarity (session replay
-                                    and interaction heatmaps) — see section{" "}
+                                    and interaction heatmaps). See section{" "}
                                     <Anchor id="cookies">
                                         "Do we use cookies and other tracking technologies?"
                                     </Anchor>{" "}
@@ -420,7 +420,7 @@ export default function PrivacyPolicy() {
                                     basic site functions. We also permit third
                                     parties and service providers to use
                                     online tracking technologies on our
-                                    Services for analytics — see the Google
+                                    Services for analytics. See the Google
                                     Analytics disclosure below. We do not use
                                     online tracking for advertising, retargeting,
                                     profiling, or any form of ad personalization.
@@ -510,9 +510,9 @@ export default function PrivacyPolicy() {
                                     replay, click and scroll heatmaps, and
                                     aggregated interaction metrics. When you
                                     visit the site, Clarity captures a
-                                    recording of your interactions — mouse
+                                    recording of your interactions (mouse
                                     movements, clicks, scrolls, and the pages
-                                    you view — along with your approximate
+                                    you view) along with your approximate
                                     location (derived from your IP address),
                                     device and browser characteristics, and
                                     referrer. Clarity sets first-party
@@ -520,7 +520,7 @@ export default function PrivacyPolicy() {
                                     <code>_clck</code>, <code>_clsk</code>)
                                     and reads Microsoft's own third-party
                                     cookies (such as <code>MUID</code>,{" "}
-                                    <code>ANONCHK</code>, <code>CLID</code>,
+                                    <code>ANONCHK</code>, <code>CLID</code>,{" "}
                                     <code>SM</code>, <code>MR</code>) to
                                     identify unique users and stitch
                                     interactions into continuous sessions.
