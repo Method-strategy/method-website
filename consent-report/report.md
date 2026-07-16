@@ -2,22 +2,8 @@
 
 **Prepared for:** Privacy counsel review.
 **Site under test:** https://methodmarketinggroup.com
-**Test suite executed:** 2026-07-16 12:30:19 UTC → 2026-07-16 12:31:34 UTC (75 seconds)
-**Overall result:** 31 of 32 checks passed. 1 failed.
-
-## Auditor's note on the failed check(s)
-
-The following check(s) returned FAIL. Each is described in plain language with the evidence observed and the remediation. In every case a FAIL surfaced by this suite has been fixed and re-verified on the next audit run; the current text below reflects the state of the system at the timestamp above.
-
-### 6. Visitor withdraws consent — 6.2 Google's session cookie is cleared on withdrawal
-
-The Google Analytics per-property session cookie (_ga_7F2PPZPXSK) is removed on withdrawal.
-
-*Evidence observed:* _ga_* cookies remaining: ['_ga_7F2PPZPXSK']
-
-*Remediation:* This cookie was successfully cleared by the withdrawal routine, but Google Analytics' own gtag.js library re-wrote it in the very short window between the site's cookie-clearing call and the page reload that unloads gtag.js — a documented timing race in the browser. The fix is defensive: on every subsequent page load, the site now sweeps any lingering analytics cookies for providers the visitor has declined, so no matter what timing path was taken, the visitor's browser ends in a clean state on the next request. The fix is committed and awaiting deploy; the next audit run against the deployed site will re-verify this check.
-
-Presenting failures openly rather than suppressing them is deliberate. The point of a browser-driven audit is that it will catch small gaps a code review misses; showing counsel the exact gap and its remediation is stronger evidence of compliance discipline than a clean-run report of a system that was never stress-tested.
+**Test suite executed:** 2026-07-16 13:17:24 UTC → 2026-07-16 13:18:40 UTC (76 seconds)
+**Overall result:** 32 of 32 checks passed. 0 failed.
 
 ## What this report is
 
@@ -69,7 +55,7 @@ No Google or Microsoft tracking cookies are dropped on the visitor's device befo
 
 When the visitor clicks Decline, the site records that decision so they are not asked again.
 
-*Evidence:* Stored record: {"v":1,"ga":false,"clarity":false,"ts":1784205026281,"origin":"methodmarketinggroup.com"}
+*Evidence:* Stored record: {"v":1,"ga":false,"clarity":false,"ts":1784207851607,"origin":"methodmarketinggroup.com"}
 
 ### 2.2 Banner disappears after decline — **PASS**
 
@@ -187,13 +173,13 @@ Confirming the accept step actually placed the cookies we are about to withdraw.
 
 When the visitor changes their mind, the primary Google Analytics cookie is removed from their device.
 
-*Evidence:* Cookies after withdrawal: ['ANONCHK', 'CLID', 'MR', 'MUID', 'SM', 'SRM_B', '_ga_7F2PPZPXSK']
+*Evidence:* Cookies after withdrawal: ['ANONCHK', 'CLID', 'MR', 'MUID', 'SM', 'SRM_B']
 
-### 6.2 Google's session cookie is cleared on withdrawal — **FAIL**
+### 6.2 Google's session cookie is cleared on withdrawal — **PASS**
 
 The Google Analytics per-property session cookie (_ga_7F2PPZPXSK) is removed on withdrawal.
 
-*Evidence:* _ga_* cookies remaining: ['_ga_7F2PPZPXSK']
+*Evidence:* _ga_* cookies remaining: []
 
 ### 6.3 Microsoft Clarity's _clck cookie is cleared on withdrawal — **PASS**
 
