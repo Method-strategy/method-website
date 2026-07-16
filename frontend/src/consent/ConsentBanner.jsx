@@ -26,7 +26,7 @@ export default function ConsentBanner({ onOpenPreferences }) {
             <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-6 md:py-7 flex flex-col md:flex-row md:items-center gap-5 md:gap-10">
                 <p
                     data-testid="consent-banner-copy"
-                    className="text-navy text-[0.95rem] md:text-base leading-relaxed max-w-3xl"
+                    className="serif italic text-navy text-lg md:text-xl leading-snug max-w-3xl"
                 >
                     We take your privacy as seriously as we take our
                     work. To understand what lands with our audience
