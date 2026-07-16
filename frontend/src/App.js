@@ -14,6 +14,7 @@ import Discernment from "@/pages/Discernment";
 import NotFound from "@/pages/NotFound";
 import Sitemap from "@/pages/Sitemap";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import ConsentProvider from "@/consent/ConsentProvider";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { useGAPageView } from "@/hooks/useGAPageView";
 import { useContactTracking } from "@/hooks/useContactTracking";
@@ -46,6 +47,7 @@ export function AppShell() {
                 <Route path="*" element={<NotFound />} />
             </Routes>
             <Footer />
+            <ConsentProvider />
         </div>
     );
 }

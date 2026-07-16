@@ -545,3 +545,18 @@ a.plain:hover {
         box-shadow: none !important;
     }
 }
+
+/* Consent banner / modal / toast entrance. Single keyframe reused
+   across the three consent surfaces; matches the site's understated
+   motion vocabulary (short duration, ease-out, no bounce). See
+   frontend/src/consent/ and SEO_PLAYBOOK.md §14. */
+@keyframes consent-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

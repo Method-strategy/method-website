@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { isAnalyticsHost } from "./analyticsHost";
+import { getEffectiveState } from "@/consent/consentStore";
 
 /**
  * Fires a GA4 `page_view` on the initial load and on every subsequent
@@ -19,6 +20,13 @@ import { isAnalyticsHost } from "./analyticsHost";
  *   - the correct title (updated first by useDocumentTitle),
  *   - the correct page_path / page_location for reporting.
  *
+ * Three-layer gate
+ * ----------------
+ * 1. Hostname guard — no analytics outside production.
+ * 2. Consent guard — no GA4 events unless the user has granted GA.
+ * 3. Runtime guard — no fire if the gtag function isn't ready (defense
+ *    against the loader missing or being blocked).
+ *
  * SSR-safe: guarded on `typeof window` because prerender-ssg.js renders
  * this tree with react-dom/server where `window` and `gtag` do not exist.
  */
@@ -27,6 +35,7 @@ export function useGAPageView() {
 
     useEffect(() => {
         if (!isAnalyticsHost()) return;
+        if (!getEffectiveState().ga) return;
         if (typeof window.gtag !== "function") return;
         window.gtag("event", "page_view", {
             page_location: window.location.href,

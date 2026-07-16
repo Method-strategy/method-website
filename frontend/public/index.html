@@ -107,46 +107,92 @@
             <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
         </noscript>
         <title>Method — Clarifying how you show up in the market.</title>
-        <!-- Analytics hostname guard — GA4 + Microsoft Clarity only
-             initialize on the production hostnames. On any other host
-             (Emergent previews, localhost, Netlify deploy permalinks)
-             neither tag loads and ZERO requests fire to
-             googletagmanager.com / google-analytics.com / clarity.ms,
-             keeping preview traffic out of both properties. The SPA
-             hooks (useGAPageView, useContactTracking) carry the same
-             guard via src/hooks/analyticsHost.js. See SEO_PLAYBOOK.md
-             §9.8. GA4 config keeps send_page_view:false — page_view is
-             owned by src/hooks/useGAPageView.js. -->
+        <!-- Analytics hostname guard + consent gate — GA4 + Microsoft
+             Clarity only initialize (a) on the production hostnames
+             AND (b) after the user has affirmatively opted in via the
+             consent banner. On any other host (Emergent previews,
+             localhost, Netlify deploy permalinks) neither tag loads
+             regardless of consent. On production, if the user
+             previously accepted a provider we load it immediately; if
+             they haven't decided yet (or they declined) the loader
+             stays absent and zero requests fire to
+             googletagmanager.com / google-analytics.com / clarity.ms
+             until they choose. The React banner (src/consent) calls
+             window.__methodConsent.load.ga() / .clarity() to inject
+             the loaders on grant. See SEO_PLAYBOOK.md §9.8 (hostname
+             guard) and §14 (consent architecture). GA4 config keeps
+             send_page_view:false — page_view is owned by
+             src/hooks/useGAPageView.js. -->
         <script>
             (function () {
-                var h = window.location.hostname;
-                if (h !== "methodmarketinggroup.com" && h !== "www.methodmarketinggroup.com") return;
-                /* Stubs are live IMMEDIATELY — page_views and email/linkedin
-                   click events fired before the vendor scripts load are
-                   queued (dataLayer / clarity.q) and flushed on load, so
-                   nothing is lost. */
-                window.dataLayer = window.dataLayer || [];
-                window.gtag = function () { window.dataLayer.push(arguments); };
-                window.gtag("js", new Date());
-                window.gtag("config", "G-7F2PPZPXSK", { send_page_view: false });
-                window.clarity = window.clarity || function () {
-                    (window.clarity.q = window.clarity.q || []).push(arguments);
+                var PROD = ["methodmarketinggroup.com", "www.methodmarketinggroup.com"];
+                var CONSENT_KEY = "method_consent_v1";
+                var MAX_AGE_MS = 365 * 24 * 60 * 60 * 1000; /* 12 months freshness */
+                function isProd() {
+                    return PROD.indexOf(window.location.hostname) !== -1;
+                }
+                function readConsent() {
+                    try {
+                        var raw = window.localStorage.getItem(CONSENT_KEY);
+                        if (!raw) return null;
+                        var p = JSON.parse(raw);
+                        if (!p || p.v !== 1) return null;
+                        if (!p.ts || Date.now() - p.ts > MAX_AGE_MS) return null;
+                        return p;
+                    } catch (e) {
+                        return null;
+                    }
+                }
+                /* Idempotent loader for GA4. Only actually runs on
+                   production hostnames. The stub is created just before
+                   injection so ANY gtag calls made before the loader
+                   arrives queue into dataLayer and flush automatically
+                   when gtag.js executes — nothing is lost. */
+                function loadGA() {
+                    if (!isProd()) return;
+                    if (window.__methodGaLoaded) return;
+                    window.__methodGaLoaded = true;
+                    window.dataLayer = window.dataLayer || [];
+                    window.gtag = function () { window.dataLayer.push(arguments); };
+                    window.gtag("js", new Date());
+                    window.gtag("config", "G-7F2PPZPXSK", { send_page_view: false });
+                    var s = document.createElement("script");
+                    s.async = true;
+                    s.src = "https://www.googletagmanager.com/gtag/js?id=G-7F2PPZPXSK";
+                    document.head.appendChild(s);
+                }
+                /* Idempotent loader for Clarity. Only actually runs on
+                   production hostnames. */
+                function loadClarity() {
+                    if (!isProd()) return;
+                    if (window.__methodClarityLoaded) return;
+                    window.__methodClarityLoaded = true;
+                    window.clarity = window.clarity || function () {
+                        (window.clarity.q = window.clarity.q || []).push(arguments);
+                    };
+                    var c = document.createElement("script");
+                    c.async = true;
+                    c.src = "https://www.clarity.ms/tag/xj8oadt46d";
+                    document.head.appendChild(c);
+                }
+                /* Boot: if a stored decision grants a provider AND
+                   we're on production, load it right away so returning
+                   consenters get their initial page_view / session
+                   captured. On a first visit, or a declined provider,
+                   nothing loads and the React banner (once hydrated)
+                   handles the ask. */
+                var c = readConsent();
+                if (c) {
+                    if (c.ga === true) loadGA();
+                    if (c.clarity === true) loadClarity();
+                }
+                /* Expose the loaders to the React consent store so
+                   grants inject the scripts inline (no reload
+                   needed). Both are idempotent and hostname-gated. */
+                window.__methodConsent = {
+                    get: readConsent,
+                    load: { ga: loadGA, clarity: loadClarity }
                 };
-                /* Both vendor scripts load IMMEDIATELY (async). They were
-                   briefly deferred to post-load idle for lab scores, but
-                   Clarity must observe the page load window to capture its
-                   performance metrics (LCP/INP/CLS) — deferral left the
-                   Clarity Performance Overview blank. Field data fidelity
-                   wins over a few lab points (user decision, July 2026).
-                   See SEO_PLAYBOOK.md §12.3 Rule 5. */
-                var s = document.createElement("script");
-                s.async = true;
-                s.src = "https://www.googletagmanager.com/gtag/js?id=G-7F2PPZPXSK";
-                document.head.appendChild(s);
-                var c = document.createElement("script");
-                c.async = true;
-                c.src = "https://www.clarity.ms/tag/xj8oadt46d";
-                document.head.appendChild(c);
             })();
         </script>
         <script>window.addEventListener("error",function(e){if(e.error instanceof DOMException&&e.error.name==="DataCloneError"&&e.message&&e.message.includes("PerformanceServerTiming")){e.stopImmediatePropagation();e.preventDefault()}},true);</script>

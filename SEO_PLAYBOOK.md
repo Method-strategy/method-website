@@ -1292,7 +1292,186 @@ GA4 → Reports → Engagement → Events → filter Event name = not_found
 
 ---
 
-## 14. Acceptance test for any SEO change
+## 14. GDPR consent architecture
+
+Method's consent system is **custom, load-blocking, and split by
+provider**. GA4 and Microsoft Clarity are two independent toggles
+that stay off until the user explicitly opts in. No CMP vendor, no
+Consent Mode v2 (which we evaluated and rejected — see §14.5).
+
+### 14.1 Three-layer gate
+
+Every analytics touchpoint must pass all three:
+
+```
+Layer 1: Hostname guard    →   Layer 2: Consent gate    →   Layer 3: Runtime guard
+  (production hosts only)      (localStorage per-provider)   (typeof window.gtag)
+```
+
+- **Layer 1** is the outermost kill-switch. Non-production hostnames
+  (previews, localhost, deploy permalinks) never load analytics
+  regardless of consent. See §9.8.
+- **Layer 2** is the new consent gate. Reads
+  `localStorage["method_consent_v1"]`. If either provider isn't
+  granted, that provider's loader script is not injected.
+- **Layer 3** is defense-in-depth. Every hook (`useGAPageView`,
+  `useContactTracking`, the `not_found` effect in `NotFound.jsx`)
+  additionally checks `typeof window.gtag === "function"` so a
+  timing race where a hook fires before the loader is ready is a
+  silent no-op, not a runtime error.
+
+### 14.2 File map
+
+| File | Role |
+|---|---|
+| `frontend/public/index.html` head snippet | Pre-React load-block. Reads localStorage on boot, conditionally injects gtag/clarity loaders. Exposes `window.__methodConsent.load.{ga,clarity}` for the React store to trigger post-boot grants. |
+| `frontend/src/consent/consentStore.js` | React-side single source of truth. `readConsent`, `writeConsent`, `getEffectiveState`, `hasDecision`, `subscribe`. Cross-tab + same-tab notifications via custom event. |
+| `frontend/src/consent/ConsentBanner.jsx` | Bottom-band banner. Accept / Decline / Preferences at equal visual weight. |
+| `frontend/src/consent/ConsentModal.jsx` | Preferences modal. Two independent toggles for GA and Clarity. |
+| `frontend/src/consent/ConsentProvider.jsx` | Mount point. Shows banner if no decision, opens modal on request. Exposes `window.openConsentPreferences()` for the footer link. Drives the "Noted." toast. |
+| `frontend/src/hooks/useGAPageView.js` | Consent-gated. |
+| `frontend/src/hooks/useContactTracking.js` | Consent-gated. |
+| `frontend/src/pages/NotFound.jsx` | `not_found` event consent-gated. |
+| `frontend/src/components/Footer.jsx` | "Cookie preferences" link that calls `window.openConsentPreferences()`. |
+
+### 14.3 Storage schema
+
+```json
+{ "v": 1, "ga": true, "clarity": false, "ts": 1730920000, "origin": "methodmarketinggroup.com" }
+```
+
+- `v`: schema version. Bump if categories or shape change. Older
+  records are treated as no decision and the banner re-shows.
+- `ga`, `clarity`: independent per-provider booleans.
+- `ts`: ms epoch of the decision. Records older than 365 days are
+  treated as expired and re-prompt.
+- `origin`: hostname the decision was made on. Belt-and-braces; not
+  currently used for logic.
+
+Storage medium is **localStorage, not a cookie**. Consent-record
+storage is explicitly permitted as strictly necessary under ePrivacy
+recital 66. localStorage adds zero bytes to every request (vs a
+cookie's ~30) and is not read by any third party.
+
+### 14.4 Grant / withdrawal semantics
+
+**Grant (false → true) is instant, no reload.** `consentStore.writeConsent`
+writes localStorage, then calls `window.__methodConsent.load.{ga,clarity}`
+which injects the loader inline. For GA specifically, the store then
+fires a manual `page_view` for the current URL so we don't lose the
+entry-page attribution (the `useGAPageView` hook already fired on
+mount with consent still false).
+
+**Withdrawal (true → false) reloads the page.** Neither `gtag.js` nor
+`clarity.js` can be uninstalled at runtime once loaded; a hard reload
+is the only reliable way to actually stop them. First-party cookies
+the provider dropped on `.methodmarketinggroup.com` (`_ga`,
+`_ga_G-7F2PPZPXSK`, `_clck`, `_clsk`) are cleared immediately before
+the reload. Third-party cookies (`MUID` on `.bing.com`) cannot be
+cleared by us and expire on their own schedule — this is
+documented in the privacy policy.
+
+### 14.5 Why not Consent Mode v2
+
+Considered and rejected for this site:
+
+- Some EU DPAs (French CNIL notably) interpret ePrivacy 5(3) to cover
+  the cookieless pings Consent Mode still sends. Load-block sidesteps
+  the ambiguity entirely — zero requests to analytics origins fire
+  pre-consent, easy to prove in a two-second demo.
+- Microsoft Clarity's `clarity('consent', false)` API still lets the
+  loader execute network activity before the call is heard, including
+  the `c.bing.com/c.gif` MUID sync (verified July 2026). Only true
+  way to stop it: don't load the Clarity loader at all.
+- Method has no ecommerce funnel and no ad spend, so the "modeled
+  conversions from denied users" benefit of Consent Mode is worth ~0.
+
+### 14.6 SSG pipeline interaction
+
+Zero disruption. The consent head snippet lives in `public/index.html`
+alongside the pre-existing hostname guard — SSG bakes it into every
+prerendered HTML file via the same mechanism as the analytics loader
+itself. `prerender-og.js` and `prerender-ssg.js` are unchanged.
+
+The React banner and modal are client-only: `ConsentProvider` returns
+`null` until it's mounted on the client (via `useState(false)` +
+`useEffect(setMounted(true))`), so the prerendered HTML contains no
+banner or modal element. This preserves the "reads without
+JavaScript" property that crawlers depend on: the initial HTML
+response is exactly the same content it was pre-consent-system, with
+just an extra 2KB of inline head script.
+
+### 14.7 Cross-tab and same-tab sync
+
+`writeConsent` dispatches a `methodconsentchange` CustomEvent for
+same-tab listeners AND writes localStorage, which fires the native
+`storage` event in other tabs. `consentStore.subscribe(cb)` listens
+to both and normalizes them into a single callback carrying
+`{ state, event }` where event is `"grant"`, `"withdraw"`, `"noop"`,
+or `"extern"`. The banner uses this to hide immediately in every tab
+when the user decides. The "Noted." toast fires only on `"grant"`.
+
+### 14.8 Acceptance suite
+
+**Live production is the only environment where analytics
+observability tests can run** (hostname guard silences preview). The
+suite lives at `frontend/scripts/acceptance-consent.js` and runs
+against a `URL` argument (default `https://methodmarketinggroup.com`).
+
+```bash
+node frontend/scripts/acceptance-consent.js https://methodmarketinggroup.com
+```
+
+Seven test groups, ~24 assertions. Emits pass/fail lines to stdout
+plus a JSON summary at `/tmp/consent-acceptance.json`. Groups:
+
+1. Fresh visit: zero analytics requests, zero third-party cookies, banner visible.
+2. Decline: persists across reload, zero analytics on subsequent pages.
+3. Accept-all: gtag + Clarity loaders fire, `_ga` and `_clck` cookies drop, toast appears.
+4. GA-only accept (via preferences modal): gtag loads, Clarity does NOT, no bing sync, no `_clck` / `MUID`.
+5. Clarity-only accept: clarity loads, GA does NOT, no `_ga`.
+6. 404 route: `not_found` event does not fire pre-consent.
+7. Footer link: opens the preferences modal, reflects stored state.
+
+Withdrawal is tested manually — the automated flow can't easily
+assert "cookies were cleared then the reload finished" without
+race conditions. Manual verification: accept, verify cookies, toggle
+off in preferences, click Save, observe the reload, verify cookies
+gone.
+
+### 14.9 Interaction with the SEO / analytics playbook sections
+
+- **§9.8 hostname guard** stays exactly as it was. Consent is the
+  inner gate; hostname is the outer gate. They are independent and
+  both required.
+- **§9.7 `email_click` / `linkedin_click`** now consent-gated. Reject
+  → those events don't fire. Accept → identical to pre-consent
+  behavior.
+- **§9.9 `not_found` event** now consent-gated. Same rule.
+- **Preview environment** behavior: banner shows so reviewers can
+  test the flow, but no analytics ever fires on preview regardless
+  of choice. This is intentional and documented on-screen for QA.
+
+### 14.10 When (not) to touch this system
+
+Do not change without re-running the acceptance suite against
+production. Consent bugs are invisible until a lawyer or regulator
+looks — the whole system's value is that "no data flows pre-consent"
+is a promise you can prove empirically. If you must edit:
+
+- Adding a new provider: bump `CONSENT_VERSION` in `consentStore.js`
+  so returning users are re-prompted. Add a loader function in the
+  head snippet. Add a Row to `ConsentModal`. Extend the acceptance
+  suite.
+- Removing a provider: keep the loader function returning early so
+  historic `ga: true` records don't crash. Remove the modal Row.
+- Copy edits: banner + modal copy is authored by the client, verbatim.
+  Do not paraphrase. See the July 2026 build prompt in
+  `memory/PRD.md` for the source strings.
+
+---
+
+## 15. Acceptance test for any SEO change
 
 **The acceptance test — run against the live Netlify deploy, not local.**
 The change must appear in the raw HTML response with no JavaScript
@@ -1344,7 +1523,7 @@ canonical, OG, Twitter, JSON-LD) must be present in the raw HTML.
 
 ---
 
-## 15. Currently-flagged items (informational; do not rewrite without approval)
+## 16. Currently-flagged items (informational; do not rewrite without approval)
 
 These titles / descriptions exceed the conventional soft limits. They are
 **authored copy** and were not rewritten during the technical audit;
@@ -1379,7 +1558,7 @@ needs shortening later, get author sign-off first.
 
 ---
 
-## 16. Technical audit results (as of last SEO pass)
+## 17. Technical audit results (as of last SEO pass)
 
 - ✓ Exactly one H1 per page across all 22 routes
 - ✓ Heading hierarchy contains no skips (h1 → h2 → h3 …)

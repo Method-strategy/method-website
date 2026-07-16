@@ -229,3 +229,17 @@ Marketing website for Method, a strategic marketing practice (fractional CMO-lev
 - Playbook: NEW §9.9 (`not_found` event — analysis workflow), NEW §13.1 (second-wave redirects table + policy for when to add more).
 - Verified locally: build succeeded (156.22 kB gzipped, +102B), 22 routes rendered, `_redirects` served correctly by preview, `not_found` string present in shipped bundle with expected params, 404 page renders/no visual regression.
 - PENDING: user deploys via Save to GitHub → Netlify. Live production acceptance test script prepared (see finish summary).
+
+## July 2026 — GDPR consent gate: custom, load-blocking, provider-split
+- User goal: showcase cutting-edge compliance for international B2B clientele. No CMP vendor, no Consent Mode v2. Load-block strategy — zero requests to google-analytics.com / clarity.ms / c.bing.com until user opts in per-provider.
+- Architecture (SEO_PLAYBOOK.md §14): three-layer gate (hostname → consent → runtime), load-block via head snippet exposing `window.__methodConsent.load.{ga,clarity}`, React banner + preferences modal in `frontend/src/consent/`. Split providers: GA4 and Clarity are independent toggles.
+- Files added: `consent/consentStore.js`, `consent/ConsentBanner.jsx`, `consent/ConsentModal.jsx`, `consent/ConsentProvider.jsx`. Files updated: `public/index.html` (head snippet rewrite), `App.js` (mount ConsentProvider), `Footer.jsx` (Cookie preferences link), `hooks/useGAPageView.js` + `useContactTracking.js` + `pages/NotFound.jsx` (all consent-gated), `index.css` (consent-fade-in keyframe).
+- Copy: verbatim from client build prompt. No em dashes in microcopy. "Noted." toast on grant.
+- Persistence: `localStorage.method_consent_v1` = `{v,ga,clarity,ts,origin}`. 12-month freshness re-prompt, schema version bump = re-prompt. Cross-tab + same-tab sync via storage event + `methodconsentchange` CustomEvent.
+- Withdrawal: clears first-party cookies (`_ga`, `_ga_G-7F2PPZPXSK`, `_clck`, `_clsk`) and reloads (only reliable way to stop running gtag.js / clarity.js). MUID on `.bing.com` cannot be cleared by us — documented in privacy policy.
+- SSR safety: ConsentProvider returns null until client mount; prerendered HTML contains no banner/modal element. Head snippet is baked into every prerendered page by existing SSG pipeline.
+- Bundle delta: +3.05KB gzipped JS, +284B CSS. Zero third-party dependency. Zero render-blocking added.
+- Acceptance suite: `frontend/scripts/acceptance-consent.js` — 7 test groups, ~24 assertions, must run against live production (hostname guard silences preview). Emits `/tmp/consent-acceptance.json`.
+- Verified on preview: banner shows, modal opens, toggles work, localStorage writes correctly, footer link opens modal, toast fires only on grant.
+- PENDING: user deploys via Save to GitHub → run acceptance suite against production. Privacy policy diffs drafted but NOT deployed — awaiting Method-voice review before ship.
+

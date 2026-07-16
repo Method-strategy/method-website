@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { RevealStagger, RevealItem } from "../components/Reveal";
 import { isAnalyticsHost } from "@/hooks/analyticsHost";
+import { getEffectiveState } from "@/consent/consentStore";
 
 const destinations = [
     { label: "Work", to: "/work" },
@@ -17,12 +18,18 @@ const destinations = [
  * can be analysed as first-class data rather than reverse-derived by
  * filtering page_views on title. See SEO_PLAYBOOK.md §9.9.
  *
+ * Consent-gated: only fires if the user has granted GA. On a pre-consent
+ * 404 visit the event is simply not recorded; if the user then grants
+ * consent, we skip retroactive firing (the next 404 they hit gets
+ * tracked normally). Acceptable data loss.
+ *
  * SSR-safe: the effect never runs under react-dom/server (prerender-ssg.js
  * renders this tree at build time — `window` and `gtag` do not exist there).
  */
 function useNotFoundEvent() {
     useEffect(() => {
         if (!isAnalyticsHost()) return;
+        if (!getEffectiveState().ga) return;
         if (typeof window.gtag !== "function") return;
         window.gtag("event", "not_found", {
             page_path: window.location.pathname + window.location.search,

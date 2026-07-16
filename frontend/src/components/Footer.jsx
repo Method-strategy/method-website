@@ -130,6 +130,22 @@ export default function Footer() {
                         >
                             Privacy Policy
                         </Link>
+                        <span aria-hidden="true">|</span>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                if (
+                                    typeof window !== "undefined" &&
+                                    typeof window.openConsentPreferences === "function"
+                                ) {
+                                    window.openConsentPreferences();
+                                }
+                            }}
+                            data-testid="footer-link-cookie-preferences"
+                            className="nav-link text-cream/70 hover:text-cream text-xs tracking-widest uppercase font-inherit bg-transparent border-0 p-0 cursor-pointer"
+                        >
+                            Cookie preferences
+                        </button>
                     </span>
                     <span className="serif italic normal-case tracking-normal text-cream/70 text-sm">
                         There is a method to this.

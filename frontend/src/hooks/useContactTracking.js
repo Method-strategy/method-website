@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { isAnalyticsHost } from "./analyticsHost";
+import { getEffectiveState } from "@/consent/consentStore";
 
 /**
  * Fires GA4 contact-intent events on outbound clicks, sitewide:
@@ -20,12 +21,17 @@ import { isAnalyticsHost } from "./analyticsHost";
  * SEO_PLAYBOOK.md §9.7. Known limitation: clicks measure intent, not
  * that an email was sent or a LinkedIn action completed.
  *
+ * Three-layer gate matches useGAPageView: hostname, consent, gtag
+ * readiness. If the user hasn't granted GA the click still happens
+ * (never blocked) — we just don't record it.
+ *
  * SSR-safe: useEffect never runs under react-dom/server.
  */
 export function useContactTracking() {
     useEffect(() => {
         const onClick = (e) => {
             if (!isAnalyticsHost()) return;
+            if (!getEffectiveState().ga) return;
             const link = e.target.closest && e.target.closest("a[href]");
             if (!link || typeof window.gtag !== "function") return;
             const href = link.getAttribute("href") || "";
